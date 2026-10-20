@@ -50,7 +50,12 @@ option(QUORUMKV_BUILD_MUTATION_TESTS "Build test-only unsafe election simulator 
 if(QUORUMKV_BUILD_MUTATION_TESTS AND NOT BUILD_TESTING)
   message(FATAL_ERROR "Mutation executables require BUILD_TESTING")
 endif()
-add_library(quorumkv src/rpc/codec.cpp src/raft/node.cpp src/raft/log.cpp src/sim/support.cpp src/sim/cluster.cpp src/sim/replication_safety.cpp)
+add_library(quorumkv src/rpc/codec.cpp src/raft/node.cpp src/raft/log.cpp src/raft/file_storage.cpp src/sim/support.cpp src/sim/cluster.cpp src/sim/replication_safety.cpp)
+if(WIN32)
+  target_sources(quorumkv PRIVATE src/platform/windows/file.cpp)
+else()
+  target_sources(quorumkv PRIVATE src/platform/posix/file.cpp)
+endif()
 target_link_libraries(quorumkv PUBLIC quorumkv_options)
 if(BUILD_TESTING)
   include(FetchContent)
@@ -75,11 +80,13 @@ if(BUILD_TESTING)
     tests/replication_test.cpp
     tests/replication_safety_test.cpp
     tests/figure8_test.cpp
+    tests/file_storage_test.cpp
     tests/sim_support_test.cpp
     tests/sim_cluster_test.cpp
     tests/election_fuzz_test.cpp
   )
   target_link_libraries(quorumkv_tests PRIVATE quorumkv GTest::gtest)
+  target_compile_definitions(quorumkv_tests PRIVATE QUORUMKV_TEST_ROOT="${PROJECT_BINARY_DIR}")
   include(GoogleTest)
   gtest_discover_tests(quorumkv_tests DISCOVERY_MODE PRE_TEST DISCOVERY_TIMEOUT 120)
   if(QUORUMKV_BUILD_MUTATION_TESTS)
