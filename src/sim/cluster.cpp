@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "quorumkv/codec.hpp"
+#include "quorumkv/replication_safety.hpp"
 #include "quorumkv/sim_cluster.hpp"
 
 namespace quorumkv::sim {
@@ -20,6 +21,20 @@ struct Cluster::Impl {
         throw std::logic_error("transport recipient mismatch");
       }
       cluster.Enqueue(message);
+      if (std::holds_alternative<RequestVote>(message.body) &&
+          cluster.random.Next() % 100 < cluster.candidate_crash_percent) {
+        ++cluster.stats.candidate_crashes;
+        const auto durable = cluster.At(message.from).storage.hard_state();
+        if (durable.term != message.term || durable.voted_for != message.from) {
+          throw std::logic_error("candidate crash loses announced term or self-vote");
+        }
+        throw PowerLoss{};
+      }
+      if (const auto* append = std::get_if<AppendResponse>(&message.body);
+          append && append->success && cluster.random.Next() % 100 < cluster.append_crash_percent) {
+        ++cluster.stats.append_reply_crashes;
+        throw PowerLoss{};
+      }
       if (const auto* vote = std::get_if<VoteResponse>(&message.body);
           vote && vote->granted && cluster.random.Next() % 100 < cluster.vote_crash_percent) {
         // Unwind the current Step before any later instruction can run. The driver
@@ -35,9 +50,16 @@ struct Cluster::Impl {
     SeededRandom random;
     Link link;
     std::unique_ptr<RaftNode> node;
+    std::optional<std::uint64_t> checked_revision;
+    RaftLog checked_log;
+    LogIndex applied{};
   };
 
-  explicit Impl(ClusterConfig config) : random(config.seed), recording(config.record_trace) {
+  explicit Impl(ClusterConfig config)
+      : random(config.seed),
+        recording(config.record_trace),
+        manual_delivery(config.manual_delivery),
+        max_append_entries(config.max_append_entries) {
     if (config.size != 3 && config.size != 5) {
       throw std::invalid_argument("election simulator uses three or five members");
     }
@@ -46,6 +68,12 @@ struct Cluster::Impl {
     std::iota(members.begin(), members.end(), NodeId{1});
     for (std::size_t index = 0; index < config.size; ++index) {
       hosts.push_back(std::make_unique<Host>(*this, random.Next()));
+      if (!config.initial.empty()) {
+        if (config.initial.size() != config.size) {
+          throw std::invalid_argument("one initial state required per member");
+        }
+        hosts.back()->storage = MemoryStorage(config.initial.at(index));
+      }
     }
     for (const auto id : members) {
       Boot(id);
@@ -56,7 +84,10 @@ struct Cluster::Impl {
   SeededRandom random;
   NetworkFaults faults;
   std::uint64_t vote_crash_percent{};
+  std::uint64_t candidate_crash_percent{};
+  std::uint64_t append_crash_percent{};
   ElectionSafety safety;
+  ReplicationSafety replication;
   std::vector<NodeId> members;
   std::vector<std::uint64_t> groups;
   std::vector<std::unique_ptr<Host>> hosts;
@@ -65,6 +96,8 @@ struct Cluster::Impl {
   std::uint64_t sequence{};
   std::uint64_t digest{14695981039346656037ULL};
   bool recording;
+  bool manual_delivery;
+  std::size_t max_append_entries;
   std::string trace;
 
   [[nodiscard]] auto At(NodeId id) const -> Host& {
@@ -83,7 +116,8 @@ struct Cluster::Impl {
 
   void HashMessage(const Message& message) {
     for (const auto byte : Encode(message)) {
-      Hash(byte);
+      digest ^= byte;
+      digest *= 1099511628211ULL;
     }
   }
 
@@ -95,13 +129,45 @@ struct Cluster::Impl {
       Hash(static_cast<unsigned char>(character));
     }
     for (const auto member : members) {
-      const auto& host = At(member);
+      auto& host = At(member);
       const auto state = host.storage.hard_state();
       const auto role = host.node ? host.node->role() : Role::Follower;
       safety.Observe(member, role, state);
       if (host.node && host.node->hard_state() != state) {
         throw std::logic_error("node hard state differs from durable storage");
       }
+      if (host.checked_revision != host.storage.revision()) {
+        host.checked_log = RaftLog(host.storage.durable());
+        replication.ObserveLog(member, host.checked_log);
+        host.checked_revision = host.storage.revision();
+        for (const auto& entry : host.checked_log.entries()) {
+          Hash(entry.index);
+          Hash(entry.term);
+          Hash(static_cast<std::uint64_t>(entry.kind));
+          for (const auto byte : entry.command) {
+            Hash(byte);
+          }
+        }
+      }
+      ++stats.log_checks;
+      if (host.node) {
+        const auto& log = host.node->log();
+        if (!std::ranges::equal(log.entries(), host.checked_log.entries())) {
+          throw std::logic_error("node log differs from durable storage");
+        }
+        if (role == Role::Leader) {
+          replication.ObserveLeader(member, state.term, log);
+        }
+        if (host.node->commit_index() < host.applied) {
+          throw std::logic_error("commit index moved backwards within a node lifetime");
+        }
+        if (host.node->commit_index() != host.applied) {
+          replication.ObserveCommit(member, log, host.node->commit_index());
+          host.applied = host.node->commit_index();
+        }
+        Hash(host.node->commit_index());
+      }
+      ++stats.application_checks;
       Hash(member);
       Hash(host.node != nullptr ? 1 : 0);
       Hash(static_cast<std::uint64_t>(role));
@@ -148,8 +214,10 @@ struct Cluster::Impl {
     if (host.node) {
       return;
     }
-    host.node = std::make_unique<RaftNode>(ElectionConfig{.id = id, .members = members}, host.link,
-                                           clock, host.storage, host.random);
+    host.applied = 0;
+    host.node = std::make_unique<RaftNode>(
+        ElectionConfig{.id = id, .members = members, .max_append_entries = max_append_entries},
+        host.link, clock, host.storage, host.random);
     ++stats.restarts;
     Check("restart", id);
   }
@@ -194,22 +262,26 @@ struct Cluster::Impl {
         Check("tick", id);
       }
     }
-    while (!queue.empty() && queue.begin()->first.first <= clock.Now()) {
-      const auto packet = queue.extract(queue.begin());
-      const auto& message = packet.mapped();
-      HashMessage(message);
-      if (At(message.to).node && Connected(message)) {
-        ++stats.delivered;
-        if (const auto* vote = std::get_if<VoteResponse>(&message.body);
-            vote && vote->granted && message.term < At(message.to).node->hard_state().term) {
-          ++stats.stale_vote_deliveries;
-        }
-        Run(message.to, [&message](RaftNode& node) { node.Step(message); });
-        Check("deliver", message.to);
-      } else {
-        ++stats.dropped;
-        Check("drop", message.to);
+    while (!manual_delivery && !queue.empty() && queue.begin()->first.first <= clock.Now()) {
+      Deliver(queue.begin());
+    }
+  }
+
+  void Deliver(decltype(queue)::iterator position) {
+    const auto packet = queue.extract(position);
+    const auto& message = packet.mapped();
+    HashMessage(message);
+    if (At(message.to).node && Connected(message)) {
+      ++stats.delivered;
+      if (const auto* vote = std::get_if<VoteResponse>(&message.body);
+          vote && vote->granted && message.term < At(message.to).node->hard_state().term) {
+        ++stats.stale_vote_deliveries;
       }
+      Run(message.to, [&message](RaftNode& node) { node.Step(message); });
+      Check("deliver", message.to);
+    } else {
+      ++stats.dropped;
+      Check("drop", message.to);
     }
   }
 };
@@ -257,6 +329,61 @@ void Cluster::SetVoteCrashPercent(std::uint64_t percent) {
   impl_->vote_crash_percent = percent;
   impl_->Hash(percent);
   impl_->Check("vote-crash-fault");
+}
+void Cluster::SetReplicationCrashPercent(std::uint64_t candidate, std::uint64_t append_reply) {
+  if (candidate > 100 || append_reply > 100) {
+    throw std::invalid_argument("invalid replication crash percentage");
+  }
+  impl_->candidate_crash_percent = candidate;
+  impl_->append_crash_percent = append_reply;
+  impl_->Hash(candidate);
+  impl_->Hash(append_reply);
+  impl_->Check("replication-crash-fault");
+}
+auto Cluster::Propose(NodeId id, Bytes command) -> std::optional<LogIndex> {
+  std::optional<LogIndex> index;
+  ++impl_->stats.proposals;
+  for (const auto byte : command) {
+    impl_->Hash(byte);
+  }
+  impl_->Run(id, [&](RaftNode& node) { index = node.Propose(std::move(command)); });
+  impl_->Check("propose", id);
+  return index;
+}
+auto Cluster::Log(NodeId id) const -> PersistentState { return impl_->At(id).storage.Load(); }
+auto Cluster::CommitIndex(NodeId id) const -> LogIndex {
+  const auto& node = impl_->At(id).node;
+  return node ? node->commit_index() : 0;
+}
+auto Cluster::Committed() const -> const std::vector<LogEntry>& {
+  return impl_->replication.committed();
+}
+auto Cluster::Pending() const -> std::vector<std::pair<std::uint64_t, Message>> {
+  std::vector<std::pair<std::uint64_t, Message>> packets;
+  for (const auto& [key, message] : impl_->queue) {
+    packets.emplace_back(key.second, message);
+  }
+  return packets;
+}
+void Cluster::Deliver(std::uint64_t packet) {
+  if (!impl_->manual_delivery) {
+    throw std::logic_error("directed delivery requires manual mode");
+  }
+  const auto found = std::ranges::find_if(
+      impl_->queue, [packet](const auto& item) { return item.first.second == packet; });
+  if (found == impl_->queue.end()) {
+    throw std::out_of_range("unknown queued packet");
+  }
+  impl_->Deliver(found);
+}
+void Cluster::Tick(NodeId id) {
+  if (!impl_->manual_delivery) {
+    throw std::logic_error("directed tick requires manual mode");
+  }
+  impl_->clock.Advance();
+  impl_->Check("clock");
+  impl_->Run(id, [](RaftNode& node) { node.Tick(); });
+  impl_->Check("tick", id);
 }
 auto Cluster::Leaders() const -> std::vector<NodeId> {
   std::vector<NodeId> leaders;

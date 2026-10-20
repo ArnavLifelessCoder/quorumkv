@@ -17,6 +17,9 @@ struct ClusterConfig {
   std::uint64_t seed{};
   std::size_t size{3};
   bool record_trace{};
+  bool manual_delivery{};
+  std::size_t max_append_entries{16};
+  std::vector<PersistentState> initial{};
 };
 
 struct SimStats {
@@ -32,6 +35,11 @@ struct SimStats {
   std::uint64_t vote_grant_crashes{};
   std::uint64_t long_delay_packets{};
   std::uint64_t stale_vote_deliveries{};
+  std::uint64_t proposals{};
+  std::uint64_t log_checks{};
+  std::uint64_t application_checks{};
+  std::uint64_t candidate_crashes{};
+  std::uint64_t append_reply_crashes{};
   auto operator==(const SimStats&) const -> bool = default;
 };
 
@@ -53,6 +61,16 @@ class Cluster {
   void SetFaults(NetworkFaults faults);
   // Abrupt power loss at the Transport::Send boundary, after a granted reply is queued.
   void SetVoteCrashPercent(std::uint64_t percent);
+  void SetReplicationCrashPercent(std::uint64_t candidate, std::uint64_t append_reply);
+  auto Propose(NodeId id, Bytes command) -> std::optional<LogIndex>;
+  [[nodiscard]] auto Log(NodeId id) const -> PersistentState;
+  [[nodiscard]] auto CommitIndex(NodeId id) const -> LogIndex;
+  [[nodiscard]] auto Committed() const -> const std::vector<LogEntry>&;
+  // Directed schedules use the same queue, driver, crash model and safety checks.
+  // Deliver selects an existing packet, never fabricates a protocol response.
+  [[nodiscard]] auto Pending() const -> std::vector<std::pair<std::uint64_t, Message>>;
+  void Deliver(std::uint64_t packet);
+  void Tick(NodeId id);
   [[nodiscard]] auto Leaders() const -> std::vector<NodeId>;
   [[nodiscard]] auto Alive(NodeId id) const -> bool;
   [[nodiscard]] auto State(NodeId id) const -> HardState;
