@@ -1,0 +1,10 @@
+{
+  "preset": "asan",
+  "utc": "2026-10-20T11:14:04.9941735Z",
+  "cmake": "cmake version 3.31.6-msvc6\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).",
+  "ninja": "1.12.1",
+  "python": "Python 3.13.15",
+  "compiler": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\cl.exe",
+  "source_revision": "ff0751e644d1e29121ec69823f04e9aecbc84924",
+  "source_status": "?? docs/\n?? scripts/test.ps1"
+}

@@ -1,0 +1,35 @@
+{
+  "unique_seeds": 10000,
+  "seed_range": [
+    0,
+    9999
+  ],
+  "runs": {
+    "debug": {
+      "tests_passed": 16,
+      "first_seed": 0,
+      "seeds": 10000,
+      "round_trips": 60000,
+      "probe_accepted": 52898,
+      "probe_rejected": 27102,
+      "corpus_digest": "ddc03ddedd0aabdf"
+    },
+    "asan": {
+      "tests_passed": 16,
+      "first_seed": 0,
+      "seeds": 10000,
+      "round_trips": 60000,
+      "probe_accepted": 52898,
+      "probe_rejected": 27102,
+      "corpus_digest": "ddc03ddedd0aabdf"
+    }
+  },
+  "ci": "not run; awaiting push approval",
+  "threaded_code": false,
+  "replay": {
+    "seed": 42,
+    "runs": 2,
+    "matching_fingerprints": true,
+    "invalid_seed_exit_code": 2
+  }
+}
