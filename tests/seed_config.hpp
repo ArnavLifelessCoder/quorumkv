@@ -15,6 +15,7 @@ struct SeedConfig {
 };
 
 inline SeedConfig seed_config;
+inline bool mutation_survey{};
 
 inline auto ParseSeedOptions(std::span<const std::string_view> options) -> SeedConfig {
   SeedConfig config;

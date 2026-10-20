@@ -11,7 +11,9 @@ auto main(int argc, char** argv) -> int try {
   int remaining = 1;
   for (int i = 1; i < argc; ++i) {
     const std::string_view argument(argv[i]);
-    if (argument.starts_with("--seed")) {
+    if (argument == "--mutation-survey") {
+      quorumkv::test::mutation_survey = true;
+    } else if (argument.starts_with("--seed")) {
       options.push_back(argument);
     } else {
       argv[remaining++] = argv[i];

@@ -237,27 +237,17 @@ void RaftNode::Receive(const Message& message, const RequestVote& vote) {
                           std::pair{log_.last_term(), log_.last_index()};
   const bool grant = message.term == hard_state_.term && up_to_date &&
                      (!hard_state_.voted_for || hard_state_.voted_for == message.from);
-#if defined(QUORUMKV_TEST_REPLY_BEFORE_PERSIST)
-  Send(message.from, VoteResponse{.granted = grant}, message.rpc_id);
-#endif
   if (grant) {
     if (!hard_state_.voted_for) {
       Save({.term = hard_state_.term, .voted_for = message.from});
     }
     ResetElectionTimer();
   }
-#if !defined(QUORUMKV_TEST_REPLY_BEFORE_PERSIST)
   Send(message.from, VoteResponse{.granted = grant}, message.rpc_id);
-#endif
 }
 
 void RaftNode::Receive(const Message& message, const VoteResponse& vote) {
-  const bool current_term =
-#if defined(QUORUMKV_TEST_COUNT_STALE_VOTES)
-      true;
-#else
-      message.term == hard_state_.term;
-#endif
+  const bool current_term = message.term == hard_state_.term;
   if (current_term && role_ == Role::Candidate && vote.granted) {
     votes_.insert(message.from);
     if (votes_.size() > config_.members.size() / 2) {

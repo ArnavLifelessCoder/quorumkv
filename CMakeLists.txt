@@ -46,16 +46,20 @@ else()
 endif()
 
 include(CTest)
-option(QUORUMKV_BUILD_MUTATION_TESTS "Build test-only unsafe election simulator executables" OFF)
+option(QUORUMKV_BUILD_MUTATION_TESTS "Build test-only unsafe simulator libraries and executables" OFF)
 if(QUORUMKV_BUILD_MUTATION_TESTS AND NOT BUILD_TESTING)
   message(FATAL_ERROR "Mutation executables require BUILD_TESTING")
 endif()
-add_library(quorumkv src/rpc/codec.cpp src/raft/node.cpp src/raft/log.cpp src/raft/file_storage.cpp src/sim/support.cpp src/sim/cluster.cpp src/sim/replication_safety.cpp)
+add_library(quorumkv_common OBJECT
+  src/rpc/codec.cpp src/raft/log.cpp src/raft/file_storage.cpp src/sim/support.cpp
+  src/sim/cluster.cpp src/sim/replication_safety.cpp)
 if(WIN32)
-  target_sources(quorumkv PRIVATE src/platform/windows/file.cpp)
+  target_sources(quorumkv_common PRIVATE src/platform/windows/file.cpp)
 else()
-  target_sources(quorumkv PRIVATE src/platform/posix/file.cpp)
+  target_sources(quorumkv_common PRIVATE src/platform/posix/file.cpp)
 endif()
+target_link_libraries(quorumkv_common PUBLIC quorumkv_options)
+add_library(quorumkv src/raft/node.cpp $<TARGET_OBJECTS:quorumkv_common>)
 target_link_libraries(quorumkv PUBLIC quorumkv_options)
 if(BUILD_TESTING)
   find_package(Python3 REQUIRED COMPONENTS Interpreter)
@@ -81,6 +85,7 @@ if(BUILD_TESTING)
     tests/replication_test.cpp
     tests/replication_safety_test.cpp
     tests/figure8_test.cpp
+    tests/replication_fuzz_test.cpp
     tests/file_storage_test.cpp
     tests/sim_support_test.cpp
     tests/sim_cluster_test.cpp
@@ -96,14 +101,23 @@ if(BUILD_TESTING)
   set_property(DIRECTORY APPEND PROPERTY TEST_INCLUDE_FILES
     "${PROJECT_SOURCE_DIR}/tests/timeouts.cmake")
   if(QUORUMKV_BUILD_MUTATION_TESTS)
-    foreach(mutation IN ITEMS COUNT_STALE_VOTES REPLY_BEFORE_PERSIST)
-      string(TOLOWER "${mutation}" suffix)
-      # The normal quorumkv library never receives these definitions. Its node object
-      # is not extracted from the archive when the executable supplies its own node.
-      add_executable(quorumkv_mutant_${suffix}
-        src/raft/node.cpp tests/main.cpp tests/election_fuzz_test.cpp tests/election_test.cpp)
-      target_compile_definitions(quorumkv_mutant_${suffix} PRIVATE QUORUMKV_TEST_${mutation})
-      target_link_libraries(quorumkv_mutant_${suffix} PRIVATE quorumkv GTest::gtest)
+    add_library(quorumkv_mutation_tests OBJECT
+      tests/main.cpp tests/election_fuzz_test.cpp tests/replication_fuzz_test.cpp
+      tests/election_test.cpp tests/figure8_test.cpp)
+    target_link_libraries(quorumkv_mutation_tests PRIVATE quorumkv_options GTest::gtest)
+    foreach(mutation IN ITEMS count_stale_votes reply_before_persist self_vote_after_send
+        commit_old_term append_reply_before_persist double_vote two_of_five)
+      set(mutant_source "${CMAKE_CURRENT_BINARY_DIR}/mutants/${mutation}/node.cpp")
+      add_custom_command(OUTPUT "${mutant_source}"
+        COMMAND "${Python3_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/scripts/make_mutant.py"
+          "${PROJECT_SOURCE_DIR}/src/raft/node.cpp" "${mutation}" "${mutant_source}"
+        DEPENDS src/raft/node.cpp scripts/make_mutant.py VERBATIM)
+      add_library(quorumkv_mutant_core_${mutation} STATIC
+        "${mutant_source}" $<TARGET_OBJECTS:quorumkv_common>)
+      target_link_libraries(quorumkv_mutant_core_${mutation} PUBLIC quorumkv_options)
+      add_executable(quorumkv_mutant_${mutation} $<TARGET_OBJECTS:quorumkv_mutation_tests>)
+      target_link_libraries(quorumkv_mutant_${mutation}
+        PRIVATE quorumkv_mutant_core_${mutation} GTest::gtest)
     endforeach()
   endif()
 endif()
