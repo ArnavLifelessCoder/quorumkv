@@ -62,7 +62,9 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: logs-${{ matrix.os }}-${{ matrix.preset }}
-          path: build/${{ matrix.preset }}/Testing/Temporary/
+          path: |
+            build/${{ matrix.preset }}/Testing/Temporary/
+            build/stacks/
 
   lint:
     runs-on: ubuntu-24.04

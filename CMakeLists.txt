@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.29)
 project(quorumkv VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -58,6 +58,7 @@ else()
 endif()
 target_link_libraries(quorumkv PUBLIC quorumkv_options)
 if(BUILD_TESTING)
+  find_package(Python3 REQUIRED COMPONENTS Interpreter)
   include(FetchContent)
   set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
   set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
@@ -88,7 +89,12 @@ if(BUILD_TESTING)
   target_link_libraries(quorumkv_tests PRIVATE quorumkv GTest::gtest)
   target_compile_definitions(quorumkv_tests PRIVATE QUORUMKV_TEST_ROOT="${PROJECT_BINARY_DIR}")
   include(GoogleTest)
-  gtest_discover_tests(quorumkv_tests DISCOVERY_MODE PRE_TEST DISCOVERY_TIMEOUT 120)
+  set_property(TARGET quorumkv_tests PROPERTY TEST_LAUNCHER
+    "${Python3_EXECUTABLE};${PROJECT_SOURCE_DIR}/scripts/test_watchdog.py")
+  gtest_discover_tests(quorumkv_tests DISCOVERY_MODE PRE_TEST DISCOVERY_TIMEOUT 120
+    TEST_LIST quorumkv_test_names PROPERTIES TIMEOUT 90)
+  set_property(DIRECTORY APPEND PROPERTY TEST_INCLUDE_FILES
+    "${PROJECT_SOURCE_DIR}/tests/timeouts.cmake")
   if(QUORUMKV_BUILD_MUTATION_TESTS)
     foreach(mutation IN ITEMS COUNT_STALE_VOTES REPLY_BEFORE_PERSIST)
       string(TOLOWER "${mutation}" suffix)
