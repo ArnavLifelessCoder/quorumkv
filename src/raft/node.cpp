@@ -4,6 +4,7 @@
 #include <tuple>
 #include <utility>
 
+#include "quorumkv/codec.hpp"
 #include "quorumkv/raft_node.hpp"
 
 namespace quorumkv {
@@ -20,19 +21,14 @@ RaftNode::RaftNode(ElectionConfig config, Transport& transport, Clock& clock, St
   if (members.empty() || !std::ranges::binary_search(members, config_.id) ||
       std::ranges::adjacent_find(members) != members.end() || config_.heartbeat_interval == 0 ||
       config_.election_min <= config_.heartbeat_interval ||
-      config_.election_max < config_.election_min) {
+      config_.election_max < config_.election_min || config_.max_append_entries == 0 ||
+      config_.max_append_entries > kMaxEntries) {
     throw std::invalid_argument("invalid election configuration");
   }
-  const auto state = storage_.Load();
-  hard_state_ = state.hard_state;
-  if (state.snapshot) {
-    last_index_ = state.snapshot->last_included_index;
-    last_term_ = state.snapshot->last_included_term;
-  }
-  if (!state.entries.empty()) {
-    last_index_ = state.entries.back().index;
-    last_term_ = state.entries.back().term;
-  }
+  persistent_ = storage_.Load();
+  hard_state_ = persistent_.hard_state;
+  log_ = RaftLog(persistent_);
+  commit_index_ = log_.base_index();
   ResetElectionTimer();
 }
 
@@ -45,13 +41,20 @@ void RaftNode::EnsureRunning() const {
 void RaftNode::Save(HardState state) {
   StorageBatch batch;
   batch.hard_state = state;
+  Persist(batch);
+}
+
+void RaftNode::Persist(const StorageBatch& batch) {
   try {
+    auto next = ApplyStorageBatch(persistent_, batch);
     storage_.Persist(batch);
+    persistent_ = std::move(next);
+    hard_state_ = persistent_.hard_state;
+    log_ = RaftLog(persistent_);
   } catch (...) {
     stopped_ = true;
     throw;
   }
-  hard_state_ = state;
 }
 
 void RaftNode::ResetElectionTimer() {
@@ -85,23 +88,109 @@ void RaftNode::StartElection() {
   }
   for (const auto peer : config_.members) {
     if (peer != config_.id) {
-      Send(peer, RequestVote{.last_log_index = last_index_, .last_log_term = last_term_});
+      Send(peer,
+           RequestVote{.last_log_index = log_.last_index(), .last_log_term = log_.last_term()});
     }
   }
 }
 
 void RaftNode::BecomeLeader() {
+  const auto no_op = AppendLocal(EntryKind::NoOp, {});
   role_ = Role::Leader;
   leader_ = config_.id;
+  progress_.clear();
+  for (const auto peer : config_.members) {
+    if (peer != config_.id) {
+      progress_.emplace(peer, Progress{.next = no_op, .flights = {}});
+    }
+  }
+  AdvanceCommit();
   Heartbeat();
+}
+
+auto RaftNode::AppendLocal(EntryKind kind, Bytes command) -> LogIndex {
+  if (log_.last_index() == std::numeric_limits<LogIndex>::max()) {
+    stopped_ = true;
+    throw std::overflow_error("log index exhausted");
+  }
+  const auto index = log_.last_index() + 1;
+  StorageBatch batch;
+  batch.append.push_back(
+      {.index = index, .term = hard_state_.term, .kind = kind, .command = std::move(command)});
+  Persist(batch);
+  return index;
+}
+
+auto RaftNode::Propose(Bytes command) -> std::optional<LogIndex> {
+  EnsureRunning();
+  if (role_ != Role::Leader) {
+    return std::nullopt;
+  }
+  if (command.size() > kMaxBlobBytes) {
+    throw std::invalid_argument("command exceeds peer codec limit");
+  }
+  const auto index = AppendLocal(EntryKind::Command, std::move(command));
+  AdvanceCommit();
+  Heartbeat();
+  return index;
+}
+
+void RaftNode::SendAppend(NodeId peer) {
+  auto& progress = progress_.at(peer);
+  if (progress.next <= log_.base_index()) {
+    return;  // Snapshot transfer is introduced in M5.
+  }
+  auto entries = log_.slice(progress.next, config_.max_append_entries);
+  std::size_t bytes = 128;
+  std::size_t count = 0;
+  for (const auto& entry : entries) {
+    if (entry.command.size() + 32 > kMaxFrameBytes - bytes) {
+      break;
+    }
+    bytes += entry.command.size() + 32;
+    ++count;
+  }
+  entries.resize(count);
+  const auto previous = progress.next - 1;
+  const auto last = entries.empty() ? previous : entries.back().index;
+  if (rpc_sequence_ == std::numeric_limits<std::uint64_t>::max()) {
+    stopped_ = true;
+    throw std::overflow_error("RPC sequence exhausted");
+  }
+  const auto rpc = ++rpc_sequence_;
+  // Bound retained correlation state even when every response is lost.
+  if (progress.flights.size() == 64) {
+    progress.flights.erase(progress.flights.begin());
+  }
+  progress.flights.emplace(rpc, Flight{.previous = previous, .last = last});
+  Send(peer,
+       AppendEntries{.prev_log_index = previous,
+                     .prev_log_term = log_.term(previous),
+                     .leader_commit = commit_index_,
+                     .entries = std::move(entries)},
+       rpc);
+}
+
+auto RaftNode::AdvanceCommit() -> bool {
+  std::vector<LogIndex> matches{log_.last_index()};
+  for (const auto& [peer, progress] : progress_) {
+    static_cast<void>(peer);
+    matches.push_back(progress.match);
+  }
+  std::ranges::sort(matches);
+  const auto candidate = matches.at((matches.size() - 1) / 2);
+  if (candidate > commit_index_ && log_.term(candidate) == hard_state_.term) {
+    commit_index_ = candidate;
+    return true;
+  }
+  return false;
 }
 
 void RaftNode::Heartbeat() {
   last_heartbeat_ = clock_.Now();
   for (const auto peer : config_.members) {
     if (peer != config_.id) {
-      Send(peer, AppendEntries{
-                     .prev_log_index = last_index_, .prev_log_term = last_term_, .entries = {}});
+      SendAppend(peer);
     }
   }
 }
@@ -129,6 +218,7 @@ void RaftNode::Step(const Message& message) {
     role_ = Role::Follower;
     leader_.reset();
     votes_.clear();
+    progress_.clear();
     // A higher term alone must not postpone an election indefinitely.
   }
   if (const auto* vote = std::get_if<RequestVote>(&message.body)) {
@@ -137,12 +227,14 @@ void RaftNode::Step(const Message& message) {
     Receive(message, *reply);
   } else if (const auto* append = std::get_if<AppendEntries>(&message.body)) {
     Receive(message, *append);
+  } else if (const auto* append_reply = std::get_if<AppendResponse>(&message.body)) {
+    Receive(message, *append_reply);
   }
 }
 
 void RaftNode::Receive(const Message& message, const RequestVote& vote) {
-  const bool up_to_date =
-      std::tie(vote.last_log_term, vote.last_log_index) >= std::tie(last_term_, last_index_);
+  const bool up_to_date = std::pair{vote.last_log_term, vote.last_log_index} >=
+                          std::pair{log_.last_term(), log_.last_index()};
   const bool grant = message.term == hard_state_.term && up_to_date &&
                      (!hard_state_.voted_for || hard_state_.voted_for == message.from);
 #if defined(QUORUMKV_TEST_REPLY_BEFORE_PERSIST)
@@ -175,22 +267,107 @@ void RaftNode::Receive(const Message& message, const VoteResponse& vote) {
 }
 
 void RaftNode::Receive(const Message& message, const AppendEntries& append) {
-  bool success = false;
-  if (message.term == hard_state_.term) {
-    role_ = Role::Follower;
-    leader_ = message.from;
-    votes_.clear();
-    ResetElectionTimer();
-    // M2 only handles empty heartbeats at the local tail. Replication is M3.
-    success = append.entries.empty() && append.prev_log_index == last_index_ &&
-              append.prev_log_term == last_term_;
+  AppendResponse reply{.conflict_term = std::nullopt, .read_context = append.read_context};
+  const auto respond = [&] { Send(message.from, reply, message.rpc_id); };
+  if (message.term != hard_state_.term) {
+    respond();
+    return;
   }
-  Send(message.from,
-       AppendResponse{.success = success,
-                      .match_index = success ? last_index_ : 0,
-                      .conflict_term = std::nullopt,
-                      .read_context = append.read_context},
-       message.rpc_id);
+  role_ = Role::Follower;
+  leader_ = message.from;
+  votes_.clear();
+  progress_.clear();
+  ResetElectionTimer();
+  if (append.prev_log_index < log_.base_index()) {
+    reply.conflict_index = log_.base_index() + 1;
+    respond();
+    return;
+  }
+  if (append.prev_log_index > log_.last_index()) {
+    reply.conflict_index = log_.last_index() + 1;
+    respond();
+    return;
+  }
+  if (log_.term(append.prev_log_index) != append.prev_log_term) {
+    reply.conflict_term = log_.term(append.prev_log_index);
+    reply.conflict_index = log_.first_in_term(append.prev_log_index);
+    respond();
+    return;
+  }
+  auto expected = append.prev_log_index;
+  auto term = append.prev_log_term;
+  for (const auto& entry : append.entries) {
+    if (expected == std::numeric_limits<LogIndex>::max() || entry.index != expected + 1 ||
+        entry.term == 0 || entry.term < term || entry.term > message.term ||
+        entry.command.size() > kMaxBlobBytes ||
+        (entry.kind != EntryKind::NoOp && entry.kind != EntryKind::Command) ||
+        (entry.kind == EntryKind::NoOp && !entry.command.empty())) {
+      respond();
+      return;
+    }
+    expected = entry.index;
+    term = entry.term;
+  }
+  StorageBatch batch;
+  for (std::size_t offset = 0; offset < append.entries.size(); ++offset) {
+    const auto& entry = append.entries[offset];
+    if (entry.index > log_.last_index() || log_.term(entry.index) != entry.term) {
+      if (entry.index <= commit_index_) {
+        stopped_ = true;
+        throw std::logic_error("attempt to replace a committed log entry");
+      }
+      if (entry.index <= log_.last_index()) {
+        batch.truncate_from = entry.index;
+      }
+      batch.append.assign(append.entries.begin() + static_cast<std::ptrdiff_t>(offset),
+                          append.entries.end());
+      break;
+    }
+  }
+  if (batch.truncate_from || !batch.append.empty()) {
+    Persist(batch);
+  }
+  commit_index_ = std::max(commit_index_, std::min(append.leader_commit, expected));
+  reply.success = true;
+  reply.match_index = expected;
+  respond();
+}
+
+void RaftNode::Receive(const Message& message, const AppendResponse& reply) {
+  if (role_ != Role::Leader || message.term != hard_state_.term) {
+    return;
+  }
+  auto& progress = progress_.at(message.from);
+  const auto found = progress.flights.find(message.rpc_id);
+  if (found == progress.flights.end()) {
+    return;
+  }
+  const auto flight = found->second;
+  progress.flights.erase(found);
+  if (reply.success) {
+    if (reply.match_index != flight.last) {
+      return;
+    }
+    progress.match = std::max(progress.match, flight.last);
+    progress.next = std::max(progress.next, progress.match + 1);
+    std::erase_if(progress.flights,
+                  [&](const auto& item) { return item.second.last <= progress.match; });
+    if (AdvanceCommit()) {
+      Heartbeat();
+    } else if (progress.match < log_.last_index()) {
+      SendAppend(message.from);
+    }
+  } else if (flight.previous > progress.match) {
+    auto next = reply.conflict_index;
+    if (reply.conflict_term) {
+      if (const auto last = log_.last_in_term(*reply.conflict_term)) {
+        next = *last + 1;
+      }
+    }
+    next = std::max(progress.match + 1, std::min(next, flight.previous));
+    progress.next = std::min(progress.next, next);
+    SendAppend(message.from);
+  }
 }
 
 }  // namespace quorumkv

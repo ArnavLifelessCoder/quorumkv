@@ -26,9 +26,9 @@ struct TestStorage final : Storage {
       throw std::runtime_error("injected persistence failure");
     }
     if (batch.hard_state) {
-      state.hard_state = *batch.hard_state;
       writes.push_back(*batch.hard_state);
     }
+    state = ApplyStorageBatch(state, batch);
   }
 };
 struct TestTransport final : Transport {

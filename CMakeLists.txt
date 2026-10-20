@@ -72,6 +72,7 @@ if(BUILD_TESTING)
     tests/codec_fuzz_test.cpp
     tests/election_test.cpp
     tests/log_test.cpp
+    tests/replication_test.cpp
     tests/sim_support_test.cpp
     tests/sim_cluster_test.cpp
     tests/election_fuzz_test.cpp
