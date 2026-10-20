@@ -1,7 +1,8 @@
 # M2 review packet
 
-Status: implementation and local validation are prepared for review. Owner
-approval is pending. M3 has not started. CI results for the final pushed commit
+Status: M2 review rejected the original simulator's mutation coverage. This
+revision strengthens that coverage; re-review and owner approval are pending.
+M3 has not started. CI results for the final pushed commit
 must be checked in the [M2 runs](https://github.com/ArnavLifelessCoder/quorumkv/actions?query=branch%3Am2).
 
 ## Built
@@ -19,6 +20,12 @@ must be checked in the [M2 runs](https://github.com/ArnavLifelessCoder/quorumkv/
   a silently ineffective safety checker.
 - Seeded cold-start, crash re-election, partition chaos, healed recovery, and
   full-trace replay checks.
+- Alternating long-delay and short-delay fault phases, per-seed/per-phase packet
+  faults, frequent sync failures, and immediate power loss after vote grants.
+- Test-only unsafe node executables and an automated gate requiring actual
+  historical leader-safety violations, identical failure replays, and successful
+  normal-node controls. The corrected majority unit test uses a stale voter
+  that never casts a current-term vote.
 - M1 approval/CI link recorded. CI pins Ubuntu 24.04 and uses Node 24 actions
   (checkout v5, setup-python v6, upload-artifact v6); Windows initialization uses
   the native VS developer shell.
@@ -40,6 +47,8 @@ counts, observed election maxima, fault counts, and fingerprints are in the
 - [ASan metadata](../results/m2/asan-tools.json), [configure](../results/m2/asan-configure.txt),
   and [build](../results/m2/asan-build.txt)
 - [Complete simulator replay traces](../results/m2/sim-replay.txt)
+- [Complete debug mutation searches and replays](../results/m2/debug-mutations.jsonl)
+- [Complete ASan mutation searches and replays](../results/m2/asan-mutations.jsonl)
 - [Codec replay](../results/m2/replay.txt)
 - [Complete clang-tidy output](../results/m2/clang-tidy.txt)
 - [Python regression output](../results/m2/python-tests.txt)
@@ -57,7 +66,8 @@ It runs all local gates into an ignored staging directory, verifies the source
 revision/tree are unchanged, then publishes `results/m2/`. Commit the results
 separately without source changes. `scripts/summarize_m2.py` validates complete
 successful CTest output, clean provenance, matching codec/simulator runs, all
-election bounds, safety-check counts, and matching replay traces before producing
+short-delay election bounds, latency percentiles, fault counters, matching replay
+traces, and both mutation failures before producing
 the summary. M1 evidence is retained unchanged.
 
 ## Acceptance gates
@@ -70,13 +80,17 @@ the summary. M1 evidence is retained unchanged.
 - [x] Failing seed reporting and exact replay command, with deterministic full traces.
 - [x] Regression tests for storage ordering, restart votes, election timer rules,
   majority counting, partitions, and the safety oracle itself.
+- [x] Stale-vote mutation fails historical election safety at seed 216; normal node passes.
+- [x] Reply-before-persist mutation fails historical election safety at seed 217;
+  normal node passes. Detection is by the simulator, independently of unit transport assertions.
 - [ ] Final local clean-source debug/ASan/tidy/evidence capture verified.
 - [ ] All final-commit CI jobs green.
 - [ ] Owner approval.
 
 The unchecked gates describe status at the source commit. The results-only
 commit and linked CI run provide final capture and CI evidence for review.
-No simulator-discovered implementation defect or failing seed is claimed.
+The two failing seeds above belong to deliberately unsafe builds. No defect in
+the normal election logic is claimed.
 The first CI run exposed a GCC 13 `maybe-uninitialized` diagnostic in the standard
 heap's movement of message variants under TSan compilation. The simulator queue
 now uses a map ordered by delivery tick and sequence; it preserves event order
@@ -91,7 +105,8 @@ failure, not a simulator-discovered safety violation, and has no failing seed.
 - C++ tests: `tests/election_test.cpp`, `tests/sim_support_test.cpp`,
   `tests/sim_cluster_test.cpp`, `tests/election_fuzz_test.cpp`.
 - Evidence tooling/tests: `scripts/capture_m2.ps1`, `scripts/summarize_m2.py`,
-  `scripts/verify_sim_replay.py`, `tests/python/test_m2_summary.py`.
-- Build/CI: `CMakeLists.txt`, `.github/workflows/ci.yml`.
+  `scripts/verify_sim_replay.py`, `scripts/verify_mutations.py`,
+  `tests/python/test_m2_summary.py`.
+- Build/CI: `CMakeLists.txt`, `CMakePresets.json`, `.github/workflows/ci.yml`.
 - Docs: `README.md`, `docs/m1-review.md`, `docs/election-simulator.md`,
   `docs/m2-review.md`; captured output under `results/m2/`.

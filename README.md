@@ -134,6 +134,9 @@ in M4. The LSM engine is not required to build this project.
 clock. Its durable term and vote are saved before sending election messages.
 The simulator supplies a virtual clock, independent seeded random streams,
 queued delivery, packet faults, partitions, and crash/restart storage.
+The fault schedule includes replies delayed beyond election timeouts and power
+loss immediately after a granted reply is queued. The latter prevents any later
+persistence instruction from running.
 
 The campaign checks election safety after each simulated event and retains
 leader history across step-downs and restarts. It also checks that terms never
@@ -161,3 +164,23 @@ for event semantics and current limitations.
 No implementation bug has been found by the election seed campaign so far.
 The safety checker is tested against deliberately conflicting leader histories
 and lost votes; those negative tests are not reported as discovered bugs.
+
+M2 review found two coverage defects: short delays never exposed stale vote
+counting, and random crashes missed reply-before-persist. The strengthened
+campaign detects deliberately injected versions at seeds 216 and 217,
+respectively, through two leaders elected in one term. The normal node passes
+those same seeds. These are mutation sensitivity results, recorded with full
+replays in `results/m2/debug-mutations.jsonl` and `results/m2/asan-mutations.jsonl`.
+The generated summary records their seeds and trace hashes.
+
+Test presets enable `QUORUMKV_BUILD_MUTATION_TESTS`; production builds leave it
+off. To verify both mutants from a developer shell:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/verify_mutations.py build/debug --output build/review/mutations.jsonl
+```
+
+The gate runs only simulator tests in the mutant executables and requires a
+leader-safety violation, identical replay, and a passing normal-node control.
+The unit-test transport separately checks that each granted vote is durable
+when sent; that was the original reply-before-persist detection.
