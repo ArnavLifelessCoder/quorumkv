@@ -60,7 +60,13 @@ if(BUILD_TESTING)
     GIT_SHALLOW TRUE
   )
   FetchContent_MakeAvailable(googletest)
-  add_executable(quorumkv_tests tests/toolchain_test.cpp tests/interfaces_test.cpp tests/codec_test.cpp)
-  target_link_libraries(quorumkv_tests PRIVATE quorumkv GTest::gtest_main)
+  add_executable(quorumkv_tests
+    tests/main.cpp
+    tests/toolchain_test.cpp
+    tests/interfaces_test.cpp
+    tests/codec_test.cpp
+    tests/codec_fuzz_test.cpp
+  )
+  target_link_libraries(quorumkv_tests PRIVATE quorumkv GTest::gtest)
   add_test(NAME quorumkv_tests COMMAND quorumkv_tests)
 endif()
