@@ -25,7 +25,7 @@ test 1
 1: [----------] Global test environment tear-down
 1: [==========] 1 test from 1 test suite ran. (0 ms total)
 1: [  PASSED  ] 1 test.
- 1/39 Test  #1: Toolchain.SupportsCpp20AndPortablePaths ..................................   Passed    0.14 sec
+ 1/40 Test  #1: Toolchain.SupportsCpp20AndPortablePaths ...................................   Passed    0.39 sec
 test 2
       Start  2: Interfaces.TransportCanOwnMessagesWithoutBorrowingCallerMemory
 
@@ -43,7 +43,7 @@ test 2
 2: [----------] Global test environment tear-down
 2: [==========] 1 test from 1 test suite ran. (0 ms total)
 2: [  PASSED  ] 1 test.
- 2/39 Test  #2: Interfaces.TransportCanOwnMessagesWithoutBorrowingCallerMemory ...........   Passed    0.10 sec
+ 2/40 Test  #2: Interfaces.TransportCanOwnMessagesWithoutBorrowingCallerMemory ............   Passed    0.47 sec
 test 3
       Start  3: Types.MissingVoteAndConflictTermDifferFromZero
 
@@ -61,7 +61,7 @@ test 3
 3: [----------] Global test environment tear-down
 3: [==========] 1 test from 1 test suite ran. (0 ms total)
 3: [  PASSED  ] 1 test.
- 3/39 Test  #3: Types.MissingVoteAndConflictTermDifferFromZero ...........................   Passed    0.10 sec
+ 3/40 Test  #3: Types.MissingVoteAndConflictTermDifferFromZero ............................   Passed    0.38 sec
 test 4
       Start  4: Types.SnapshotAndLogRetainBinaryDataByValue
 
@@ -79,7 +79,7 @@ test 4
 4: [----------] Global test environment tear-down
 4: [==========] 1 test from 1 test suite ran. (0 ms total)
 4: [  PASSED  ] 1 test.
- 4/39 Test  #4: Types.SnapshotAndLogRetainBinaryDataByValue ..............................   Passed    0.15 sec
+ 4/40 Test  #4: Types.SnapshotAndLogRetainBinaryDataByValue ...............................   Passed    0.37 sec
 test 5
       Start  5: Codec.VoteMatchesIndependentBigEndianGoldenFrame
 
@@ -97,7 +97,7 @@ test 5
 5: [----------] Global test environment tear-down
 5: [==========] 1 test from 1 test suite ran. (0 ms total)
 5: [  PASSED  ] 1 test.
- 5/39 Test  #5: Codec.VoteMatchesIndependentBigEndianGoldenFrame .........................   Passed    0.13 sec
+ 5/40 Test  #5: Codec.VoteMatchesIndependentBigEndianGoldenFrame ..........................   Passed    0.44 sec
 test 6
       Start  6: Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix
 
@@ -109,13 +109,13 @@ test 6
 6: [----------] Global test environment set-up.
 6: [----------] 1 test from Codec
 6: [ RUN      ] Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix
-6: [       OK ] Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix (35 ms)
-6: [----------] 1 test from Codec (35 ms total)
+6: [       OK ] Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix (14 ms)
+6: [----------] 1 test from Codec (14 ms total)
 6: 
 6: [----------] Global test environment tear-down
-6: [==========] 1 test from 1 test suite ran. (35 ms total)
+6: [==========] 1 test from 1 test suite ran. (15 ms total)
 6: [  PASSED  ] 1 test.
- 6/39 Test  #6: Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix .....................   Passed    0.14 sec
+ 6/40 Test  #6: Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix ......................   Passed    0.41 sec
 test 7
       Start  7: Codec.RejectsUnknownVersionAndTag
 
@@ -133,7 +133,7 @@ test 7
 7: [----------] Global test environment tear-down
 7: [==========] 1 test from 1 test suite ran. (0 ms total)
 7: [  PASSED  ] 1 test.
- 7/39 Test  #7: Codec.RejectsUnknownVersionAndTag ........................................   Passed    0.10 sec
+ 7/40 Test  #7: Codec.RejectsUnknownVersionAndTag .........................................   Passed    0.41 sec
 test 8
       Start  8: Codec.RejectsNoncanonicalBooleansAndEntryKinds
 
@@ -151,7 +151,7 @@ test 8
 8: [----------] Global test environment tear-down
 8: [==========] 1 test from 1 test suite ran. (0 ms total)
 8: [  PASSED  ] 1 test.
- 8/39 Test  #8: Codec.RejectsNoncanonicalBooleansAndEntryKinds ...........................   Passed    0.11 sec
+ 8/40 Test  #8: Codec.RejectsNoncanonicalBooleansAndEntryKinds ............................   Passed    0.34 sec
 test 9
       Start  9: Codec.PreservesEmptyFieldsAndFullWidthIntegers
 
@@ -169,7 +169,7 @@ test 9
 9: [----------] Global test environment tear-down
 9: [==========] 1 test from 1 test suite ran. (0 ms total)
 9: [  PASSED  ] 1 test.
- 9/39 Test  #9: Codec.PreservesEmptyFieldsAndFullWidthIntegers ...........................   Passed    0.11 sec
+ 9/40 Test  #9: Codec.PreservesEmptyFieldsAndFullWidthIntegers ............................   Passed    0.37 sec
 test 10
       Start 10: Codec.BoundsBlobAllocationBeforeReading
 
@@ -181,13 +181,13 @@ test 10
 10: [----------] Global test environment set-up.
 10: [----------] 1 test from Codec
 10: [ RUN      ] Codec.BoundsBlobAllocationBeforeReading
-10: [       OK ] Codec.BoundsBlobAllocationBeforeReading (1 ms)
-10: [----------] 1 test from Codec (1 ms total)
+10: [       OK ] Codec.BoundsBlobAllocationBeforeReading (2 ms)
+10: [----------] 1 test from Codec (2 ms total)
 10: 
 10: [----------] Global test environment tear-down
 10: [==========] 1 test from 1 test suite ran. (2 ms total)
 10: [  PASSED  ] 1 test.
-10/39 Test #10: Codec.BoundsBlobAllocationBeforeReading ..................................   Passed    0.11 sec
+10/40 Test #10: Codec.BoundsBlobAllocationBeforeReading ...................................   Passed    0.36 sec
 test 11
       Start 11: Codec.BoundsEntryAllocationBeforeReading
 
@@ -205,7 +205,7 @@ test 11
 11: [----------] Global test environment tear-down
 11: [==========] 1 test from 1 test suite ran. (23 ms total)
 11: [  PASSED  ] 1 test.
-11/39 Test #11: Codec.BoundsEntryAllocationBeforeReading .................................   Passed    0.14 sec
+11/40 Test #11: Codec.BoundsEntryAllocationBeforeReading ..................................   Passed    0.57 sec
 test 12
       Start 12: Codec.EnforcesWholeFrameBudget
 
@@ -217,13 +217,13 @@ test 12
 12: [----------] Global test environment set-up.
 12: [----------] 1 test from Codec
 12: [ RUN      ] Codec.EnforcesWholeFrameBudget
-12: [       OK ] Codec.EnforcesWholeFrameBudget (21 ms)
-12: [----------] 1 test from Codec (21 ms total)
+12: [       OK ] Codec.EnforcesWholeFrameBudget (20 ms)
+12: [----------] 1 test from Codec (20 ms total)
 12: 
 12: [----------] Global test environment tear-down
-12: [==========] 1 test from 1 test suite ran. (21 ms total)
+12: [==========] 1 test from 1 test suite ran. (20 ms total)
 12: [  PASSED  ] 1 test.
-12/39 Test #12: Codec.EnforcesWholeFrameBudget ...........................................   Passed    0.13 sec
+12/40 Test #12: Codec.EnforcesWholeFrameBudget ............................................   Passed    0.37 sec
 test 13
       Start 13: SeedOptions.DefaultsAndSingleSeedReplay
 
@@ -241,7 +241,7 @@ test 13
 13: [----------] Global test environment tear-down
 13: [==========] 1 test from 1 test suite ran. (0 ms total)
 13: [  PASSED  ] 1 test.
-13/39 Test #13: SeedOptions.DefaultsAndSingleSeedReplay ..................................   Passed    0.13 sec
+13/40 Test #13: SeedOptions.DefaultsAndSingleSeedReplay ...................................   Passed    1.25 sec
 test 14
       Start 14: SeedOptions.RejectsInvalidAndWrappingRanges
 
@@ -257,9 +257,9 @@ test 14
 14: [----------] 1 test from SeedOptions (0 ms total)
 14: 
 14: [----------] Global test environment tear-down
-14: [==========] 1 test from 1 test suite ran. (0 ms total)
+14: [==========] 1 test from 1 test suite ran. (1 ms total)
 14: [  PASSED  ] 1 test.
-14/39 Test #14: SeedOptions.RejectsInvalidAndWrappingRanges ..............................   Passed    0.14 sec
+14/40 Test #14: SeedOptions.RejectsInvalidAndWrappingRanges ...............................   Passed    1.23 sec
 test 15
       Start 15: SeedOptions.GeneratorHasStableKnownSequence
 
@@ -277,7 +277,7 @@ test 15
 15: [----------] Global test environment tear-down
 15: [==========] 1 test from 1 test suite ran. (0 ms total)
 15: [  PASSED  ] 1 test.
-15/39 Test #15: SeedOptions.GeneratorHasStableKnownSequence ..............................   Passed    0.11 sec
+15/40 Test #15: SeedOptions.GeneratorHasStableKnownSequence ...............................   Passed    1.36 sec
 test 16
       Start 16: CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe
 
@@ -290,13 +290,13 @@ test 16
 16: [----------] 1 test from CodecFuzz
 16: [ RUN      ] CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe
 16: [fuzz] first_seed=0 seeds=10000 round_trips=60000 probe_accepted=52898 probe_rejected=27102 corpus_digest=ddc03ddedd0aabdf
-16: [       OK ] CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe (6910 ms)
-16: [----------] 1 test from CodecFuzz (6910 ms total)
+16: [       OK ] CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe (10137 ms)
+16: [----------] 1 test from CodecFuzz (10137 ms total)
 16: 
 16: [----------] Global test environment tear-down
-16: [==========] 1 test from 1 test suite ran. (6911 ms total)
+16: [==========] 1 test from 1 test suite ran. (10138 ms total)
 16: [  PASSED  ] 1 test.
-16/39 Test #16: CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe ..............   Passed    7.02 sec
+16/40 Test #16: CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe ...............   Passed   11.44 sec
 test 17
       Start 17: ElectionTest.TimeoutPersistsSelfVoteBeforeSendingAndRetriesInNewTerm
 
@@ -314,7 +314,7 @@ test 17
 17: [----------] Global test environment tear-down
 17: [==========] 1 test from 1 test suite ran. (0 ms total)
 17: [  PASSED  ] 1 test.
-17/39 Test #17: ElectionTest.TimeoutPersistsSelfVoteBeforeSendingAndRetriesInNewTerm .....   Passed    0.19 sec
+17/40 Test #17: ElectionTest.TimeoutPersistsSelfVoteBeforeSendingAndRetriesInNewTerm ......   Passed    0.42 sec
 test 18
       Start 18: ElectionTest.OnlyDistinctCurrentTermMemberVotesFormMajority
 
@@ -332,7 +332,7 @@ test 18
 18: [----------] Global test environment tear-down
 18: [==========] 1 test from 1 test suite ran. (0 ms total)
 18: [  PASSED  ] 1 test.
-18/39 Test #18: ElectionTest.OnlyDistinctCurrentTermMemberVotesFormMajority ..............   Passed    0.50 sec
+18/40 Test #18: ElectionTest.OnlyDistinctCurrentTermMemberVotesFormMajority ...............   Passed    0.35 sec
 test 19
       Start 19: ElectionTest.VoteSurvivesRestartAndHigherTermClearsItBeforeReply
 
@@ -350,7 +350,7 @@ test 19
 19: [----------] Global test environment tear-down
 19: [==========] 1 test from 1 test suite ran. (0 ms total)
 19: [  PASSED  ] 1 test.
-19/39 Test #19: ElectionTest.VoteSurvivesRestartAndHigherTermClearsItBeforeReply .........   Passed    0.14 sec
+19/40 Test #19: ElectionTest.VoteSurvivesRestartAndHigherTermClearsItBeforeReply ..........   Passed    0.41 sec
 test 20
       Start 20: ElectionTest.LogFreshnessUsesTermThenIndexIncludingSnapshotTail
 
@@ -368,7 +368,7 @@ test 20
 20: [----------] Global test environment tear-down
 20: [==========] 1 test from 1 test suite ran. (0 ms total)
 20: [  PASSED  ] 1 test.
-20/39 Test #20: ElectionTest.LogFreshnessUsesTermThenIndexIncludingSnapshotTail ..........   Passed    0.15 sec
+20/40 Test #20: ElectionTest.LogFreshnessUsesTermThenIndexIncludingSnapshotTail ...........   Passed    0.41 sec
 test 21
       Start 21: ElectionTest.DeniedVoteAndStaleHeartbeatDoNotDelayElection
 
@@ -386,7 +386,7 @@ test 21
 21: [----------] Global test environment tear-down
 21: [==========] 1 test from 1 test suite ran. (0 ms total)
 21: [  PASSED  ] 1 test.
-21/39 Test #21: ElectionTest.DeniedVoteAndStaleHeartbeatDoNotDelayElection ...............   Passed    0.13 sec
+21/40 Test #21: ElectionTest.DeniedVoteAndStaleHeartbeatDoNotDelayElection ................   Passed    0.34 sec
 test 22
       Start 22: ElectionTest.GrantedVoteAndCurrentHeartbeatResetElectionTimer
 
@@ -404,7 +404,7 @@ test 22
 22: [----------] Global test environment tear-down
 22: [==========] 1 test from 1 test suite ran. (0 ms total)
 22: [  PASSED  ] 1 test.
-22/39 Test #22: ElectionTest.GrantedVoteAndCurrentHeartbeatResetElectionTimer ............   Passed    0.11 sec
+22/40 Test #22: ElectionTest.GrantedVoteAndCurrentHeartbeatResetElectionTimer .............   Passed    0.39 sec
 test 23
       Start 23: ElectionTest.SameTermHeartbeatStepsCandidateDownWithoutClearingVote
 
@@ -422,7 +422,7 @@ test 23
 23: [----------] Global test environment tear-down
 23: [==========] 1 test from 1 test suite ran. (0 ms total)
 23: [  PASSED  ] 1 test.
-23/39 Test #23: ElectionTest.SameTermHeartbeatStepsCandidateDownWithoutClearingVote ......   Passed    0.15 sec
+23/40 Test #23: ElectionTest.SameTermHeartbeatStepsCandidateDownWithoutClearingVote .......   Passed    0.37 sec
 test 24
       Start 24: ElectionTest.HigherTermResponseStepsLeaderDownButDoesNotResetTimer
 
@@ -440,7 +440,7 @@ test 24
 24: [----------] Global test environment tear-down
 24: [==========] 1 test from 1 test suite ran. (0 ms total)
 24: [  PASSED  ] 1 test.
-24/39 Test #24: ElectionTest.HigherTermResponseStepsLeaderDownButDoesNotResetTimer .......   Passed    0.11 sec
+24/40 Test #24: ElectionTest.HigherTermResponseStepsLeaderDownButDoesNotResetTimer ........   Passed    0.47 sec
 test 25
       Start 25: ElectionTest.StorageFailureSendsNothingAndLatchesStop
 
@@ -458,7 +458,7 @@ test 25
 25: [----------] Global test environment tear-down
 25: [==========] 1 test from 1 test suite ran. (0 ms total)
 25: [  PASSED  ] 1 test.
-25/39 Test #25: ElectionTest.StorageFailureSendsNothingAndLatchesStop ....................   Passed    0.14 sec
+25/40 Test #25: ElectionTest.StorageFailureSendsNothingAndLatchesStop .....................   Passed    0.44 sec
 test 26
       Start 26: ElectionTest.FailedSelfVoteCannotSendElectionTraffic
 
@@ -476,7 +476,7 @@ test 26
 26: [----------] Global test environment tear-down
 26: [==========] 1 test from 1 test suite ran. (0 ms total)
 26: [  PASSED  ] 1 test.
-26/39 Test #26: ElectionTest.FailedSelfVoteCannotSendElectionTraffic .....................   Passed    0.10 sec
+26/40 Test #26: ElectionTest.FailedSelfVoteCannotSendElectionTraffic ......................   Passed    0.40 sec
 test 27
       Start 27: ElectionTest.SingleMemberElectsItselfAndTermCannotWrap
 
@@ -494,7 +494,7 @@ test 27
 27: [----------] Global test environment tear-down
 27: [==========] 1 test from 1 test suite ran. (0 ms total)
 27: [  PASSED  ] 1 test.
-27/39 Test #27: ElectionTest.SingleMemberElectsItselfAndTermCannotWrap ...................   Passed    0.11 sec
+27/40 Test #27: ElectionTest.SingleMemberElectsItselfAndTermCannotWrap ....................   Passed    0.34 sec
 test 28
       Start 28: ElectionTest.RejectsInvalidMembershipAndTiming
 
@@ -512,7 +512,7 @@ test 28
 28: [----------] Global test environment tear-down
 28: [==========] 1 test from 1 test suite ran. (0 ms total)
 28: [  PASSED  ] 1 test.
-28/39 Test #28: ElectionTest.RejectsInvalidMembershipAndTiming ...........................   Passed    0.10 sec
+28/40 Test #28: ElectionTest.RejectsInvalidMembershipAndTiming ............................   Passed    0.33 sec
 test 29
       Start 29: SimSupport.GeneratorMatchesKnownSequenceAndClockAdvancesOnlyExplicitly
 
@@ -530,7 +530,7 @@ test 29
 29: [----------] Global test environment tear-down
 29: [==========] 1 test from 1 test suite ran. (0 ms total)
 29: [  PASSED  ] 1 test.
-29/39 Test #29: SimSupport.GeneratorMatchesKnownSequenceAndClockAdvancesOnlyExplicitly ...   Passed    0.11 sec
+29/40 Test #29: SimSupport.GeneratorMatchesKnownSequenceAndClockAdvancesOnlyExplicitly ....   Passed    0.33 sec
 test 30
       Start 30: SimSupport.CrashBeforeSyncDiscardsPendingVoteButAfterSyncRetainsIt
 
@@ -548,7 +548,7 @@ test 30
 30: [----------] Global test environment tear-down
 30: [==========] 1 test from 1 test suite ran. (0 ms total)
 30: [  PASSED  ] 1 test.
-30/39 Test #30: SimSupport.CrashBeforeSyncDiscardsPendingVoteButAfterSyncRetainsIt .......   Passed    0.11 sec
+30/40 Test #30: SimSupport.CrashBeforeSyncDiscardsPendingVoteButAfterSyncRetainsIt ........   Passed    0.35 sec
 test 31
       Start 31: SimSupport.LoadedStateIsACopyAndUnsupportedWritesAreRejected
 
@@ -566,7 +566,7 @@ test 31
 31: [----------] Global test environment tear-down
 31: [==========] 1 test from 1 test suite ran. (0 ms total)
 31: [  PASSED  ] 1 test.
-31/39 Test #31: SimSupport.LoadedStateIsACopyAndUnsupportedWritesAreRejected .............   Passed    0.11 sec
+31/40 Test #31: SimSupport.LoadedStateIsACopyAndUnsupportedWritesAreRejected ..............   Passed    0.38 sec
 test 32
       Start 32: SimSupport.OracleRejectsNonSimultaneousLeadersAndLostVotes
 
@@ -584,7 +584,7 @@ test 32
 32: [----------] Global test environment tear-down
 32: [==========] 1 test from 1 test suite ran. (0 ms total)
 32: [  PASSED  ] 1 test.
-32/39 Test #32: SimSupport.OracleRejectsNonSimultaneousLeadersAndLostVotes ...............   Passed    0.10 sec
+32/40 Test #32: SimSupport.OracleRejectsNonSimultaneousLeadersAndLostVotes ................   Passed    0.33 sec
 test 33
       Start 33: SimCluster.ColdStartCrashAndRestartKeepDurableVotes
 
@@ -596,13 +596,13 @@ test 33
 33: [----------] Global test environment set-up.
 33: [----------] 1 test from SimCluster
 33: [ RUN      ] SimCluster.ColdStartCrashAndRestartKeepDurableVotes
-33: [       OK ] SimCluster.ColdStartCrashAndRestartKeepDurableVotes (5 ms)
-33: [----------] 1 test from SimCluster (5 ms total)
+33: [       OK ] SimCluster.ColdStartCrashAndRestartKeepDurableVotes (7 ms)
+33: [----------] 1 test from SimCluster (7 ms total)
 33: 
 33: [----------] Global test environment tear-down
-33: [==========] 1 test from 1 test suite ran. (5 ms total)
+33: [==========] 1 test from 1 test suite ran. (7 ms total)
 33: [  PASSED  ] 1 test.
-33/39 Test #33: SimCluster.ColdStartCrashAndRestartKeepDurableVotes ......................   Passed    0.13 sec
+33/40 Test #33: SimCluster.ColdStartCrashAndRestartKeepDurableVotes .......................   Passed    0.36 sec
 test 34
       Start 34: SimCluster.CompletePartitionCannotElectAndHealingRestoresLiveness
 
@@ -615,12 +615,12 @@ test 34
 34: [----------] 1 test from SimCluster
 34: [ RUN      ] SimCluster.CompletePartitionCannotElectAndHealingRestoresLiveness
 34: [       OK ] SimCluster.CompletePartitionCannotElectAndHealingRestoresLiveness (1 ms)
-34: [----------] 1 test from SimCluster (2 ms total)
+34: [----------] 1 test from SimCluster (1 ms total)
 34: 
 34: [----------] Global test environment tear-down
 34: [==========] 1 test from 1 test suite ran. (2 ms total)
 34: [  PASSED  ] 1 test.
-34/39 Test #34: SimCluster.CompletePartitionCannotElectAndHealingRestoresLiveness ........   Passed    0.14 sec
+34/40 Test #34: SimCluster.CompletePartitionCannotElectAndHealingRestoresLiveness .........   Passed    0.40 sec
 test 35
       Start 35: SimCluster.IsolatedLeaderAndMajorityLeaderHaveDifferentTermsAndHeal
 
@@ -632,13 +632,13 @@ test 35
 35: [----------] Global test environment set-up.
 35: [----------] 1 test from SimCluster
 35: [ RUN      ] SimCluster.IsolatedLeaderAndMajorityLeaderHaveDifferentTermsAndHeal
-35: [       OK ] SimCluster.IsolatedLeaderAndMajorityLeaderHaveDifferentTermsAndHeal (29 ms)
-35: [----------] 1 test from SimCluster (29 ms total)
+35: [       OK ] SimCluster.IsolatedLeaderAndMajorityLeaderHaveDifferentTermsAndHeal (31 ms)
+35: [----------] 1 test from SimCluster (31 ms total)
 35: 
 35: [----------] Global test environment tear-down
-35: [==========] 1 test from 1 test suite ran. (30 ms total)
+35: [==========] 1 test from 1 test suite ran. (31 ms total)
 35: [  PASSED  ] 1 test.
-35/39 Test #35: SimCluster.IsolatedLeaderAndMajorityLeaderHaveDifferentTermsAndHeal ......   Passed    0.14 sec
+35/40 Test #35: SimCluster.IsolatedLeaderAndMajorityLeaderHaveDifferentTermsAndHeal .......   Passed    0.35 sec
 test 36
       Start 36: SimCluster.TraceIncludesEveryStepAndReplaysByteForByte
 
@@ -650,13 +650,13 @@ test 36
 36: [----------] Global test environment set-up.
 36: [----------] 1 test from SimCluster
 36: [ RUN      ] SimCluster.TraceIncludesEveryStepAndReplaysByteForByte
-36: [       OK ] SimCluster.TraceIncludesEveryStepAndReplaysByteForByte (43 ms)
-36: [----------] 1 test from SimCluster (43 ms total)
+36: [       OK ] SimCluster.TraceIncludesEveryStepAndReplaysByteForByte (46 ms)
+36: [----------] 1 test from SimCluster (46 ms total)
 36: 
 36: [----------] Global test environment tear-down
-36: [==========] 1 test from 1 test suite ran. (43 ms total)
+36: [==========] 1 test from 1 test suite ran. (46 ms total)
 36: [  PASSED  ] 1 test.
-36/39 Test #36: SimCluster.TraceIncludesEveryStepAndReplaysByteForByte ...................   Passed    0.15 sec
+36/40 Test #36: SimCluster.TraceIncludesEveryStepAndReplaysByteForByte ....................   Passed    0.50 sec
 test 37
       Start 37: SimCluster.FailedSyncStopsNodeAndRestartUsesOnlyDurableState
 
@@ -672,9 +672,9 @@ test 37
 37: [----------] 1 test from SimCluster (1 ms total)
 37: 
 37: [----------] Global test environment tear-down
-37: [==========] 1 test from 1 test suite ran. (1 ms total)
+37: [==========] 1 test from 1 test suite ran. (2 ms total)
 37: [  PASSED  ] 1 test.
-37/39 Test #37: SimCluster.FailedSyncStopsNodeAndRestartUsesOnlyDurableState .............   Passed    0.13 sec
+37/40 Test #37: SimCluster.FailedSyncStopsNodeAndRestartUsesOnlyDurableState ..............   Passed    0.36 sec
 test 38
       Start 38: SimCluster.RejectsInvalidScenarioInputs
 
@@ -692,27 +692,45 @@ test 38
 38: [----------] Global test environment tear-down
 38: [==========] 1 test from 1 test suite ran. (0 ms total)
 38: [  PASSED  ] 1 test.
-38/39 Test #38: SimCluster.RejectsInvalidScenarioInputs ..................................   Passed    0.11 sec
+38/40 Test #38: SimCluster.RejectsInvalidScenarioInputs ...................................   Passed    0.37 sec
 test 39
-      Start 39: ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules
+      Start 39: SimCluster.PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply
 
-39: Test command: "C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\build\debug\quorumkv_tests.exe" "--gtest_filter=ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules" "--gtest_also_run_disabled_tests"
+39: Test command: "C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\build\debug\quorumkv_tests.exe" "--gtest_filter=SimCluster.PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply" "--gtest_also_run_disabled_tests"
 39: Working Directory: C:/Users/arnav/Downloads/SDE PROJs/raft kv storage/build/debug
 39: Test timeout computed to be: 1500
-39: Note: Google Test filter = ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules
+39: Note: Google Test filter = SimCluster.PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply
 39: [==========] Running 1 test from 1 test suite.
 39: [----------] Global test environment set-up.
-39: [----------] 1 test from ElectionFuzz
-39: [ RUN      ] ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules
-39: [sim] first_seed=0 seeds=10000 election_bound=300 max_cold_ticks=107 max_reelection_ticks=238 max_recovery_ticks=41 steps=15889772 safety_checks=15889772 delivered=2572442 dropped=1012199 duplicated=194170 partitions=60000 crashes=82126 restarts=117472 sync_failures=32126 digest=4e8223a7390bf641
-39: [       OK ] ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules (152016 ms)
-39: [----------] 1 test from ElectionFuzz (152016 ms total)
+39: [----------] 1 test from SimCluster
+39: [ RUN      ] SimCluster.PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply
+39: [       OK ] SimCluster.PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply (5 ms)
+39: [----------] 1 test from SimCluster (5 ms total)
 39: 
 39: [----------] Global test environment tear-down
-39: [==========] 1 test from 1 test suite ran. (152016 ms total)
+39: [==========] 1 test from 1 test suite ran. (5 ms total)
 39: [  PASSED  ] 1 test.
-39/39 Test #39: ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules .................   Passed  152.12 sec
+39/40 Test #39: SimCluster.PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply ...   Passed    0.34 sec
+test 40
+      Start 40: ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules
 
-100% tests passed, 0 tests failed out of 39
+40: Test command: "C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\build\debug\quorumkv_tests.exe" "--gtest_filter=ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules" "--gtest_also_run_disabled_tests"
+40: Working Directory: C:/Users/arnav/Downloads/SDE PROJs/raft kv storage/build/debug
+40: Test timeout computed to be: 1500
+40: Note: Google Test filter = ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules
+40: [==========] Running 1 test from 1 test suite.
+40: [----------] Global test environment set-up.
+40: [----------] 1 test from ElectionFuzz
+40: [ RUN      ] ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules
+40: [sim] first_seed=0 seeds=10000 p50_cold_ticks=20 p99_cold_ticks=49 p50_reelection_ticks=24 p99_reelection_ticks=91 election_bound=300 max_cold_ticks=92 max_reelection_ticks=198 max_recovery_ticks=91 steps=19603967 safety_checks=19603967 delivered=2941486 dropped=715598 duplicated=229029 partitions=60000 crashes=211353 restarts=250544 sync_failures=144767 vote_grant_crashes=16586 long_delay_packets=168107 stale_vote_deliveries=7291 digest=87710b0300a2fd6d
+40: [       OK ] ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules (265481 ms)
+40: [----------] 1 test from ElectionFuzz (265481 ms total)
+40: 
+40: [----------] Global test environment tear-down
+40: [==========] 1 test from 1 test suite ran. (265481 ms total)
+40: [  PASSED  ] 1 test.
+40/40 Test #40: ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules ..................   Passed  265.84 sec
 
-Total Test time (real) = 166.72 sec
+100% tests passed, 0 tests failed out of 40
+
+Total Test time (real) = 297.47 sec

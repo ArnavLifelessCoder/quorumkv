@@ -19,31 +19,47 @@ C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\toolchain_test.cpp
 
 [1/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\raft\node.cpp.
 37577 warnings generated.
-[2/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\rpc\codec.cpp.
-68370 warnings generated.
-[3/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\sim\cluster.cpp.
-116600 warnings generated.
-[4/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\sim\support.cpp.
-148954 warnings generated.
-[5/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\codec_fuzz_test.cpp.
-206680 warnings generated.
-[6/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\codec_test.cpp.
-257627 warnings generated.
-[7/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\election_fuzz_test.cpp.
-315042 warnings generated.
-[8/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\election_test.cpp.
-365441 warnings generated.
-[9/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\interfaces_test.cpp.
-415854 warnings generated.
-[10/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\main.cpp.
-466917 warnings generated.
-[11/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\sim_cluster_test.cpp.
-517526 warnings generated.
-[12/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\sim_support_test.cpp.
-568105 warnings generated.
-[13/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\toolchain_test.cpp.
-634019 warnings generated.
-Suppressed 634145 warnings (634019 in non-user code, 126 NOLINT).
+[2/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\raft\node.cpp.
+75154 warnings generated.
+[3/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\raft\node.cpp.
+112731 warnings generated.
+[4/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\rpc\codec.cpp.
+143524 warnings generated.
+[5/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\sim\cluster.cpp.
+191759 warnings generated.
+[6/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\sim\support.cpp.
+224113 warnings generated.
+[7/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\codec_fuzz_test.cpp.
+281839 warnings generated.
+[8/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\codec_test.cpp.
+332786 warnings generated.
+[9/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\election_fuzz_test.cpp.
+390311 warnings generated.
+[10/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\election_fuzz_test.cpp.
+447836 warnings generated.
+[11/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\election_fuzz_test.cpp.
+505361 warnings generated.
+[12/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\election_test.cpp.
+555760 warnings generated.
+[13/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\election_test.cpp.
+606159 warnings generated.
+[14/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\election_test.cpp.
+656558 warnings generated.
+[15/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\interfaces_test.cpp.
+706971 warnings generated.
+[16/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\main.cpp.
+758034 warnings generated.
+[17/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\main.cpp.
+809097 warnings generated.
+[18/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\main.cpp.
+860160 warnings generated.
+[19/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\sim_cluster_test.cpp.
+910779 warnings generated.
+[20/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\sim_support_test.cpp.
+961358 warnings generated.
+[21/13] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\toolchain_test.cpp.
+1027272 warnings generated.
+Suppressed 1027482 warnings (1027272 in non-user code, 210 NOLINT).
 Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
 
 clang-tidy exit code: 0

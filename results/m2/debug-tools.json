@@ -1,10 +1,10 @@
 {
   "preset": "debug",
-  "utc": "2026-10-20T13:38:59.9854488Z",
+  "utc": "2026-10-20T15:31:59.1400104Z",
   "cmake": "cmake version 3.31.6-msvc6\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).",
   "ninja": "1.12.1",
   "python": "Python 3.13.15",
   "compiler": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\cl.exe",
-  "source_revision": "1de76630325773025c737c3c02761b1e8d2fe5c9",
+  "source_revision": "90f01e8bafc0f4f512b4f513dafcda1187a8b571",
   "source_status": ""
 }
