@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <ranges>
 #include <stdexcept>
 
 namespace quorumkv {
@@ -56,9 +57,9 @@ auto RaftLog::first_in_term(LogIndex index) const -> LogIndex {
   return index;
 }
 auto RaftLog::last_in_term(Term wanted) const -> std::optional<LogIndex> {
-  for (auto entry = entries_.rbegin(); entry != entries_.rend(); ++entry) {
-    if (entry->term == wanted) {
-      return entry->index;
+  for (const auto& entry : std::views::reverse(entries_)) {
+    if (entry.term == wanted) {
+      return entry.index;
     }
   }
   return base_term_ == wanted ? std::optional<LogIndex>{base_index_} : std::nullopt;

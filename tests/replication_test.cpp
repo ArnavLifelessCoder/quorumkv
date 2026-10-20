@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <ranges>
 #include <stdexcept>
 
 #include "quorumkv/sim_support.hpp"
@@ -46,9 +47,9 @@ struct ReplicationTest : testing::Test {
                                   .entries = std::move(entries)}};
   }
   auto LatestAppend(NodeId to) -> Message {
-    for (auto message = transport.sent.rbegin(); message != transport.sent.rend(); ++message) {
-      if (message->to == to && std::holds_alternative<AppendEntries>(message->body)) {
-        return *message;
+    for (const auto& message : std::views::reverse(transport.sent)) {
+      if (message.to == to && std::holds_alternative<AppendEntries>(message.body)) {
+        return message;
       }
     }
     throw std::logic_error("no append sent");
