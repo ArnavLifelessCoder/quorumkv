@@ -46,7 +46,7 @@ else()
 endif()
 
 include(CTest)
-add_library(quorumkv src/rpc/codec.cpp)
+add_library(quorumkv src/rpc/codec.cpp src/raft/node.cpp)
 target_link_libraries(quorumkv PUBLIC quorumkv_options)
 if(BUILD_TESTING)
   include(FetchContent)
@@ -66,6 +66,7 @@ if(BUILD_TESTING)
     tests/interfaces_test.cpp
     tests/codec_test.cpp
     tests/codec_fuzz_test.cpp
+    tests/election_test.cpp
   )
   target_link_libraries(quorumkv_tests PRIVATE quorumkv GTest::gtest)
   include(GoogleTest)
