@@ -79,13 +79,15 @@ TEST_F(ElectionTest, OnlyDistinctCurrentTermMemberVotesFormMajority) {
   auto node = MakeNode();
   clock.time = 15;
   node.Tick();
-  node.Step(From(2, 0, VoteResponse{true}));
+  // Member 4 never votes in this term: counting this stale reply adds an extra vote.
+  node.Step(From(4, 0, VoteResponse{true}));
   node.Step(From(99, 100, VoteResponse{true}));
   node.Step(From(1, 1, VoteResponse{true}));
   auto wrong_recipient = From(3, 1, VoteResponse{true});
   wrong_recipient.to = 2;
   node.Step(wrong_recipient);
   node.Step(From(2, 1, VoteResponse{true}));
+  ASSERT_EQ(node.role(), Role::Candidate);
   node.Step(From(2, 1, VoteResponse{true}));
   node.Step(From(3, 1, VoteResponse{false}));
   EXPECT_EQ(node.role(), Role::Candidate);

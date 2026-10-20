@@ -10,6 +10,7 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "BUILD_TESTING": "ON",
+        "QUORUMKV_BUILD_MUTATION_TESTS": "ON",
         "QUORUMKV_SANITIZER": "none"
       }
     },
@@ -17,7 +18,7 @@
       "name": "release",
       "inherits": "debug",
       "binaryDir": "${sourceDir}/build/release",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "BUILD_TESTING": "OFF" }
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "BUILD_TESTING": "OFF", "QUORUMKV_BUILD_MUTATION_TESTS": "OFF" }
     },
     {
       "name": "asan",
