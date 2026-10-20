@@ -77,6 +77,11 @@ the summary. M1 evidence is retained unchanged.
 The unchecked gates describe status at the source commit. The results-only
 commit and linked CI run provide final capture and CI evidence for review.
 No simulator-discovered implementation defect or failing seed is claimed.
+The first CI run exposed a GCC 13 `maybe-uninitialized` diagnostic in the standard
+heap's movement of message variants under TSan compilation. The simulator queue
+now uses a map ordered by delivery tick and sequence; it preserves event order
+and replay output without disabling warnings. This was a compile-time portability
+failure, not a simulator-discovered safety violation, and has no failing seed.
 
 ## Files changed since M1
 

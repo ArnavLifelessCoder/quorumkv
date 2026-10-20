@@ -1,9 +1,8 @@
 #include <algorithm>
+#include <map>
 #include <numeric>
-#include <queue>
 #include <sstream>
 #include <stdexcept>
-#include <tuple>
 #include <utility>
 
 #include "quorumkv/codec.hpp"
@@ -29,16 +28,6 @@ struct Cluster::Impl {
     Link link;
     std::unique_ptr<RaftNode> node;
   };
-  struct Packet {
-    TimePoint due{};
-    std::uint64_t sequence{};
-    Message message;
-  };
-  struct Later {
-    auto operator()(const Packet& left, const Packet& right) const -> bool {
-      return std::tie(left.due, left.sequence) > std::tie(right.due, right.sequence);
-    }
-  };
 
   explicit Impl(ClusterConfig config) : random(config.seed), recording(config.record_trace) {
     if (config.size != 3 && config.size != 5) {
@@ -62,7 +51,7 @@ struct Cluster::Impl {
   std::vector<NodeId> members;
   std::vector<std::uint64_t> groups;
   std::vector<std::unique_ptr<Host>> hosts;
-  std::priority_queue<Packet, std::vector<Packet>, Later> queue;
+  std::map<std::pair<TimePoint, std::uint64_t>, Message> queue;
   SimStats stats;
   std::uint64_t sequence{};
   std::uint64_t digest{14695981039346656037ULL};
@@ -138,7 +127,7 @@ struct Cluster::Impl {
     for (unsigned copy = 0; copy < (duplicate ? 2U : 1U); ++copy) {
       const auto due = clock.Now() + 1 + random.Next() % faults.max_delay;
       Hash(due);
-      queue.push(Packet{.due = due, .sequence = sequence++, .message = message});
+      queue.emplace(std::pair{due, sequence++}, message);
     }
   }
 
@@ -191,17 +180,17 @@ struct Cluster::Impl {
         Check("tick", id);
       }
     }
-    while (!queue.empty() && queue.top().due <= clock.Now()) {
-      const auto packet = queue.top();
-      queue.pop();
-      HashMessage(packet.message);
-      if (At(packet.message.to).node && Connected(packet.message)) {
+    while (!queue.empty() && queue.begin()->first.first <= clock.Now()) {
+      const auto packet = queue.extract(queue.begin());
+      const auto& message = packet.mapped();
+      HashMessage(message);
+      if (At(message.to).node && Connected(message)) {
         ++stats.delivered;
-        Run(packet.message.to, [&packet](RaftNode& node) { node.Step(packet.message); });
-        Check("deliver", packet.message.to);
+        Run(message.to, [&message](RaftNode& node) { node.Step(message); });
+        Check("deliver", message.to);
       } else {
         ++stats.dropped;
-        Check("drop", packet.message.to);
+        Check("drop", message.to);
       }
     }
   }
