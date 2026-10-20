@@ -1,0 +1,9 @@
+Preset CMake variables:
+
+  BUILD_TESTING="ON"
+  CMAKE_BUILD_TYPE="Debug"
+  QUORUMKV_SANITIZER="address"
+
+-- Configuring done (4.8s)
+-- Generating done (0.3s)
+-- Build files have been written to: C:/Users/arnav/Downloads/SDE PROJs/raft kv storage/build/asan

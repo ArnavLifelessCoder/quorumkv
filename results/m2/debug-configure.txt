@@ -1,0 +1,9 @@
+Preset CMake variables:
+
+  BUILD_TESTING="ON"
+  CMAKE_BUILD_TYPE="Debug"
+  QUORUMKV_SANITIZER="none"
+
+-- Configuring done (4.6s)
+-- Generating done (0.2s)
+-- Build files have been written to: C:/Users/arnav/Downloads/SDE PROJs/raft kv storage/build/debug

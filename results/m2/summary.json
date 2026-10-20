@@ -1,0 +1,100 @@
+{
+  "producer": "scripts/summarize_m2.py",
+  "source_revision": "1de76630325773025c737c3c02761b1e8d2fe5c9",
+  "source_status": "",
+  "unique_seeds": 10000,
+  "seed_range": [
+    0,
+    9999
+  ],
+  "runs": {
+    "debug": {
+      "tests_passed": 39,
+      "ctest_cases": 39,
+      "first_seed": 0,
+      "seeds": 10000,
+      "round_trips": 60000,
+      "probe_accepted": 52898,
+      "probe_rejected": 27102,
+      "corpus_digest": "ddc03ddedd0aabdf"
+    },
+    "asan": {
+      "tests_passed": 39,
+      "ctest_cases": 39,
+      "first_seed": 0,
+      "seeds": 10000,
+      "round_trips": 60000,
+      "probe_accepted": 52898,
+      "probe_rejected": 27102,
+      "corpus_digest": "ddc03ddedd0aabdf"
+    }
+  },
+  "replay": {
+    "seed": 42,
+    "runs": 2,
+    "matching_fingerprints": true,
+    "corpus_digest": "37c9f7593ffeef94",
+    "invalid_seed_exit_code": 2
+  },
+  "simulations": {
+    "debug": {
+      "first_seed": 0,
+      "seeds": 10000,
+      "election_bound": 300,
+      "max_cold_ticks": 107,
+      "max_reelection_ticks": 238,
+      "max_recovery_ticks": 41,
+      "steps": 15889772,
+      "safety_checks": 15889772,
+      "delivered": 2572442,
+      "dropped": 1012199,
+      "duplicated": 194170,
+      "partitions": 60000,
+      "crashes": 82126,
+      "restarts": 117472,
+      "sync_failures": 32126,
+      "digest": "4e8223a7390bf641"
+    },
+    "asan": {
+      "first_seed": 0,
+      "seeds": 10000,
+      "election_bound": 300,
+      "max_cold_ticks": 107,
+      "max_reelection_ticks": 238,
+      "max_recovery_ticks": 41,
+      "steps": 15889772,
+      "safety_checks": 15889772,
+      "delivered": 2572442,
+      "dropped": 1012199,
+      "duplicated": 194170,
+      "partitions": 60000,
+      "crashes": 82126,
+      "restarts": 117472,
+      "sync_failures": 32126,
+      "digest": "4e8223a7390bf641"
+    }
+  },
+  "simulator_replay": {
+    "seed": 42,
+    "runs": 3,
+    "trace_sha256": "59570d4cc86bc1e63492637f2c161ab60bb04822ab6b6fc79344eff76fb824e9",
+    "summary": {
+      "first_seed": 42,
+      "seeds": 1,
+      "election_bound": 300,
+      "max_cold_ticks": 22,
+      "max_reelection_ticks": 25,
+      "max_recovery_ticks": 41,
+      "steps": 1231,
+      "safety_checks": 1231,
+      "delivered": 184,
+      "dropped": 76,
+      "duplicated": 15,
+      "partitions": 6,
+      "crashes": 6,
+      "restarts": 9,
+      "sync_failures": 1,
+      "digest": "89d7e2178aaae73d"
+    }
+  }
+}
