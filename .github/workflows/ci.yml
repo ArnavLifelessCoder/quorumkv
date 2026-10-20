@@ -18,10 +18,18 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
-      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Enter MSVC developer environment
         if: runner.os == 'Windows'
-        with:
-          arch: x64
+        shell: pwsh
+        run: |
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
+          $vsRoot = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          if (-not $vsRoot) { throw 'Visual Studio C++ tools not found' }
+          & (Join-Path $vsRoot 'Common7/Tools/Launch-VsDevShell.ps1') -Arch amd64 -HostArch amd64 -SkipAutomaticLocation
+          foreach ($name in @('PATH', 'INCLUDE', 'LIB', 'LIBPATH', 'VCINSTALLDIR', 'VCToolsInstallDir', 'WindowsSdkDir', 'WindowsSDKVersion', 'UniversalCRTSdkDir', 'UCRTVersion')) {
+            $value = [Environment]::GetEnvironmentVariable($name)
+            if ($value) { Add-Content -LiteralPath $env:GITHUB_ENV -Value "$name=$value" }
+          }
       - name: Install build tools
         shell: bash
         run: |
@@ -39,9 +47,17 @@ jobs:
         run: cmake --build --preset ${{ matrix.preset }}
       - name: Test
         run: ctest --preset ${{ matrix.preset }} --verbose
+      - name: Verify simulator replay
+        shell: bash
+        run: |
+          executable="build/${{ matrix.preset }}/quorumkv_tests"
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            executable="$executable.exe"
+          fi
+          python scripts/verify_sim_replay.py "$executable" --output "build/${{ matrix.preset }}/Testing/Temporary/sim-replay.txt"
       - name: Save test logs
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: logs-${{ matrix.os }}-${{ matrix.preset }}
           path: build/${{ matrix.preset }}/Testing/Temporary/
@@ -81,7 +97,7 @@ jobs:
       - run: python scripts/check_tidy.py --output build/review/clang-tidy.txt
       - name: Save full analysis output
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: clang-tidy
           path: build/review/clang-tidy.txt
