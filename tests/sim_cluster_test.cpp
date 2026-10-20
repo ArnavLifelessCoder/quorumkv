@@ -119,6 +119,26 @@ TEST(SimCluster, RejectsInvalidScenarioInputs) {
   EXPECT_THROW(cluster.Partition({1, 2}), std::invalid_argument);
   EXPECT_THROW(cluster.SetFaults(NetworkFaults{.drop_percent = 101}), std::invalid_argument);
   EXPECT_THROW(cluster.SetFaults(NetworkFaults{.max_delay = 0}), std::invalid_argument);
+  EXPECT_THROW(cluster.SetVoteCrashPercent(101), std::invalid_argument);
+}
+
+TEST(SimCluster, PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply) {
+  Cluster cluster({.seed = 19});
+  cluster.SetFaults({.drop_percent = 0, .duplicate_percent = 0, .max_delay = 1});
+  cluster.SetVoteCrashPercent(100);
+  for (unsigned tick = 0; tick < 100; ++tick) {
+    cluster.Advance();
+    for (NodeId id = 1; id <= 3; ++id) {
+      if (!cluster.Alive(id)) {
+        EXPECT_TRUE(cluster.State(id).voted_for.has_value());
+        cluster.Restart(id);
+      }
+    }
+  }
+  EXPECT_GT(cluster.Stats().vote_grant_crashes, 0U);
+  EXPECT_EQ(cluster.Stats().crashes, cluster.Stats().vote_grant_crashes);
+  EXPECT_FALSE(cluster.Leaders().empty());
+  EXPECT_EQ(cluster.Stats().steps, cluster.Stats().safety_checks);
 }
 
 }  // namespace

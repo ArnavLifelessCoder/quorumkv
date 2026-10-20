@@ -41,6 +41,9 @@ auto Scenario(std::uint64_t seed, bool trace) -> ScenarioResult {
   Cluster cluster({.seed = seed, .size = size, .record_trace = trace});
   SeededRandom nemesis(seed ^ 0x72616674656c6563ULL);
   try {
+    cluster.SetFaults({.drop_percent = 5 + nemesis.Next() % 6,
+                       .duplicate_percent = nemesis.Next() % 21,
+                       .max_delay = 1 + nemesis.Next() % 3});
     const auto cold = AwaitLeader(cluster);
     const auto old_term = cluster.State(cold.leader).term;
     cluster.Crash(cold.leader);
@@ -49,9 +52,16 @@ auto Scenario(std::uint64_t seed, bool trace) -> ScenarioResult {
       throw std::logic_error("crashed leader was not replaced in a higher term");
     }
     cluster.Restart(cold.leader);
+    cluster.SetVoteCrashPercent(20 + nemesis.Next() % 41);
     // Six partition/heal cycles, with packet loss and duplication still enabled.
     for (unsigned tick = 0; tick < 180; ++tick) {
       if (tick % 30 == 0) {
+        // Alternate asynchronous safety phases and short-delay crash phases.
+        // Only the cold-start/re-election and healed phases have liveness bounds.
+        cluster.SetFaults(
+            {.drop_percent = nemesis.Next() % 21,
+             .duplicate_percent = nemesis.Next() % 41,
+             .max_delay = tick % 60 == 0 ? 31 + nemesis.Next() % 30 : 1 + nemesis.Next() % 3});
         std::vector<std::uint64_t> groups(size);
         for (auto& group : groups) {
           group = nemesis.Next() % 2;
@@ -66,25 +76,27 @@ auto Scenario(std::uint64_t seed, bool trace) -> ScenarioResult {
       if (tick % 45 == 10) {
         cluster.Crash(1 + nemesis.Next() % size);
       }
-      if (tick % 45 == 25) {
+      if (tick % 5 == 4) {
         for (NodeId id = 1; id <= size; ++id) {
           cluster.Restart(id);
         }
       }
-      if (tick % 40 == 7) {
-        cluster.FailNextSync(1 + nemesis.Next() % size,
-                             tick % 80 == 7 ? SyncFailure::BeforeSync : SyncFailure::AfterSync);
+      if (tick % 7 == 0) {
+        cluster.FailNextSync(1 + nemesis.Next() % size, nemesis.Next() % 2 == 0
+                                                            ? SyncFailure::BeforeSync
+                                                            : SyncFailure::AfterSync);
       }
       cluster.Advance();
     }
     cluster.Heal();
+    cluster.SetVoteCrashPercent(0);
     cluster.SetFaults({.drop_percent = 0, .duplicate_percent = 0, .max_delay = 1});
     for (NodeId id = 1; id <= size; ++id) {
       cluster.FailNextSync(id, SyncFailure::None);
       cluster.Restart(id);
     }
     // Drain delayed packets and give formerly isolated leaders time to step down.
-    for (unsigned tick = 0; tick < 40; ++tick) {
+    for (unsigned tick = 0; tick < 90; ++tick) {
       cluster.Advance();
     }
     const auto recovered = AwaitLeader(cluster);
@@ -97,7 +109,7 @@ auto Scenario(std::uint64_t seed, bool trace) -> ScenarioResult {
     }
     return {.cold_ticks = cold.ticks,
             .reelection_ticks = replacement.ticks,
-            .recovery_ticks = 40 + recovered.ticks,
+            .recovery_ticks = 90 + recovered.ticks,
             .stats = stats,
             .digest = cluster.Digest()};
   } catch (const std::exception&) {
@@ -111,6 +123,8 @@ auto Scenario(std::uint64_t seed, bool trace) -> ScenarioResult {
 TEST(ElectionFuzz, SafetyAndRecoveryAcrossSeededFaultSchedules) {
   const auto config = test::seed_config;
   ScenarioResult totals;
+  std::vector<unsigned> cold_ticks;
+  std::vector<unsigned> reelection_ticks;
   std::uint64_t digest = 14695981039346656037ULL;
   for (std::uint64_t offset = 0; offset < config.count; ++offset) {
     const auto seed = config.first + offset;
@@ -119,6 +133,8 @@ TEST(ElectionFuzz, SafetyAndRecoveryAcrossSeededFaultSchedules) {
     SCOPED_TRACE(replay);
     try {
       const auto result = Scenario(seed, config.count == 1);
+      cold_ticks.push_back(result.cold_ticks);
+      reelection_ticks.push_back(result.reelection_ticks);
       totals.cold_ticks = std::max(totals.cold_ticks, result.cold_ticks);
       totals.reelection_ticks = std::max(totals.reelection_ticks, result.reelection_ticks);
       totals.recovery_ticks = std::max(totals.recovery_ticks, result.recovery_ticks);
@@ -131,6 +147,9 @@ TEST(ElectionFuzz, SafetyAndRecoveryAcrossSeededFaultSchedules) {
       totals.stats.crashes += result.stats.crashes;
       totals.stats.restarts += result.stats.restarts;
       totals.stats.sync_failures += result.stats.sync_failures;
+      totals.stats.vote_grant_crashes += result.stats.vote_grant_crashes;
+      totals.stats.long_delay_packets += result.stats.long_delay_packets;
+      totals.stats.stale_vote_deliveries += result.stats.stale_vote_deliveries;
       digest = (digest ^ result.digest) * 1099511628211ULL;
     } catch (const std::exception& error) {
       std::cerr << "[sim-failure] seed=" << seed << " replay=" << replay << '\n';
@@ -144,7 +163,15 @@ TEST(ElectionFuzz, SafetyAndRecoveryAcrossSeededFaultSchedules) {
       FAIL() << error.what() << "; seed=" << seed << "; replay: " << replay;
     }
   }
+  auto percentile = [](std::vector<unsigned>& values, std::size_t percent) {
+    std::ranges::sort(values);
+    return values.at((values.size() * percent + 99) / 100 - 1);
+  };
   std::cout << "[sim] first_seed=" << config.first << " seeds=" << config.count
+            << " p50_cold_ticks=" << percentile(cold_ticks, 50)
+            << " p99_cold_ticks=" << percentile(cold_ticks, 99)
+            << " p50_reelection_ticks=" << percentile(reelection_ticks, 50)
+            << " p99_reelection_ticks=" << percentile(reelection_ticks, 99)
             << " election_bound=" << kElectionBound << " max_cold_ticks=" << totals.cold_ticks
             << " max_reelection_ticks=" << totals.reelection_ticks
             << " max_recovery_ticks=" << totals.recovery_ticks << " steps=" << totals.stats.steps
@@ -153,8 +180,11 @@ TEST(ElectionFuzz, SafetyAndRecoveryAcrossSeededFaultSchedules) {
             << " duplicated=" << totals.stats.duplicated
             << " partitions=" << totals.stats.partitions << " crashes=" << totals.stats.crashes
             << " restarts=" << totals.stats.restarts
-            << " sync_failures=" << totals.stats.sync_failures << " digest=" << std::hex << digest
-            << std::dec << '\n';
+            << " sync_failures=" << totals.stats.sync_failures
+            << " vote_grant_crashes=" << totals.stats.vote_grant_crashes
+            << " long_delay_packets=" << totals.stats.long_delay_packets
+            << " stale_vote_deliveries=" << totals.stats.stale_vote_deliveries
+            << " digest=" << std::hex << digest << std::dec << '\n';
 }
 
 }  // namespace

@@ -29,6 +29,9 @@ struct SimStats {
   std::uint64_t crashes{};
   std::uint64_t restarts{};
   std::uint64_t sync_failures{};
+  std::uint64_t vote_grant_crashes{};
+  std::uint64_t long_delay_packets{};
+  std::uint64_t stale_vote_deliveries{};
   auto operator==(const SimStats&) const -> bool = default;
 };
 
@@ -48,6 +51,8 @@ class Cluster {
   void Partition(const std::vector<std::uint64_t>& groups);
   void Heal();
   void SetFaults(NetworkFaults faults);
+  // Abrupt power loss at the Transport::Send boundary, after a granted reply is queued.
+  void SetVoteCrashPercent(std::uint64_t percent);
   [[nodiscard]] auto Leaders() const -> std::vector<NodeId>;
   [[nodiscard]] auto Alive(NodeId id) const -> bool;
   [[nodiscard]] auto State(NodeId id) const -> HardState;

@@ -11,6 +11,7 @@
 namespace quorumkv::sim {
 
 struct Cluster::Impl {
+  struct PowerLoss final : std::exception {};
   struct Link final : Transport {
     explicit Link(Impl& owner) : cluster(owner) {}
     Impl& cluster;
@@ -19,6 +20,13 @@ struct Cluster::Impl {
         throw std::logic_error("transport recipient mismatch");
       }
       cluster.Enqueue(message);
+      if (const auto* vote = std::get_if<VoteResponse>(&message.body);
+          vote && vote->granted && cluster.random.Next() % 100 < cluster.vote_crash_percent) {
+        // Unwind the current Step before any later instruction can run. The driver
+        // destroys the node; Transport never calls back into it.
+        ++cluster.stats.vote_grant_crashes;
+        throw PowerLoss{};
+      }
     }
   };
   struct Host {
@@ -47,6 +55,7 @@ struct Cluster::Impl {
   VirtualClock clock;
   SeededRandom random;
   NetworkFaults faults;
+  std::uint64_t vote_crash_percent{};
   ElectionSafety safety;
   std::vector<NodeId> members;
   std::vector<std::uint64_t> groups;
@@ -126,6 +135,9 @@ struct Cluster::Impl {
     }
     for (unsigned copy = 0; copy < (duplicate ? 2U : 1U); ++copy) {
       const auto due = clock.Now() + 1 + random.Next() % faults.max_delay;
+      if (due - clock.Now() > 30) {
+        ++stats.long_delay_packets;
+      }
       Hash(due);
       queue.emplace(std::pair{due, sequence++}, message);
     }
@@ -158,6 +170,8 @@ struct Cluster::Impl {
     }
     try {
       operation(*host.node);
+    } catch (const PowerLoss&) {
+      Crash(id);
     } catch (const std::runtime_error&) {
       if (!host.node->stopped()) {
         throw;
@@ -186,6 +200,10 @@ struct Cluster::Impl {
       HashMessage(message);
       if (At(message.to).node && Connected(message)) {
         ++stats.delivered;
+        if (const auto* vote = std::get_if<VoteResponse>(&message.body);
+            vote && vote->granted && message.term < At(message.to).node->hard_state().term) {
+          ++stats.stale_vote_deliveries;
+        }
         Run(message.to, [&message](RaftNode& node) { node.Step(message); });
         Check("deliver", message.to);
       } else {
@@ -231,6 +249,14 @@ void Cluster::SetFaults(NetworkFaults faults) {
   impl_->Hash(faults.duplicate_percent);
   impl_->Hash(faults.max_delay);
   impl_->Check("faults");
+}
+void Cluster::SetVoteCrashPercent(std::uint64_t percent) {
+  if (percent > 100) {
+    throw std::invalid_argument("invalid vote crash percentage");
+  }
+  impl_->vote_crash_percent = percent;
+  impl_->Hash(percent);
+  impl_->Check("vote-crash-fault");
 }
 auto Cluster::Leaders() const -> std::vector<NodeId> {
   std::vector<NodeId> leaders;
