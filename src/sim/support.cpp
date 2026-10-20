@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <utility>
 
+#include "quorumkv/log.hpp"
 #include "quorumkv/sim_support.hpp"
 
 namespace quorumkv::sim {
@@ -21,17 +22,14 @@ void VirtualClock::Advance() {
 }
 
 void MemoryStorage::Persist(const StorageBatch& batch) {
-  if (batch.truncate_from || !batch.append.empty() || batch.snapshot) {
-    throw std::invalid_argument("M2 simulated storage only writes hard state");
-  }
+  auto next = ApplyStorageBatch(durable_, batch);
   const auto failure = std::exchange(failure_, SyncFailure::None);
-  pending_ = batch.hard_state;
+  pending_ = std::move(next);
   if (failure == SyncFailure::BeforeSync) {
     throw std::runtime_error("simulated crash before sync");
   }
-  if (pending_) {
-    durable_.hard_state = *pending_;
-  }
+  durable_ = std::move(*pending_);
+  ++revision_;
   pending_.reset();
   if (failure == SyncFailure::AfterSync) {
     throw std::runtime_error("simulated crash after sync");

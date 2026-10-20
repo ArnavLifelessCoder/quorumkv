@@ -44,8 +44,39 @@ TEST(SimSupport, LoadedStateIsACopyAndUnsupportedWritesAreRejected) {
   loaded.hard_state.term = 3;
   EXPECT_EQ(storage.hard_state().term, 2U);
   StorageBatch batch;
-  batch.truncate_from = 1;
+  batch.snapshot = Snapshot{};
   EXPECT_THROW(storage.Persist(batch), std::invalid_argument);
+}
+
+TEST(SimSupport, LogTruncationAppendAndVotePublishAsOneDurableBatch) {
+  PersistentState initial;
+  initial.hard_state = {.term = 2, .voted_for = 1};
+  initial.entries = {{.index = 1, .term = 1, .command = {}},
+                     {.index = 2, .term = 2, .kind = EntryKind::Command, .command = {2}}};
+  StorageBatch batch;
+  batch.hard_state = HardState{.term = 3, .voted_for = 2};
+  batch.truncate_from = 2;
+  batch.append = {{.index = 2, .term = 3, .kind = EntryKind::Command, .command = {3}},
+                  {.index = 3, .term = 3, .kind = EntryKind::Command, .command = {4}}};
+  MemoryStorage storage(initial);
+  storage.FailNext(SyncFailure::BeforeSync);
+  EXPECT_THROW(storage.Persist(batch), std::runtime_error);
+  EXPECT_EQ(storage.Load(), initial);
+  storage.Crash();
+  EXPECT_EQ(storage.Load(), initial);
+  storage.FailNext(SyncFailure::AfterSync);
+  EXPECT_THROW(storage.Persist(batch), std::runtime_error);
+  storage.Crash();
+  const auto durable = storage.Load();
+  EXPECT_EQ(durable.hard_state, *batch.hard_state);
+  ASSERT_EQ(durable.entries.size(), 3U);
+  EXPECT_EQ(durable.entries.front(), initial.entries.front());
+  EXPECT_EQ(durable.entries[1], batch.append.front());
+  EXPECT_EQ(durable.entries.back(), batch.append.back());
+  batch.truncate_from = 1;
+  batch.append.clear();
+  storage.Persist(batch);
+  EXPECT_TRUE(storage.Load().entries.empty());
 }
 
 TEST(SimSupport, OracleRejectsNonSimultaneousLeadersAndLostVotes) {

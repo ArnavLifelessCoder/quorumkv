@@ -27,7 +27,7 @@ class VirtualClock final : public Clock {
 
 enum class SyncFailure : std::uint8_t { None, BeforeSync, AfterSync };
 
-// M2 models atomic hard-state sync. Log/snapshot writes are deliberately rejected until M3.
+// Pending log/hard-state batches publish atomically at the simulated sync boundary.
 class MemoryStorage final : public Storage {
  public:
   explicit MemoryStorage(PersistentState initial = {}) : durable_(std::move(initial)) {}
@@ -36,10 +36,13 @@ class MemoryStorage final : public Storage {
   void FailNext(SyncFailure failure) { failure_ = failure; }
   void Crash();
   [[nodiscard]] auto hard_state() const -> HardState { return durable_.hard_state; }
+  [[nodiscard]] auto durable() const -> const PersistentState& { return durable_; }
+  [[nodiscard]] auto revision() const -> std::uint64_t { return revision_; }
 
  private:
   PersistentState durable_;
-  std::optional<HardState> pending_;
+  std::optional<PersistentState> pending_;
+  std::uint64_t revision_{};
   SyncFailure failure_{SyncFailure::None};
 };
 
