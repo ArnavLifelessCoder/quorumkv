@@ -68,5 +68,6 @@ if(BUILD_TESTING)
     tests/codec_fuzz_test.cpp
   )
   target_link_libraries(quorumkv_tests PRIVATE quorumkv GTest::gtest)
-  add_test(NAME quorumkv_tests COMMAND quorumkv_tests)
+  include(GoogleTest)
+  gtest_discover_tests(quorumkv_tests DISCOVERY_MODE PRE_TEST DISCOVERY_TIMEOUT 120)
 endif()
