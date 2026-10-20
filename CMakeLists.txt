@@ -50,7 +50,7 @@ option(QUORUMKV_BUILD_MUTATION_TESTS "Build test-only unsafe election simulator 
 if(QUORUMKV_BUILD_MUTATION_TESTS AND NOT BUILD_TESTING)
   message(FATAL_ERROR "Mutation executables require BUILD_TESTING")
 endif()
-add_library(quorumkv src/rpc/codec.cpp src/raft/node.cpp src/sim/support.cpp src/sim/cluster.cpp)
+add_library(quorumkv src/rpc/codec.cpp src/raft/node.cpp src/raft/log.cpp src/sim/support.cpp src/sim/cluster.cpp)
 target_link_libraries(quorumkv PUBLIC quorumkv_options)
 if(BUILD_TESTING)
   include(FetchContent)
@@ -71,6 +71,7 @@ if(BUILD_TESTING)
     tests/codec_test.cpp
     tests/codec_fuzz_test.cpp
     tests/election_test.cpp
+    tests/log_test.cpp
     tests/sim_support_test.cpp
     tests/sim_cluster_test.cpp
     tests/election_fuzz_test.cpp
