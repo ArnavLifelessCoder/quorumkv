@@ -1,5 +1,5 @@
 clang-format --dry-run --Werror: PASS
 All checks passed!
 
-5 files already formatted
+7 files already formatted
 

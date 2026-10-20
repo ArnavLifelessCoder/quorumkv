@@ -25,7 +25,7 @@ test 1
 1: [----------] Global test environment tear-down
 1: [==========] 1 test from 1 test suite ran. (0 ms total)
 1: [  PASSED  ] 1 test.
- 1/16 Test  #1: Toolchain.SupportsCpp20AndPortablePaths ..........................   Passed    0.11 sec
+ 1/16 Test  #1: Toolchain.SupportsCpp20AndPortablePaths ..........................   Passed    0.12 sec
 test 2
       Start  2: Interfaces.TransportCanOwnMessagesWithoutBorrowingCallerMemory
 
@@ -43,7 +43,7 @@ test 2
 2: [----------] Global test environment tear-down
 2: [==========] 1 test from 1 test suite ran. (0 ms total)
 2: [  PASSED  ] 1 test.
- 2/16 Test  #2: Interfaces.TransportCanOwnMessagesWithoutBorrowingCallerMemory ...   Passed    0.10 sec
+ 2/16 Test  #2: Interfaces.TransportCanOwnMessagesWithoutBorrowingCallerMemory ...   Passed    0.13 sec
 test 3
       Start  3: Types.MissingVoteAndConflictTermDifferFromZero
 
@@ -61,7 +61,7 @@ test 3
 3: [----------] Global test environment tear-down
 3: [==========] 1 test from 1 test suite ran. (0 ms total)
 3: [  PASSED  ] 1 test.
- 3/16 Test  #3: Types.MissingVoteAndConflictTermDifferFromZero ...................   Passed    0.11 sec
+ 3/16 Test  #3: Types.MissingVoteAndConflictTermDifferFromZero ...................   Passed    0.12 sec
 test 4
       Start  4: Types.SnapshotAndLogRetainBinaryDataByValue
 
@@ -79,7 +79,7 @@ test 4
 4: [----------] Global test environment tear-down
 4: [==========] 1 test from 1 test suite ran. (0 ms total)
 4: [  PASSED  ] 1 test.
- 4/16 Test  #4: Types.SnapshotAndLogRetainBinaryDataByValue ......................   Passed    0.11 sec
+ 4/16 Test  #4: Types.SnapshotAndLogRetainBinaryDataByValue ......................   Passed    0.10 sec
 test 5
       Start  5: Codec.VoteMatchesIndependentBigEndianGoldenFrame
 
@@ -97,7 +97,7 @@ test 5
 5: [----------] Global test environment tear-down
 5: [==========] 1 test from 1 test suite ran. (0 ms total)
 5: [  PASSED  ] 1 test.
- 5/16 Test  #5: Codec.VoteMatchesIndependentBigEndianGoldenFrame .................   Passed    0.11 sec
+ 5/16 Test  #5: Codec.VoteMatchesIndependentBigEndianGoldenFrame .................   Passed    0.12 sec
 test 6
       Start  6: Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix
 
@@ -109,11 +109,11 @@ test 6
 6: [----------] Global test environment set-up.
 6: [----------] 1 test from Codec
 6: [ RUN      ] Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix
-6: [       OK ] Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix (29 ms)
-6: [----------] 1 test from Codec (29 ms total)
+6: [       OK ] Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix (31 ms)
+6: [----------] 1 test from Codec (31 ms total)
 6: 
 6: [----------] Global test environment tear-down
-6: [==========] 1 test from 1 test suite ran. (29 ms total)
+6: [==========] 1 test from 1 test suite ran. (31 ms total)
 6: [  PASSED  ] 1 test.
  6/16 Test  #6: Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix .............   Passed    0.13 sec
 test 7
@@ -133,7 +133,7 @@ test 7
 7: [----------] Global test environment tear-down
 7: [==========] 1 test from 1 test suite ran. (0 ms total)
 7: [  PASSED  ] 1 test.
- 7/16 Test  #7: Codec.RejectsUnknownVersionAndTag ................................   Passed    0.18 sec
+ 7/16 Test  #7: Codec.RejectsUnknownVersionAndTag ................................   Passed    0.11 sec
 test 8
       Start  8: Codec.RejectsNoncanonicalBooleansAndEntryKinds
 
@@ -205,7 +205,7 @@ test 11
 11: [----------] Global test environment tear-down
 11: [==========] 1 test from 1 test suite ran. (21 ms total)
 11: [  PASSED  ] 1 test.
-11/16 Test #11: Codec.BoundsEntryAllocationBeforeReading .........................   Passed    0.12 sec
+11/16 Test #11: Codec.BoundsEntryAllocationBeforeReading .........................   Passed    0.11 sec
 test 12
       Start 12: Codec.EnforcesWholeFrameBudget
 
@@ -223,7 +223,7 @@ test 12
 12: [----------] Global test environment tear-down
 12: [==========] 1 test from 1 test suite ran. (25 ms total)
 12: [  PASSED  ] 1 test.
-12/16 Test #12: Codec.EnforcesWholeFrameBudget ...................................   Passed    0.11 sec
+12/16 Test #12: Codec.EnforcesWholeFrameBudget ...................................   Passed    0.12 sec
 test 13
       Start 13: SeedOptions.DefaultsAndSingleSeedReplay
 
@@ -253,13 +253,13 @@ test 14
 14: [----------] Global test environment set-up.
 14: [----------] 1 test from SeedOptions
 14: [ RUN      ] SeedOptions.RejectsInvalidAndWrappingRanges
-14: [       OK ] SeedOptions.RejectsInvalidAndWrappingRanges (16 ms)
-14: [----------] 1 test from SeedOptions (17 ms total)
+14: [       OK ] SeedOptions.RejectsInvalidAndWrappingRanges (18 ms)
+14: [----------] 1 test from SeedOptions (18 ms total)
 14: 
 14: [----------] Global test environment tear-down
-14: [==========] 1 test from 1 test suite ran. (17 ms total)
+14: [==========] 1 test from 1 test suite ran. (18 ms total)
 14: [  PASSED  ] 1 test.
-14/16 Test #14: SeedOptions.RejectsInvalidAndWrappingRanges ......................   Passed    0.12 sec
+14/16 Test #14: SeedOptions.RejectsInvalidAndWrappingRanges ......................   Passed    0.11 sec
 test 15
       Start 15: SeedOptions.GeneratorHasStableKnownSequence
 
@@ -277,7 +277,7 @@ test 15
 15: [----------] Global test environment tear-down
 15: [==========] 1 test from 1 test suite ran. (0 ms total)
 15: [  PASSED  ] 1 test.
-15/16 Test #15: SeedOptions.GeneratorHasStableKnownSequence ......................   Passed    0.12 sec
+15/16 Test #15: SeedOptions.GeneratorHasStableKnownSequence ......................   Passed    0.11 sec
 test 16
       Start 16: CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe
 
@@ -290,14 +290,14 @@ test 16
 16: [----------] 1 test from CodecFuzz
 16: [ RUN      ] CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe
 16: [fuzz] first_seed=0 seeds=10000 round_trips=60000 probe_accepted=52898 probe_rejected=27102 corpus_digest=ddc03ddedd0aabdf
-16: [       OK ] CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe (9412 ms)
-16: [----------] 1 test from CodecFuzz (9412 ms total)
+16: [       OK ] CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe (9365 ms)
+16: [----------] 1 test from CodecFuzz (9365 ms total)
 16: 
 16: [----------] Global test environment tear-down
-16: [==========] 1 test from 1 test suite ran. (9413 ms total)
+16: [==========] 1 test from 1 test suite ran. (9366 ms total)
 16: [  PASSED  ] 1 test.
-16/16 Test #16: CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe ......   Passed    9.75 sec
+16/16 Test #16: CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe ......   Passed    9.47 sec
 
 100% tests passed, 0 tests failed out of 16
 
-Total Test time (real) =  11.77 sec
+Total Test time (real) =  11.39 sec
