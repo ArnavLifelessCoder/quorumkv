@@ -42,7 +42,7 @@ class File {
 void WriteSynced(const std::filesystem::path& path, std::span<const std::uint8_t> bytes) {
   const File file(path, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC);
   while (!bytes.empty()) {
-    const auto count = std::min<std::size_t>(bytes.size(), 1024 * 1024);
+    const auto count = std::min(bytes.size(), std::size_t{1024} * 1024);
     const auto written = write(file.get(), bytes.data(), count);
     if (written < 0 && errno == EINTR) {
       continue;

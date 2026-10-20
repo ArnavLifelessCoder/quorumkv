@@ -7,7 +7,7 @@
 
 namespace quorumkv {
 
-enum class StoragePoint { TemporarySynced, Replaced };
+enum class StoragePoint : std::uint8_t { TemporarySynced, Replaced };
 
 // Single-owner storage. Each batch publishes a checksummed complete image.
 // The hook provides deterministic crash boundaries for storage tests.

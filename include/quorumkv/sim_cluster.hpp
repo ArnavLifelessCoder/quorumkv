@@ -45,7 +45,7 @@ struct SimStats {
 
 class Cluster {
  public:
-  explicit Cluster(ClusterConfig config);
+  explicit Cluster(const ClusterConfig& config);
   ~Cluster();
   Cluster(const Cluster&) = delete;
   auto operator=(const Cluster&) -> Cluster& = delete;

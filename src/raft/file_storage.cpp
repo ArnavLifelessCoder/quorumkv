@@ -16,7 +16,7 @@ namespace quorumkv {
 namespace {
 
 constexpr std::array<std::uint8_t, 8> kMagic{'Q', 'K', 'V', 'L', 'O', 'G', '0', '1'};
-constexpr std::size_t kMaxImageBytes = 64 * 1024 * 1024;
+constexpr std::size_t kMaxImageBytes = std::size_t{64} * 1024 * 1024;
 
 auto Checksum(std::span<const std::uint8_t> bytes) -> std::uint32_t {
   std::uint32_t crc = 0xffffffffU;
@@ -29,8 +29,9 @@ auto Checksum(std::span<const std::uint8_t> bytes) -> std::uint32_t {
   return ~crc;
 }
 
-void Integer(Bytes& bytes, std::uint64_t value, unsigned width) {
-  for (unsigned index = width; index > 0; --index) {
+template <unsigned Width>
+void Integer(Bytes& bytes, std::uint64_t value) {
+  for (unsigned index = Width; index > 0; --index) {
     bytes.push_back(static_cast<std::uint8_t>(value >> (8 * (index - 1))));
   }
 }
@@ -52,10 +53,10 @@ auto Serialize(const PersistentState& state) -> Bytes {
     throw std::invalid_argument("file snapshots require M5");
   }
   Bytes bytes(kMagic.begin(), kMagic.end());
-  Integer(bytes, state.hard_state.term, 8);
-  Integer(bytes, state.hard_state.voted_for.has_value() ? 1 : 0, 1);
-  Integer(bytes, state.hard_state.voted_for.value_or(0), 8);
-  Integer(bytes, state.entries.size(), 8);
+  Integer<8>(bytes, state.hard_state.term);
+  Integer<1>(bytes, state.hard_state.voted_for.has_value() ? 1 : 0);
+  Integer<8>(bytes, state.hard_state.voted_for.value_or(0));
+  Integer<8>(bytes, state.entries.size());
   for (const auto& entry : state.entries) {
     const auto frame =
         Encode({.term = state.hard_state.term, .body = AppendEntries{.entries = {entry}}});
@@ -64,7 +65,7 @@ auto Serialize(const PersistentState& state) -> Bytes {
     }
     bytes.insert(bytes.end(), frame.begin(), frame.end());
   }
-  Integer(bytes, Checksum(bytes), 4);
+  Integer<4>(bytes, Checksum(bytes));
   return bytes;
 }
 

@@ -101,7 +101,7 @@ void RaftNode::BecomeLeader() {
   progress_.clear();
   for (const auto peer : config_.members) {
     if (peer != config_.id) {
-      progress_.emplace(peer, Progress{.next = no_op, .flights = {}});
+      progress_.try_emplace(peer, no_op);
     }
   }
   AdvanceCommit();

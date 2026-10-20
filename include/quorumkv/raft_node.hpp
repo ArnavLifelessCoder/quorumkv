@@ -65,6 +65,9 @@ class RaftNode {
     LogIndex last{};
   };
   struct Progress {
+    explicit Progress(LogIndex first) : next(first) {}
+    Progress(const Progress&) = delete;
+    auto operator=(const Progress&) -> Progress& = delete;
     LogIndex next{};
     LogIndex match{};
     std::map<std::uint64_t, Flight> flights;

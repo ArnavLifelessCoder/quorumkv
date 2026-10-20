@@ -55,7 +55,7 @@ struct Cluster::Impl {
     LogIndex applied{};
   };
 
-  explicit Impl(ClusterConfig config)
+  explicit Impl(const ClusterConfig& config)
       : random(config.seed),
         recording(config.record_trace),
         manual_delivery(config.manual_delivery),
@@ -267,7 +267,7 @@ struct Cluster::Impl {
     }
   }
 
-  void Deliver(decltype(queue)::iterator position) {
+  void Deliver(const decltype(queue)::iterator& position) {
     const auto packet = queue.extract(position);
     const auto& message = packet.mapped();
     HashMessage(message);
@@ -286,7 +286,7 @@ struct Cluster::Impl {
   }
 };
 
-Cluster::Cluster(ClusterConfig config) : impl_(std::make_unique<Impl>(config)) {}
+Cluster::Cluster(const ClusterConfig& config) : impl_(std::make_unique<Impl>(config)) {}
 Cluster::~Cluster() = default;
 void Cluster::Advance() { impl_->Advance(); }
 void Cluster::Crash(NodeId id) { impl_->Crash(id); }

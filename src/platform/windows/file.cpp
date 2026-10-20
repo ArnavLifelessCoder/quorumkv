@@ -34,7 +34,7 @@ class File {
 void WriteSynced(const std::filesystem::path& path, std::span<const std::uint8_t> bytes) {
   const File file(path);
   while (!bytes.empty()) {
-    const auto count = static_cast<DWORD>(std::min<std::size_t>(bytes.size(), 1024 * 1024));
+    const auto count = static_cast<DWORD>(std::min(bytes.size(), std::size_t{1024} * 1024));
     DWORD written{};
     if (!WriteFile(file.get(), bytes.data(), count, &written, nullptr) || written == 0) {
       throw std::system_error(static_cast<int>(GetLastError()), std::system_category(),
