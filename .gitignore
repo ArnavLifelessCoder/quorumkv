@@ -1,0 +1,12 @@
+/00-CONVENTIONS.md
+/03-raft-kv-store.md
+/build/
+/.venv/
+/.cache/
+/.tools/
+/CMakeUserPresets.json
+/.ruff_cache/
+__pycache__/
+*.py[cod]
+.vs/
+*.user
