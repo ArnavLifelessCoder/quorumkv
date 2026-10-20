@@ -32,6 +32,9 @@ try {
     $env:PATH = (Join-Path $projectRoot ".venv/Scripts") + [IO.Path]::PathSeparator + $env:PATH
     & (Join-Path $PSScriptRoot "test.ps1") -Preset debug -VsRoot $VsRoot -OutputDirectory $stage
     & (Join-Path $PSScriptRoot "test.ps1") -Preset asan -VsRoot $VsRoot -OutputDirectory $stage
+    foreach ($preset in @("debug", "asan")) {
+        Invoke-Check -Arguments @("scripts/verify_mutations.py", "build/$preset", "--output", (Join-Path $stage "$preset-mutations.jsonl")) -LogName "$preset-mutations-driver.txt"
+    }
     Invoke-Check -Arguments @("scripts/check_tidy.py", "--output", (Join-Path $stage "clang-tidy.txt")) -LogName "tidy-driver.txt"
     Invoke-Check -Arguments @("scripts/verify_replay.py", "build/debug/quorumkv_tests.exe", "--output", (Join-Path $stage "replay.txt")) -LogName "replay-driver.txt"
     Invoke-Check -Arguments @("scripts/verify_sim_replay.py", "build/debug/quorumkv_tests.exe", "--compare-executable", "build/asan/quorumkv_tests.exe", "--output", (Join-Path $stage "sim-replay.txt")) -LogName "sim-replay-driver.txt"
@@ -54,7 +57,8 @@ try {
     $files = @(
         "debug-configure.txt", "debug-build.txt", "debug-tests.txt", "debug-tools.json",
         "asan-configure.txt", "asan-build.txt", "asan-tests.txt", "asan-tools.json",
-        "clang-tidy.txt", "python-tests.txt", "replay.txt", "sim-replay.txt", "lint.txt", "summary.json"
+        "clang-tidy.txt", "python-tests.txt", "replay.txt", "sim-replay.txt", "lint.txt", "summary.json",
+        "debug-mutations.jsonl", "asan-mutations.jsonl"
     )
     foreach ($file in $files) {
         Copy-Item -LiteralPath (Join-Path $stage $file) -Destination (Join-Path $destination $file) -Force

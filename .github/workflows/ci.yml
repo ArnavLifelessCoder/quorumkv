@@ -55,6 +55,8 @@ jobs:
             executable="$executable.exe"
           fi
           python scripts/verify_sim_replay.py "$executable" --output "build/${{ matrix.preset }}/Testing/Temporary/sim-replay.txt"
+      - name: Verify simulator catches unsafe election mutations
+        run: python scripts/verify_mutations.py "build/${{ matrix.preset }}" --output "build/${{ matrix.preset }}/Testing/Temporary/mutations.jsonl"
       - name: Save test logs
         if: always()
         uses: actions/upload-artifact@v6
