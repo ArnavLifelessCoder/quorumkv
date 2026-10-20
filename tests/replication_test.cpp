@@ -228,5 +228,24 @@ TEST_F(ReplicationTest, FailedLeaderAppendNeverSendsAndAfterSyncCrashRetainsEntr
   EXPECT_EQ(restarted.commit_index(), 0U);
 }
 
+TEST_F(ReplicationTest, SendsNextBatchBeforeAcknowledgementAndAcceptsReorderedReplies) {
+  config.max_append_entries = 1;
+  auto node = Node();
+  Elect(node);
+  const auto first = LatestAppend(2);
+  ASSERT_EQ(node.Propose({2}), 2U);
+  const auto second = LatestAppend(2);
+  EXPECT_EQ(std::get<AppendEntries>(second.body).prev_log_index, 1U);
+  ASSERT_EQ(node.Propose({3}), 3U);
+  const auto third = LatestAppend(2);
+  EXPECT_EQ(std::get<AppendEntries>(third.body).prev_log_index, 2U);
+  EXPECT_EQ(node.commit_index(), 0U);
+  Ack(node, third, 3);
+  EXPECT_EQ(node.commit_index(), 3U);
+  Ack(node, second, 2);
+  Ack(node, first, 1);
+  EXPECT_EQ(node.commit_index(), 3U);
+}
+
 }  // namespace
 }  // namespace quorumkv

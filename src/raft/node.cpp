@@ -163,6 +163,9 @@ void RaftNode::SendAppend(NodeId peer) {
     progress.flights.erase(progress.flights.begin());
   }
   progress.flights.emplace(rpc, Flight{.previous = previous, .last = last});
+  // Speculatively send subsequent batches while earlier RPCs are in flight.
+  // Only successful correlated responses advance match; rejection rewinds next.
+  progress.next = last + 1;
   Send(peer,
        AppendEntries{.prev_log_index = previous,
                      .prev_log_term = log_.term(previous),

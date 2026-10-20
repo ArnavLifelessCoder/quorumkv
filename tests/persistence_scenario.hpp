@@ -9,15 +9,18 @@ inline void CrashAfterAcknowledgement(Cluster& cluster) {
   figure8::Campaign(cluster, 1, 1);
   figure8::Deliver<RequestVote>(cluster, 1, 2);
   figure8::Deliver<VoteResponse>(cluster, 2, 1);
+  figure8::Deliver<AppendEntries>(cluster, 1, 2);
+  figure8::Deliver<AppendResponse>(cluster, 2, 1);
   if (cluster.Propose(1, {6}) != 2) {
     throw std::runtime_error("persistence schedule could not propose");
   }
   cluster.SetReplicationCrashPercent(0, 100);
-  // Choose the queued batch containing both the leader no-op and the command.
+  // Choose the queued command batch, which may follow a heartbeat in the queue.
   bool delivered = false;
   for (const auto& [packet, message] : cluster.Pending()) {
     const auto* append = std::get_if<AppendEntries>(&message.body);
-    if (message.from == 1 && message.to == 2 && append && append->entries.size() == 2) {
+    if (message.from == 1 && message.to == 2 && append && !append->entries.empty() &&
+        append->entries.back().index == 2) {
       cluster.Deliver(packet);
       delivered = true;
       break;
