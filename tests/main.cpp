@@ -6,7 +6,7 @@
 
 #include "seed_config.hpp"
 
-int main(int argc, char** argv) {
+auto main(int argc, char** argv) -> int try {
   std::vector<std::string_view> options;
   int remaining = 1;
   for (int i = 1; i < argc; ++i) {
@@ -27,4 +27,6 @@ int main(int argc, char** argv) {
   }
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
+} catch (...) {
+  return 2;
 }

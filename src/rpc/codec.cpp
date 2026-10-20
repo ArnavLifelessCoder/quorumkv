@@ -22,8 +22,8 @@ class Writer {
     data_.push_back(value);
   }
 
-  void U32(std::uint32_t value) { Integer(value, 4); }
-  void U64(std::uint64_t value) { Integer(value, 8); }
+  void U32(std::uint32_t value) { Integer<4>(value); }
+  void U64(std::uint64_t value) { Integer<8>(value); }
   void Bool(bool value) { U8(value ? 1 : 0); }
 
   void Blob(const Bytes& bytes) {
@@ -35,7 +35,7 @@ class Writer {
     data_.insert(data_.end(), bytes.begin(), bytes.end());
   }
 
-  Bytes Finish() && {
+  auto Finish() && -> Bytes {
     const auto length = static_cast<std::uint32_t>(data_.size() - 4);
     for (unsigned i = 0; i < 4; ++i) {
       data_[i] = static_cast<std::uint8_t>(length >> (24 - 8 * i));
@@ -50,9 +50,10 @@ class Writer {
     }
   }
 
-  void Integer(std::uint64_t value, unsigned width) {
-    Check(width);
-    for (unsigned i = width; i > 0; --i) {
+  template <unsigned Width>
+  void Integer(std::uint64_t value) {
+    Check(Width);
+    for (unsigned i = Width; i > 0; --i) {
       data_.push_back(static_cast<std::uint8_t>(value >> (8 * (i - 1))));
     }
   }
@@ -64,12 +65,12 @@ class Reader {
  public:
   explicit Reader(std::span<const std::uint8_t> data) : data_(data) {}
 
-  std::size_t Remaining() const { return data_.size() - cursor_; }
-  std::uint8_t U8() { return static_cast<std::uint8_t>(Integer(1)); }
-  std::uint32_t U32() { return static_cast<std::uint32_t>(Integer(4)); }
-  std::uint64_t U64() { return Integer(8); }
+  [[nodiscard]] auto Remaining() const -> std::size_t { return data_.size() - cursor_; }
+  auto U8() -> std::uint8_t { return static_cast<std::uint8_t>(Integer(1)); }
+  auto U32() -> std::uint32_t { return static_cast<std::uint32_t>(Integer(4)); }
+  auto U64() -> std::uint64_t { return Integer(8); }
 
-  bool Bool() {
+  auto Bool() -> bool {
     const auto value = U8();
     if (value > 1) {
       throw CodecError("invalid boolean");
@@ -77,18 +78,18 @@ class Reader {
     return value == 1;
   }
 
-  Bytes Blob() {
+  auto Blob() -> Bytes {
     const auto size = U32();
     if (size > kMaxBlobBytes || size > Remaining()) {
       throw CodecError("invalid blob length");
     }
     const auto bytes = data_.subspan(cursor_, size);
     cursor_ += size;
-    return Bytes(bytes.begin(), bytes.end());
+    return {bytes.begin(), bytes.end()};
   }
 
  private:
-  std::uint64_t Integer(unsigned width) {
+  auto Integer(unsigned width) -> std::uint64_t {
     if (width > Remaining()) {
       throw CodecError("truncated frame");
     }
@@ -104,7 +105,7 @@ class Reader {
 };
 
 template <class Body>
-constexpr Tag BodyTag() {
+constexpr auto BodyTag() -> Tag {
   if constexpr (std::is_same_v<Body, RequestVote>) {
     return Tag::Vote;
   } else if constexpr (std::is_same_v<Body, VoteResponse>) {
@@ -172,7 +173,7 @@ void WriteBody(Writer& writer, const SnapshotResponse& body) {
   writer.U64(body.next_offset);
 }
 
-MessageBody ReadBody(Reader& reader, Tag tag) {
+auto ReadBody(Reader& reader, Tag tag) -> MessageBody {
   switch (tag) {
     case Tag::Vote: {
       RequestVote body;
@@ -239,7 +240,7 @@ MessageBody ReadBody(Reader& reader, Tag tag) {
 
 }  // namespace
 
-Bytes Encode(const Message& message) {
+auto Encode(const Message& message) -> Bytes {
   Writer writer;
   writer.U8(kWireVersion);
   std::visit(
@@ -255,7 +256,7 @@ Bytes Encode(const Message& message) {
   return std::move(writer).Finish();
 }
 
-Message Decode(std::span<const std::uint8_t> frame) {
+auto Decode(std::span<const std::uint8_t> frame) -> Message {
   if (frame.size() > kMaxFrameBytes) {
     throw CodecError("frame exceeds limit");
   }

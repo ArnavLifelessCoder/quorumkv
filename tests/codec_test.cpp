@@ -7,7 +7,9 @@
 namespace quorumkv {
 namespace {
 
-Message Wrap(MessageBody body) { return Message{1, 2, 3, 4, std::move(body)}; }
+auto Wrap(MessageBody body) -> Message {
+  return Message{.from = 1, .to = 2, .term = 3, .rpc_id = 4, .body = std::move(body)};
+}
 
 void SetLength(Bytes& frame) {
   const auto length = static_cast<std::uint32_t>(frame.size() - 4);
@@ -16,14 +18,28 @@ void SetLength(Bytes& frame) {
   }
 }
 
-std::vector<Message> Examples() {
+auto Examples() -> std::vector<Message> {
   return {
-      Wrap(RequestVote{5, 6}),
+      Wrap(RequestVote{.last_log_index = 5, .last_log_term = 6}),
       Wrap(VoteResponse{true}),
-      Wrap(AppendEntries{5, 6, 7, 8, {{9, 6, EntryKind::Command, {0, 128, 255}}}}),
-      Wrap(AppendResponse{false, 5, 6, 7, 8}),
-      Wrap(InstallSnapshot{5, 6, 7, true, {0, 128, 255}}),
-      Wrap(SnapshotResponse{true, 5}),
+      Wrap(AppendEntries{
+          .prev_log_index = 5,
+          .prev_log_term = 6,
+          .leader_commit = 7,
+          .read_context = 8,
+          .entries =
+              {{.index = 9, .term = 6, .kind = EntryKind::Command, .command = {0, 128, 255}}}}),
+      Wrap(AppendResponse{.success = false,
+                          .match_index = 5,
+                          .conflict_term = 6,
+                          .conflict_index = 7,
+                          .read_context = 8}),
+      Wrap(InstallSnapshot{.last_included_index = 5,
+                           .last_included_term = 6,
+                           .offset = 7,
+                           .done = true,
+                           .data = {0, 128, 255}}),
+      Wrap(SnapshotResponse{.success = true, .next_offset = 5}),
   };
 }
 
@@ -35,7 +51,7 @@ TEST(Codec, VoteMatchesIndependentBigEndianGoldenFrame) {
                        0, 0, 0, 0,  0, 0, 0, 4,   // rpc id
                        0, 0, 0, 0,  0, 0, 0, 5,   // last index
                        0, 0, 0, 0,  0, 0, 0, 6};  // last term
-  const auto message = Wrap(RequestVote{5, 6});
+  const auto message = Wrap(RequestVote{.last_log_index = 5, .last_log_term = 6});
   EXPECT_EQ(Encode(message), expected);
   EXPECT_EQ(Decode(expected), message);
 }
@@ -85,7 +101,12 @@ TEST(Codec, RejectsNoncanonicalBooleansAndEntryKinds) {
     frame[offset] = 2;
     EXPECT_THROW(Decode(frame), CodecError);
   }
-  auto message = Wrap(AppendEntries{0, 0, 0, 0, {{1, 1, EntryKind::NoOp, {}}}});
+  auto message = Wrap(
+      AppendEntries{.prev_log_index = 0,
+                    .prev_log_term = 0,
+                    .leader_commit = 0,
+                    .read_context = 0,
+                    .entries = {{.index = 1, .term = 1, .kind = EntryKind::NoOp, .command = {}}}});
   auto frame = Encode(message);
   frame[90] = 2;
   EXPECT_THROW(Decode(frame), CodecError);
@@ -95,18 +116,35 @@ TEST(Codec, RejectsNoncanonicalBooleansAndEntryKinds) {
 
 TEST(Codec, PreservesEmptyFieldsAndFullWidthIntegers) {
   const auto max = std::numeric_limits<std::uint64_t>::max();
-  const Message message{max, max, max, max, AppendResponse{true, max, max, max, max}};
+  const Message message{.from = max,
+                        .to = max,
+                        .term = max,
+                        .rpc_id = max,
+                        .body = AppendResponse{.success = true,
+                                               .match_index = max,
+                                               .conflict_term = max,
+                                               .conflict_index = max,
+                                               .read_context = max}};
   EXPECT_EQ(Decode(Encode(message)), message);
-  for (const auto& body : std::vector<MessageBody>{
-           RequestVote{}, VoteResponse{}, AppendEntries{}, AppendResponse{},
-           AppendResponse{false, 0, Term{0}, 0, 0}, InstallSnapshot{}, SnapshotResponse{}}) {
+  for (const auto& body :
+       std::vector<MessageBody>{RequestVote{}, VoteResponse{}, AppendEntries{}, AppendResponse{},
+                                AppendResponse{.success = false,
+                                               .match_index = 0,
+                                               .conflict_term = Term{0},
+                                               .conflict_index = 0,
+                                               .read_context = 0},
+                                InstallSnapshot{}, SnapshotResponse{}}) {
     const auto empty = Wrap(body);
     EXPECT_EQ(Decode(Encode(empty)), empty);
   }
 }
 
 TEST(Codec, BoundsBlobAllocationBeforeReading) {
-  auto message = Wrap(InstallSnapshot{0, 0, 0, true, Bytes(kMaxBlobBytes, 255)});
+  auto message = Wrap(InstallSnapshot{.last_included_index = 0,
+                                      .last_included_term = 0,
+                                      .offset = 0,
+                                      .done = true,
+                                      .data = Bytes(kMaxBlobBytes, 255)});
   EXPECT_EQ(Decode(Encode(message)), message);
   std::get<InstallSnapshot>(message.body).data.push_back(0);
   EXPECT_THROW(Encode(message), CodecError);
@@ -121,7 +159,11 @@ TEST(Codec, BoundsBlobAllocationBeforeReading) {
 }
 
 TEST(Codec, BoundsEntryAllocationBeforeReading) {
-  auto message = Wrap(AppendEntries{0, 0, 0, 0, std::vector<LogEntry>(kMaxEntries)});
+  auto message = Wrap(AppendEntries{.prev_log_index = 0,
+                                    .prev_log_term = 0,
+                                    .leader_commit = 0,
+                                    .read_context = 0,
+                                    .entries = std::vector<LogEntry>(kMaxEntries)});
   EXPECT_EQ(Decode(Encode(message)), message);
   std::get<AppendEntries>(message.body).entries.emplace_back();
   EXPECT_THROW(Encode(message), CodecError);
@@ -138,7 +180,8 @@ TEST(Codec, BoundsEntryAllocationBeforeReading) {
 TEST(Codec, EnforcesWholeFrameBudget) {
   AppendEntries body;
   for (unsigned i = 0; i < 4; ++i) {
-    body.entries.push_back(LogEntry{1, 1, EntryKind::Command, Bytes(kMaxBlobBytes, 0)});
+    body.entries.push_back(LogEntry{
+        .index = 1, .term = 1, .kind = EntryKind::Command, .command = Bytes(kMaxBlobBytes, 0)});
   }
   // Four entry headers plus the frame header use 158 bytes.
   body.entries.back().command.resize(kMaxBlobBytes - 158);

@@ -20,18 +20,18 @@ struct LogEntry {
   Term term{};
   EntryKind kind{EntryKind::NoOp};
   Bytes command;
-  bool operator==(const LogEntry&) const = default;
+  auto operator==(const LogEntry&) const -> bool = default;
 };
 
 struct RequestVote {
   LogIndex last_log_index{};
   Term last_log_term{};
-  bool operator==(const RequestVote&) const = default;
+  auto operator==(const RequestVote&) const -> bool = default;
 };
 
 struct VoteResponse {
   bool granted{};
-  bool operator==(const VoteResponse&) const = default;
+  auto operator==(const VoteResponse&) const -> bool = default;
 };
 
 struct AppendEntries {
@@ -40,7 +40,7 @@ struct AppendEntries {
   LogIndex leader_commit{};
   std::uint64_t read_context{};
   std::vector<LogEntry> entries;
-  bool operator==(const AppendEntries&) const = default;
+  auto operator==(const AppendEntries&) const -> bool = default;
 };
 
 struct AppendResponse {
@@ -49,7 +49,7 @@ struct AppendResponse {
   std::optional<Term> conflict_term;
   LogIndex conflict_index{};
   std::uint64_t read_context{};
-  bool operator==(const AppendResponse&) const = default;
+  auto operator==(const AppendResponse&) const -> bool = default;
 };
 
 struct InstallSnapshot {
@@ -58,13 +58,13 @@ struct InstallSnapshot {
   std::uint64_t offset{};
   bool done{};
   Bytes data;
-  bool operator==(const InstallSnapshot&) const = default;
+  auto operator==(const InstallSnapshot&) const -> bool = default;
 };
 
 struct SnapshotResponse {
   bool success{};
   std::uint64_t next_offset{};
-  bool operator==(const SnapshotResponse&) const = default;
+  auto operator==(const SnapshotResponse&) const -> bool = default;
 };
 
 using MessageBody = std::variant<RequestVote, VoteResponse, AppendEntries, AppendResponse,
@@ -76,27 +76,27 @@ struct Message {
   Term term{};
   std::uint64_t rpc_id{};
   MessageBody body;
-  bool operator==(const Message&) const = default;
+  auto operator==(const Message&) const -> bool = default;
 };
 
 struct HardState {
   Term term{};
   std::optional<NodeId> voted_for;
-  bool operator==(const HardState&) const = default;
+  auto operator==(const HardState&) const -> bool = default;
 };
 
 struct Snapshot {
   LogIndex last_included_index{};
   Term last_included_term{};
   Bytes state;
-  bool operator==(const Snapshot&) const = default;
+  auto operator==(const Snapshot&) const -> bool = default;
 };
 
 struct PersistentState {
   HardState hard_state;
   std::vector<LogEntry> entries;
   std::optional<Snapshot> snapshot;
-  bool operator==(const PersistentState&) const = default;
+  auto operator==(const PersistentState&) const -> bool = default;
 };
 
 struct StorageBatch {

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <array>
 #include <iostream>
 #include <limits>
@@ -16,7 +17,7 @@ class SeededRandom {
  public:
   explicit SeededRandom(std::uint64_t seed) : state_(seed) {}
 
-  std::uint64_t Next() {
+  auto Next() -> std::uint64_t {
     // SplitMix64: specified arithmetic, independent of standard-library distributions.
     auto value = (state_ += 0x9e3779b97f4a7c15ULL);
     value = (value ^ (value >> 30)) * 0xbf58476d1ce4e5b9ULL;
@@ -24,7 +25,7 @@ class SeededRandom {
     return value ^ (value >> 31);
   }
 
-  Bytes Blob() {
+  auto Blob() -> Bytes {
     Bytes bytes(static_cast<std::size_t>(Next() % 257));
     for (auto& byte : bytes) {
       byte = static_cast<std::uint8_t>(Next());
@@ -36,20 +37,31 @@ class SeededRandom {
   std::uint64_t state_;
 };
 
-Message Generate(SeededRandom& random, std::size_t kind) {
-  Message message{random.Next(), random.Next(), random.Next(), random.Next(), RequestVote{}};
+auto Generate(SeededRandom& random, std::size_t kind) -> Message {
+  Message message{.from = random.Next(),
+                  .to = random.Next(),
+                  .term = random.Next(),
+                  .rpc_id = random.Next(),
+                  .body = RequestVote{}};
   switch (kind) {
     case 0:
-      message.body = RequestVote{random.Next(), random.Next()};
+      message.body = RequestVote{.last_log_index = random.Next(), .last_log_term = random.Next()};
       break;
     case 1:
       message.body = VoteResponse{random.Next() % 2 == 1};
       break;
     case 2: {
-      AppendEntries body{random.Next(), random.Next(), random.Next(), random.Next(), {}};
+      AppendEntries body{.prev_log_index = random.Next(),
+                         .prev_log_term = random.Next(),
+                         .leader_commit = random.Next(),
+                         .read_context = random.Next(),
+                         .entries = {}};
       const auto count = random.Next() % 9;
       for (std::uint64_t i = 0; i < count; ++i) {
-        LogEntry entry{random.Next(), random.Next(), static_cast<EntryKind>(random.Next() % 2), {}};
+        LogEntry entry{.index = random.Next(),
+                       .term = random.Next(),
+                       .kind = static_cast<EntryKind>(random.Next() % 2),
+                       .command = {}};
         if (entry.kind == EntryKind::Command) {
           entry.command = random.Blob();
         }
@@ -59,8 +71,11 @@ Message Generate(SeededRandom& random, std::size_t kind) {
       break;
     }
     case 3: {
-      AppendResponse body{random.Next() % 2 == 1, random.Next(), std::nullopt, random.Next(),
-                          random.Next()};
+      AppendResponse body{.success = random.Next() % 2 == 1,
+                          .match_index = random.Next(),
+                          .conflict_term = std::nullopt,
+                          .conflict_index = random.Next(),
+                          .read_context = random.Next()};
       if (random.Next() % 2 == 1) {
         body.conflict_term = random.Next();
       }
@@ -68,11 +83,15 @@ Message Generate(SeededRandom& random, std::size_t kind) {
       break;
     }
     case 4:
-      message.body = InstallSnapshot{random.Next(), random.Next(), random.Next(),
-                                     random.Next() % 2 == 1, random.Blob()};
+      message.body = InstallSnapshot{.last_included_index = random.Next(),
+                                     .last_included_term = random.Next(),
+                                     .offset = random.Next(),
+                                     .done = random.Next() % 2 == 1,
+                                     .data = random.Blob()};
       break;
     case 5:
-      message.body = SnapshotResponse{random.Next() % 2 == 1, random.Next()};
+      message.body =
+          SnapshotResponse{.success = random.Next() % 2 == 1, .next_offset = random.Next()};
       break;
     default:
       throw std::invalid_argument("unknown generator kind");
@@ -86,18 +105,23 @@ void Hash(std::uint64_t& digest, const Bytes& bytes) {
   }
 }
 
-void CheckArbitraryFrame(const Bytes& frame, std::uint64_t& accepted, std::uint64_t& rejected) {
+struct ProbeCounts {
+  std::uint64_t accepted{};
+  std::uint64_t rejected{};
+};
+
+void CheckArbitraryFrame(const Bytes& frame, ProbeCounts& counts) {
   Message decoded;
   try {
     decoded = Decode(frame);
   } catch (const CodecError&) {
-    ++rejected;
+    ++counts.rejected;
     return;
   }
   // Accepted bytes must be canonical, including boolean/optional encodings.
   EXPECT_EQ(Encode(decoded), frame);
   EXPECT_EQ(ReferenceEncode(decoded), frame);
-  ++accepted;
+  ++counts.accepted;
 }
 
 TEST(SeedOptions, DefaultsAndSingleSeedReplay) {
@@ -139,8 +163,7 @@ TEST(SeedOptions, GeneratorHasStableKnownSequence) {
 TEST(CodecFuzz, RoundTripsMatchReferenceAndMalformedFramesAreSafe) {
   std::uint64_t digest = 0xcbf29ce484222325ULL;
   std::uint64_t round_trips = 0;
-  std::uint64_t accepted = 0;
-  std::uint64_t rejected = 0;
+  ProbeCounts counts;
   for (std::uint64_t offset = 0; offset < seed_config.count; ++offset) {
     const auto seed = seed_config.first + offset;
     SCOPED_TRACE("replay: quorumkv_tests --seed=" + std::to_string(seed) +
@@ -160,19 +183,19 @@ TEST(CodecFuzz, RoundTripsMatchReferenceAndMalformedFramesAreSafe) {
         auto corrupt = frame;
         const auto position = static_cast<std::size_t>(random.Next() % corrupt.size());
         corrupt[position] ^= static_cast<std::uint8_t>(1 + random.Next() % 255);
-        CheckArbitraryFrame(corrupt, accepted, rejected);
+        CheckArbitraryFrame(corrupt, counts);
         Hash(digest, corrupt);
         ASSERT_FALSE(::testing::Test::HasFailure());
       }
       auto arbitrary = random.Blob();
-      CheckArbitraryFrame(arbitrary, accepted, rejected);
+      CheckArbitraryFrame(arbitrary, counts);
       // Repair its outer length to also drive the decoder beyond the prefix.
       if (arbitrary.size() >= 4) {
         Bytes length;
-        ReferenceInteger(length, arbitrary.size() - 4, 4);
-        std::copy(length.begin(), length.end(), arbitrary.begin());
+        ReferenceInteger<4>(length, arbitrary.size() - 4);
+        std::ranges::copy(length, arbitrary.begin());
       }
-      CheckArbitraryFrame(arbitrary, accepted, rejected);
+      CheckArbitraryFrame(arbitrary, counts);
       Hash(digest, arbitrary);
       ASSERT_FALSE(::testing::Test::HasFailure());
     } catch (const std::exception& error) {
@@ -180,9 +203,9 @@ TEST(CodecFuzz, RoundTripsMatchReferenceAndMalformedFramesAreSafe) {
     }
   }
   std::cout << "[fuzz] first_seed=" << seed_config.first << " seeds=" << seed_config.count
-            << " round_trips=" << round_trips << " probe_accepted=" << accepted
-            << " probe_rejected=" << rejected << " corpus_digest=" << std::hex << digest << std::dec
-            << '\n';
+            << " round_trips=" << round_trips << " probe_accepted=" << counts.accepted
+            << " probe_rejected=" << counts.rejected << " corpus_digest=" << std::hex << digest
+            << std::dec << '\n';
 }
 
 }  // namespace

@@ -16,7 +16,7 @@ struct SeedConfig {
 
 inline SeedConfig seed_config;
 
-inline SeedConfig ParseSeedOptions(std::span<const std::string_view> options) {
+inline auto ParseSeedOptions(std::span<const std::string_view> options) -> SeedConfig {
   SeedConfig config;
   bool saw_seed = false;
   bool saw_count = false;
