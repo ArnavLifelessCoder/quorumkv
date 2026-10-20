@@ -1,8 +1,8 @@
 # M1 review packet
 
-Status: M1 is not approved. The revised local evidence and review fixes are described
-below. Every CI job must be green after the owner's `m1` push, followed by owner
-approval. M2 has not started.
+Status: the M1 re-review accepted the local evidence and review fixes. Final
+owner approval remains pending. The owner authorized pushing `m1` and checking CI;
+every job must be green before that approval. M2 has not started.
 
 ## What was built
 
@@ -72,9 +72,14 @@ clang-cl executable was found in the VS tool directories inspected. MSVC was
 used for both required local builds. Formatting used clang-format 18.1.8 and
 ruff 0.11.13 from `.venv`.
 
-CI is pending the owner's push. No Linux or CI-green result is claimed. TSan is
-not a local Windows option. Per the review, all configured CI jobs, including
-Ubuntu TSan and clang-tidy, must be green before M2 can start.
+The [initial CI run](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39424498774)
+passed Windows and Ubuntu debug/ASan, Ubuntu TSan, and Linux clang-tidy. Lint
+failed because pytest's nested temporary directory had no parent in a fresh
+checkout. A regression test reproduced that failure before a pytest startup hook
+was added to create the parent directory. This setup defect has no random seed.
+All jobs must pass again on the updated branch; use the
+[branch CI runs](https://github.com/ArnavLifelessCoder/quorumkv/actions?query=branch%3Am1)
+to verify the final commit. TSan is not a local Windows option.
 
 ## Evidence provenance
 
@@ -111,9 +116,9 @@ wire bytes. Header filtering now recognizes Windows and POSIX path separators.
 - [x] clang-tidy runs locally with complete retained output and is configured in CI.
 - [x] summary.json has a tested producing script; evidence identifies a clean source HEAD.
 - [x] Client message types and leader-hint encoding are planned before M4.
-- [ ] All CI jobs green after the owner's `m1` push.
+- [ ] All CI jobs green on the final `m1` commit (verify the linked CI runs).
 - [x] Spec files remain unchanged and ignored.
-- [x] Local commits use the existing identity; no push has occurred.
+- [x] Commits use the existing identity; `m1` was pushed with owner authorization.
 - [ ] Owner approval received.
 
 Simulator invariants, elections, Figure 8, crash persistence, sessions, ReadIndex,
@@ -137,7 +142,8 @@ Tests:
 Tooling and documentation:
 `scripts/check_format.py`, `scripts/test.ps1`, `scripts/verify_replay.py`,
 `scripts/check_tidy.py`, `scripts/summarize_m1.py`, `scripts/capture_m1.ps1`,
-`tests/python/test_m1_summary.py`, `README.md`, `docs/protocol.md`,
+`tests/python/test_m1_summary.py`, `tests/python/test_pytest_bootstrap.py`,
+`tests/python/conftest.py`, `README.md`, `docs/protocol.md`,
 `docs/client-protocol-plan.md`, `docs/m1-review.md`.
 
 Recorded evidence:
