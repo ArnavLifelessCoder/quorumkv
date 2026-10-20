@@ -1,12 +1,15 @@
 param(
     [ValidateSet("debug", "asan", "tsan")]
     [string]$Preset = "debug",
-    [string]$VsRoot = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\BuildTools"
+    [string]$VsRoot = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\BuildTools",
+    [string]$OutputDirectory
 )
 
 $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$logDirectory = Join-Path $projectRoot "results/m1"
+$logDirectory = if ($OutputDirectory) { $OutputDirectory } else {
+    Join-Path $projectRoot "build/test-logs"
+}
 New-Item -ItemType Directory -Force -Path $logDirectory | Out-Null
 
 function Invoke-Logged {

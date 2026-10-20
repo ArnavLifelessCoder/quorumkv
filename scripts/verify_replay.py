@@ -6,12 +6,15 @@ import subprocess
 
 
 def main() -> None:
+    root = pathlib.Path(__file__).resolve().parent.parent
     parser = argparse.ArgumentParser()
     parser.add_argument("executable", type=pathlib.Path)
+    parser.add_argument(
+        "--output", type=pathlib.Path, default=root / "build" / "review" / "replay.txt"
+    )
     arguments = parser.parse_args()
     executable = arguments.executable.resolve(strict=True)
-    root = pathlib.Path(__file__).resolve().parent.parent
-    output = root / "results" / "m1" / "replay.txt"
+    output = arguments.output
     output.parent.mkdir(parents=True, exist_ok=True)
     fingerprints = []
     with output.open("w", encoding="utf-8", newline="\n") as log:
