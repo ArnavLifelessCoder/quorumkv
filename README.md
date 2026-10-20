@@ -90,8 +90,9 @@ To regenerate only that JSON from existing valid logs:
 Commit the published evidence in a separate results-only commit. Its
 `source_revision` identifies the preceding tested source HEAD; the evidence commit
 must change no files outside `results/m1/`. This avoids a self-referential commit
-hash. M1 remains unapproved until the owner pushes `m1`, every CI job is green,
-and the owner approves. Do not start M2 while those gates are pending.
+hash. M1 was approved after all jobs passed in
+[CI run 39425744602](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39425744602)
+on `5cbbb40`. M2 is authorized.
 
 ## Tests and replay
 

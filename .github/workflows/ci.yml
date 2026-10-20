@@ -7,15 +7,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-24.04]
         preset: [debug, asan]
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-24.04
             preset: tsan
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
       - uses: ilammy/msvc-dev-cmd@v1
@@ -41,16 +41,16 @@ jobs:
         run: ctest --preset ${{ matrix.preset }} --verbose
       - name: Save test logs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: logs-${{ matrix.os }}-${{ matrix.preset }}
           path: build/${{ matrix.preset }}/Testing/Temporary/
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
       - name: Install lint tools
@@ -64,10 +64,10 @@ jobs:
       - run: python -m pytest tests/python -q --basetemp=build/pytest
 
   tidy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
       - name: Install analysis tools
@@ -81,7 +81,7 @@ jobs:
       - run: python scripts/check_tidy.py --output build/review/clang-tidy.txt
       - name: Save full analysis output
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: clang-tidy
           path: build/review/clang-tidy.txt

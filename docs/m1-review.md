@@ -1,8 +1,8 @@
 # M1 review packet
 
-Status: the M1 re-review accepted the local evidence and review fixes. Final
-owner approval remains pending. The owner authorized pushing `m1` and checking CI;
-every job must be green before that approval. M2 has not started.
+Status: M1 approved by the owner. Local evidence was verified and
+[CI run 39425744602](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39425744602)
+passed all seven jobs on `5cbbb40`. M2 is authorized.
 
 ## What was built
 
@@ -77,9 +77,9 @@ passed Windows and Ubuntu debug/ASan, Ubuntu TSan, and Linux clang-tidy. Lint
 failed because pytest's nested temporary directory had no parent in a fresh
 checkout. A regression test reproduced that failure before a pytest startup hook
 was added to create the parent directory. This setup defect has no random seed.
-All jobs must pass again on the updated branch; use the
-[branch CI runs](https://github.com/ArnavLifelessCoder/quorumkv/actions?query=branch%3Am1)
-to verify the final commit. TSan is not a local Windows option.
+The [second CI run](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39425744602)
+passed every job on the final M1 commit `5cbbb40`, including the corrected lint
+job. TSan is not a local Windows option.
 
 ## Evidence provenance
 
@@ -116,10 +116,10 @@ wire bytes. Header filtering now recognizes Windows and POSIX path separators.
 - [x] clang-tidy runs locally with complete retained output and is configured in CI.
 - [x] summary.json has a tested producing script; evidence identifies a clean source HEAD.
 - [x] Client message types and leader-hint encoding are planned before M4.
-- [ ] All CI jobs green on the final `m1` commit (verify the linked CI runs).
+- [x] All CI jobs green on `5cbbb40` in run 39425744602.
 - [x] Spec files remain unchanged and ignored.
 - [x] Commits use the existing identity; `m1` was pushed with owner authorization.
-- [ ] Owner approval received.
+- [x] Owner approval received.
 
 Simulator invariants, elections, Figure 8, crash persistence, sessions, ReadIndex,
 snapshots, and threaded transport tests belong to later milestones.
