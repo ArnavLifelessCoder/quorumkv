@@ -1,9 +1,9 @@
 # M2 review packet
 
-Status: M2 review rejected the original simulator's mutation coverage. This
-revision strengthens that coverage; re-review and owner approval are pending.
-M3 has not started. CI results for the final pushed commit
-must be checked in the [M2 runs](https://github.com/ArnavLifelessCoder/quorumkv/actions?query=branch%3Am2).
+Status: M2 approved after independent review of `21e5949`. All seven jobs passed
+in [CI run 39454980609](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39454980609),
+and debug evidence was independently reproduced. The approved revision is on
+`main`, which is now the default branch. M3 proceeds separately on `m3`.
 
 ## Built
 
@@ -83,12 +83,14 @@ the summary. M1 evidence is retained unchanged.
 - [x] Stale-vote mutation fails historical election safety at seed 216; normal node passes.
 - [x] Reply-before-persist mutation fails historical election safety at seed 217;
   normal node passes. Detection is by the simulator, independently of unit transport assertions.
-- [ ] Final local clean-source debug/ASan/tidy/evidence capture verified.
-- [ ] All final-commit CI jobs green.
-- [ ] Owner approval.
+- [x] Final local clean-source debug/ASan/tidy/evidence capture verified.
+- [x] All final-commit CI jobs green.
+- [x] Owner approval.
 
-The unchecked gates describe status at the source commit. The results-only
-commit and linked CI run provide final capture and CI evidence for review.
+The results-only commit and linked CI run provide final capture and CI evidence.
+Independent reviewer mutations also caught double-voting at seed 3 and a
+two-of-five majority at seed 33. Those are reviewer observations, not additional
+claims about the committed mutation harness.
 The two failing seeds above belong to deliberately unsafe builds. No defect in
 the normal election logic is claimed.
 The first CI run exposed a GCC 13 `maybe-uninitialized` diagnostic in the standard
