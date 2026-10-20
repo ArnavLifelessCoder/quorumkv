@@ -1,7 +1,8 @@
 # M1 review packet
 
-Status: local acceptance criteria met; awaiting owner review and `approved`.
-Work is on branch `m1`. Nothing has been pushed, and M2 has not started.
+Status: M1 is not approved. The revised local evidence and review fixes are described
+below. Every CI job must be green after the owner's `m1` push, followed by owner
+approval. M2 has not started.
 
 ## What was built
 
@@ -20,6 +21,12 @@ Work is on branch `m1`. Nothing has been pushed, and M2 has not started.
   command-line seed validation.
 - Windows/Linux debug and ASan CI, an Ubuntu TSan job, and formatting/Python lint.
   All Python packages are installed into project-local virtual environments.
+- Individually discovered GoogleTest cases, clang-tidy across every tracked C++
+  translation unit and project headers, and a retained complete analysis log.
+- A tested summary producer and a clean-source evidence capture script. Evidence
+  is published only after all local checks pass and the source tree is still clean.
+- A [client protocol plan](client-protocol-plan.md) for ClientRequest, ClientResponse,
+  and NotLeader with an optional leader hint before M4.
 
 No RaftNode, simulator, real sockets, background threads, disk storage adapter,
 KV implementation, client protocol, or benchmark is implemented in this milestone.
@@ -49,6 +56,8 @@ Complete, unabridged test output and supporting evidence:
 - [ASan test output](../results/m1/asan-tests.txt)
 - [Replay output](../results/m1/replay.txt)
 - [Formatting and Python lint output](../results/m1/lint.txt)
+- [Complete clang-tidy output](../results/m1/clang-tidy.txt)
+- [Summary producer regression tests](../results/m1/python-tests.txt)
 - [Machine-readable test summary](../results/m1/summary.json)
 - [Debug configure output](../results/m1/debug-configure.txt),
   [build output](../results/m1/debug-build.txt), and
@@ -63,10 +72,32 @@ clang-cl executable was found in the VS tool directories inspected. MSVC was
 used for both required local builds. Formatting used clang-format 18.1.8 and
 ruff 0.11.13 from `.venv`.
 
-CI has not run because pushing requires approval. No Linux or CI-green result
-is claimed. TSan is not a local Windows option; M1 has no threaded project code,
-so a green TSan result is not an M1 acceptance gate. The Ubuntu job is configured
-for the future threaded milestone gate.
+CI is pending the owner's push. No Linux or CI-green result is claimed. TSan is
+not a local Windows option. Per the review, all configured CI jobs, including
+Ubuntu TSan and clang-tidy, must be green before M2 can start.
+
+## Evidence provenance
+
+Run `scripts/capture_m1.ps1` from a clean, committed source tree. It stages all
+logs under ignored `build/`, runs all local gates, then verifies that the same HEAD
+and clean tree remain before publishing the recorded evidence. Both tools JSON
+files and the generated summary record that tested source revision with an empty
+`source_status`. The subsequent commit changes only `results/m1/`; source,
+configuration, scripts, and docs remain identical to the tested source commit.
+This source-then-evidence commit convention was accepted during review.
+
+`scripts/summarize_m1.py` is the producing script for `summary.json`. It parses
+test counts, seed counts, round trips, probe outcomes, fingerprints, and replay
+results from the logs. Its regression suite first failed because the producer
+was missing; it now tests varying input counts, failed/incomplete logs, mismatched
+replays, dirty/different source revisions, and deterministic CLI regeneration.
+This was an evidence-generation defect, not a simulator failure; no seed is
+attributed to it.
+
+The clang-tidy fixes retain all configured bugprone, performance, and modernize
+checks. They use compile-time integer widths, group probe counters, handle test
+runner exceptions, and apply the requested C++ modernization without changing
+wire bytes. Header filtering now recognizes Windows and POSIX path separators.
 
 ## Acceptance checklist
 
@@ -77,6 +108,10 @@ for the future threaded milestone gate.
 - [x] Serialization round-trip fuzz tests pass under debug and ASan.
 - [x] Failures include a seed replay command; deterministic replay is verified.
 - [x] Formatting and Python lint pass; local builds emit no compiler warnings.
+- [x] clang-tidy runs locally with complete retained output and is configured in CI.
+- [x] summary.json has a tested producing script; evidence identifies a clean source HEAD.
+- [x] Client message types and leader-hint encoding are planned before M4.
+- [ ] All CI jobs green after the owner's `m1` push.
 - [x] Spec files remain unchanged and ignored.
 - [x] Local commits use the existing identity; no push has occurred.
 - [ ] Owner approval received.
@@ -101,14 +136,17 @@ Tests:
 
 Tooling and documentation:
 `scripts/check_format.py`, `scripts/test.ps1`, `scripts/verify_replay.py`,
-`README.md`, `docs/protocol.md`, `docs/m1-review.md`.
+`scripts/check_tidy.py`, `scripts/summarize_m1.py`, `scripts/capture_m1.ps1`,
+`tests/python/test_m1_summary.py`, `README.md`, `docs/protocol.md`,
+`docs/client-protocol-plan.md`, `docs/m1-review.md`.
 
 Recorded evidence:
 `results/m1/debug-configure.txt`, `results/m1/debug-build.txt`,
 `results/m1/debug-tests.txt`, `results/m1/debug-tools.json`,
 `results/m1/asan-configure.txt`, `results/m1/asan-build.txt`,
 `results/m1/asan-tests.txt`, `results/m1/asan-tools.json`,
-`results/m1/lint.txt`, `results/m1/replay.txt`, `results/m1/summary.json`.
+`results/m1/lint.txt`, `results/m1/replay.txt`, `results/m1/summary.json`,
+`results/m1/clang-tidy.txt`, `results/m1/python-tests.txt`.
 
 The spec, build trees, downloaded GoogleTest sources, tool caches, and `.venv`
 are excluded from Git.
