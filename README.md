@@ -5,9 +5,10 @@ injected transport, clock, storage, and random interfaces so the same logic can 
 tested with deterministic failures and used with a TCP transport. The initial state
 machine will use `std::map` behind a replaceable interface.
 
-M1 provides injectable interfaces, peer message types, and a bounded binary codec
-with deterministic fuzz tests. No Raft algorithm or server is implemented, and no
-performance results have been collected.
+M2 adds leader election and a deterministic fault simulator to the injectable
+interfaces and bounded peer-message codec. The node handles durable votes, terms,
+timeouts, and heartbeats. Log replication, the KV implementation, and real
+networking are later milestones. No performance results have been collected.
 
 ## Build and test
 
@@ -73,7 +74,8 @@ tree and the project-local Python tools installed, run:
 .\scripts\capture_m1.ps1
 ```
 
-This runs debug and ASan with individually discovered GoogleTest cases, clang-tidy,
+Use `scripts/capture_m2.ps1` for the current milestone; M1 evidence is retained
+unchanged. The capture runs debug and ASan with individually discovered GoogleTest cases, clang-tidy,
 replay verification, Python regression tests, formatting, and lint. All intermediate
 output goes into an ignored `build/m1-capture-*` directory. The script verifies
 that HEAD and the clean tree have not changed before publishing `results/m1/`.
@@ -125,7 +127,37 @@ ClientRequest, ClientResponse, and NotLeader leader-hint extension before M4.
 The `StateMachine` interface is ready for an in-memory `std::map` implementation
 in M4. The LSM engine is not required to build this project.
 
+## Election simulation
+
+`RaftNode` receives only Transport, Clock, Storage, and Random dependencies.
+`Step(Message)` processes one message and `Tick()` observes the injected logical
+clock. Its durable term and vote are saved before sending election messages.
+The simulator supplies a virtual clock, independent seeded random streams,
+queued delivery, packet faults, partitions, and crash/restart storage.
+
+The campaign checks election safety after each simulated event and retains
+leader history across step-downs and restarts. It also checks that terms never
+decrease and a durable vote never changes within a term. Liveness is tested
+with a connected majority; arbitrary partitions can prevent elections.
+The [M2 review packet](docs/m2-review.md) links complete logs, measured election
+bounds, fault counts, and clean-source evidence.
+
+Replay a simulator seed from a developer shell:
+
+```powershell
+.\build\debug\quorumkv_tests.exe --gtest_filter=ElectionFuzz.* --seed=42
+.\.venv\Scripts\python.exe scripts/verify_sim_replay.py build/debug/quorumkv_tests.exe --output build/review/sim-replay.txt
+```
+
+A single seed emits a canonical event trace. On failure, the campaign prints
+the seed, replay command, and trace. The replay script compares the complete
+trace and outcome; `--compare-executable` also checks another build. Capture
+compares debug and ASan and generates `results/m2/summary.json` through
+`scripts/summarize_m2.py`. See [the simulator design](docs/election-simulator.md)
+for event semantics and current limitations.
+
 ## Bugs found by the simulator
 
-The simulator has not been implemented. No simulator bug discoveries or seed
-results are claimed.
+No implementation bug has been found by the election seed campaign so far.
+The safety checker is tested against deliberately conflicting leader histories
+and lost votes; those negative tests are not reported as discovered bugs.
