@@ -55,8 +55,15 @@ jobs:
             executable="$executable.exe"
           fi
           python scripts/verify_sim_replay.py "$executable" --output "build/${{ matrix.preset }}/Testing/Temporary/sim-replay.txt"
-      - name: Verify simulator catches unsafe election mutations
-        run: python scripts/verify_mutations.py "build/${{ matrix.preset }}" --output "build/${{ matrix.preset }}/Testing/Temporary/mutations.jsonl"
+          python scripts/verify_replication_replay.py "$executable" --output "build/${{ matrix.preset }}/Testing/Temporary/replication-replay.txt"
+      - name: Verify simulator catches unsafe mutations
+        shell: bash
+        run: |
+          extra=()
+          if [ "$RUNNER_OS" = "Linux" ] && [ "${{ matrix.preset }}" = "debug" ]; then
+            extra=(--survey --jobs 2)
+          fi
+          python scripts/verify_m3_mutations.py "build/${{ matrix.preset }}" --output "build/${{ matrix.preset }}/Testing/Temporary/mutations.jsonl" "${extra[@]}"
       - name: Save test logs
         if: always()
         uses: actions/upload-artifact@v6

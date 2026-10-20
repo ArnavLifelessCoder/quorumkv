@@ -4,6 +4,8 @@ project(quorumkv VERSION 0.1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+# Header-based builds also support compilers without module dependency scanning.
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(QUORUMKV_SANITIZER "none" CACHE STRING "Sanitizer: none, address, or thread")

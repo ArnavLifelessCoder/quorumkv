@@ -39,7 +39,7 @@ tags/kinds, invalid booleans, and trailing bytes. Stream buffering belongs to th
 future transport; it must bound the prefix before allocating a receive buffer.
 
 The codec enforces structural validity. Raft rules such as contiguous indices,
-valid peers, and consistency with a prior term belong to the future Raft core.
+valid peers, and consistency with a prior term are enforced by the Raft core.
 Client command and response encoding will be defined with the KV layer.
 
 ## Interface contracts
@@ -67,10 +67,10 @@ implementation-dependent distribution behavior.
 Absent optional fields mean no change. All effects commit together. Return means
 the batch is durable; on failure the adapter throws and the node must stop rather
 than acknowledge the RPC. A crash during a batch may expose the previous or the
-new complete durable state, never a partial batch. Actual persistence, sync,
-crash modeling, and batch consistency validation are M3 work. Snapshot transport
+new complete durable state, never a partial batch. The memory and file adapters
+implement these boundaries as described in [replication and persistence](replication.md). Snapshot transport
 chunks must be assembled before publishing a complete storage snapshot in M5.
-Filesystem synchronization and atomic rename implementations will live behind
+Filesystem synchronization and atomic rename implementations live behind
 Windows and POSIX adapters in `src/platform/`.
 
 `StateMachine` operates on opaque command and response bytes. `Apply` accepts only

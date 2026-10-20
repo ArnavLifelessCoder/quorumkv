@@ -5,14 +5,13 @@ injected transport, clock, storage, and random interfaces so the same logic can 
 tested with deterministic failures and used with a TCP transport. The initial state
 machine will use `std::map` behind a replaceable interface.
 
-M2 adds leader election and a deterministic fault simulator to the injectable
-interfaces and bounded peer-message codec. The node handles durable votes, terms,
-timeouts, and heartbeats. Log replication, the KV implementation, and real
-networking are later milestones. No performance results have been collected.
+M3 adds durable log replication, batching and pipelining, conflict recovery, and
+historical log/commit safety checks to the election simulator. The KV implementation
+and real networking remain later milestones. No performance results have been collected.
 
 ## Build and test
 
-Use CMake 3.20 or newer, Ninja, and Python 3.11 or newer. Windows requires Visual
+Use CMake 3.29 or newer, Ninja, and Python 3.11 or newer. Windows requires Visual
 Studio 2022 C++ Build Tools with the Windows SDK and C++ AddressSanitizer component.
 The Windows helper enters the x64 developer shell and saves complete configure,
 build, and test output under `build/test-logs/`:
@@ -60,7 +59,7 @@ On Linux, activate with `source .venv/bin/activate` before the same pip and lint
 commands. Python packages belong in `.venv/`.
 
 Run `python scripts/check_tidy.py` from the VS developer shell after configuring
-debug. It checks every tracked C++ translation unit with `.clang-tidy`, including
+debug. It checks every tracked C++ translation unit for the host platform with `.clang-tidy`, including
 project headers, and saves complete output to `build/review/clang-tidy.txt`.
 Use `--clang-tidy` to specify an executable when it is not on PATH or available
 through the VS developer environment. CI also runs clang-tidy and retains its log.
@@ -71,30 +70,34 @@ Commit all source, configuration, and documentation changes first. With a clean
 tree and the project-local Python tools installed, run:
 
 ```powershell
-.\scripts\capture_m1.ps1
+.\scripts\capture_m3.ps1
 ```
 
-Use `scripts/capture_m2.ps1` for the current milestone; M1 evidence is retained
-unchanged. The capture runs debug and ASan with individually discovered GoogleTest cases, clang-tidy,
-replay verification, Python regression tests, formatting, and lint. All intermediate
-output goes into an ignored `build/m1-capture-*` directory. The script verifies
-that HEAD and the clean tree have not changed before publishing `results/m1/`.
+M1 and M2 evidence is retained unchanged. Push the M3 source branch for CI before
+capture. The capture runs debug and ASan with individually discovered GoogleTest
+cases, clang-tidy, replay and mutation verification, full debug mutation surveys,
+Python regression tests, formatting, and lint. Intermediate output goes into an
+ignored `build/m3-capture-*` directory. The script verifies that HEAD and the clean
+tree have not changed and that all exact-source CI jobs passed before publishing
+`results/m3/`.
 
-`scripts/summarize_m1.py` derives `summary.json` from the captured debug, ASan, and
+`scripts/summarize_m3.py` derives `summary.json` from the captured debug, ASan, and
 replay logs, validating that both builds identify the same clean source commit.
 It rejects missing/failed tests, mismatched seed corpora, and invalid provenance.
 To regenerate only that JSON from existing valid logs:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/summarize_m1.py
+.\.venv\Scripts\python.exe scripts/summarize_m3.py
 ```
 
 Commit the published evidence in a separate results-only commit. Its
 `source_revision` identifies the preceding tested source HEAD; the evidence commit
-must change no files outside `results/m1/`. This avoids a self-referential commit
+must change no files outside `results/m3/`. This avoids a self-referential commit
 hash. M1 was approved after all jobs passed in
 [CI run 39425744602](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39425744602)
-on `5cbbb40`. M2 is authorized.
+on `5cbbb40`. M2 was approved after
+[CI run 39454980609](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39454980609).
+M3 awaits review and approval.
 
 ## Tests and replay
 
@@ -159,6 +162,24 @@ compares debug and ASan and generates `results/m2/summary.json` through
 `scripts/summarize_m2.py`. See [the simulator design](docs/election-simulator.md)
 for event semantics and current limitations.
 
+## Replication simulation
+
+The [M3 review packet](docs/m3-review.md) links complete debug/ASan output, CI and
+TSan results, seed counts, mutation detection counts, and acceptance tests.
+The [replication design](docs/replication.md) explains historical Log Matching,
+State Machine Safety, Leader Completeness, persisted/pending storage images,
+the Figure 8 schedules, and crash boundaries.
+
+```powershell
+.\build\debug\quorumkv_tests.exe --gtest_filter=ReplicationFuzz.* --seed=47
+.\.venv\Scripts\python.exe scripts/verify_replication_replay.py build/debug/quorumkv_tests.exe --output build/review/replication-replay.txt
+```
+
+CTest has a deadline for every discovered test. A separate launcher detects hangs
+after a passing summary, captures native thread stacks under `build/stacks/`, and
+fails the run. CMake's test launcher support is the reason for the newer minimum
+CMake version.
+
 ## Bugs found by the simulator
 
 No implementation bug has been found by the election seed campaign so far.
@@ -173,14 +194,25 @@ those same seeds. These are mutation sensitivity results, recorded with full
 replays in `results/m2/debug-mutations.jsonl` and `results/m2/asan-mutations.jsonl`.
 The generated summary records their seeds and trace hashes.
 
+M3 sensitivity work found that the random-only workload missed old-term commits
+even though the directed Figure 8 test rejected them. Including that schedule in
+the seeded campaign exposes the lost committed prefix through the historical
+oracle. The generated M3 summary records all current failing seeds and detection
+counts; these are deliberately injected defects, not production bugs.
+
+A unit regression also found that subsequent replication batches waited for an
+acknowledgement. The sender now advances its speculative next index while retaining
+the independently acknowledged match index. This was found by a unit test, not a
+simulator seed.
+
 Test presets enable `QUORUMKV_BUILD_MUTATION_TESTS`; production builds leave it
-off. To verify both mutants from a developer shell:
+off. Mutations are separate test-only libraries. To verify them from a developer shell:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/verify_mutations.py build/debug --output build/review/mutations.jsonl
+.\.venv\Scripts\python.exe scripts/verify_m3_mutations.py build/debug --survey --jobs 3 --output build/review/mutations.jsonl
 ```
 
 The gate runs only simulator tests in the mutant executables and requires a
-leader-safety violation, identical replay, and a passing normal-node control.
+known safety or durability invariant violation, identical replay, and a passing normal-node control.
 The unit-test transport separately checks that each granted vote is durable
 when sent; that was the original reply-before-persist detection.
