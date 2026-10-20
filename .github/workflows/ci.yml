@@ -9,6 +9,9 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest]
         preset: [debug, asan]
+        include:
+          - os: ubuntu-latest
+            preset: tsan
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +23,16 @@ jobs:
         with:
           arch: x64
       - name: Install build tools
-        run: python -m pip install cmake ninja
+        shell: bash
+        run: |
+          python -m venv .venv
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            .venv/Scripts/python -m pip install cmake ninja
+            echo "$GITHUB_WORKSPACE/.venv/Scripts" >> "$GITHUB_PATH"
+          else
+            .venv/bin/python -m pip install cmake ninja
+            echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
+          fi
       - name: Configure
         run: cmake --preset ${{ matrix.preset }}
       - name: Build
@@ -41,7 +53,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: python -m pip install clang-format==18.1.8 ruff==0.11.13
+      - name: Install lint tools
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install clang-format==18.1.8 ruff==0.11.13
+          echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
       - run: python scripts/check_format.py
       - run: ruff check .
       - run: ruff format --check .
