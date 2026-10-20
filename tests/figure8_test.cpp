@@ -91,5 +91,41 @@ TEST(SimReplication, FollowerAckCrashThenLeaderCrashRetainsCommittedCommand) {
   EXPECT_EQ(cluster.Committed()[1].command, (Bytes{6}));
 }
 
+TEST(SimReplication, LongCommittedPrefixSurvivesReorderedPipelineAndLeaderReplacement) {
+  Cluster cluster({.seed = 303, .size = 5, .max_append_entries = 2});
+  cluster.SetFaults({.drop_percent = 0, .duplicate_percent = 0, .max_delay = 1});
+  for (unsigned tick = 0; tick < 100 && cluster.Leaders().empty(); ++tick) {
+    cluster.Advance();
+  }
+  ASSERT_EQ(cluster.Leaders().size(), 1U);
+  const auto leader = cluster.Leaders().front();
+  cluster.SetFaults({.drop_percent = 10, .duplicate_percent = 50, .max_delay = 5});
+  for (unsigned command = 0; command < 80; ++command) {
+    ASSERT_TRUE(cluster.Propose(leader, {static_cast<std::uint8_t>(command)}));
+  }
+  for (unsigned tick = 0; tick < 300 && cluster.Committed().size() < 81; ++tick) {
+    cluster.Advance();
+  }
+  ASSERT_EQ(cluster.Committed().size(), 81U);
+  const auto prefix = cluster.Committed();
+  cluster.Crash(leader);
+  cluster.SetFaults({.drop_percent = 15, .duplicate_percent = 30, .max_delay = 50});
+  cluster.Partition({0, 1, 0, 1, 0});
+  for (unsigned tick = 0; tick < 100; ++tick) {
+    cluster.Advance();
+  }
+  cluster.Heal();
+  cluster.Restart(leader);
+  cluster.SetFaults({.drop_percent = 0, .duplicate_percent = 0, .max_delay = 1});
+  for (unsigned tick = 0; tick < 200; ++tick) {
+    cluster.Advance();
+  }
+  for (NodeId id = 1; id <= 5; ++id) {
+    const auto state = cluster.Log(id);
+    ASSERT_GE(cluster.CommitIndex(id), prefix.size());
+    EXPECT_TRUE(std::ranges::equal(prefix, state.entries | std::views::take(prefix.size())));
+  }
+}
+
 }  // namespace
 }  // namespace quorumkv::sim
