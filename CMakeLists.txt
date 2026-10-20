@@ -46,7 +46,7 @@ else()
 endif()
 
 include(CTest)
-add_library(quorumkv src/rpc/codec.cpp src/raft/node.cpp src/sim/support.cpp)
+add_library(quorumkv src/rpc/codec.cpp src/raft/node.cpp src/sim/support.cpp src/sim/cluster.cpp)
 target_link_libraries(quorumkv PUBLIC quorumkv_options)
 if(BUILD_TESTING)
   include(FetchContent)
@@ -68,6 +68,8 @@ if(BUILD_TESTING)
     tests/codec_fuzz_test.cpp
     tests/election_test.cpp
     tests/sim_support_test.cpp
+    tests/sim_cluster_test.cpp
+    tests/election_fuzz_test.cpp
   )
   target_link_libraries(quorumkv_tests PRIVATE quorumkv GTest::gtest)
   include(GoogleTest)
