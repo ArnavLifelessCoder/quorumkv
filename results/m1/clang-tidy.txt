@@ -1,0 +1,28 @@
+LLVM (http://llvm.org/):
+  LLVM version 19.1.5
+  Optimized build.
+
+Translation units:
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\rpc\codec.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\codec_fuzz_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\codec_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\interfaces_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\main.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\toolchain_test.cpp
+
+[1/6] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\rpc\codec.cpp.
+30793 warnings generated.
+[2/6] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\codec_fuzz_test.cpp.
+88519 warnings generated.
+[3/6] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\codec_test.cpp.
+139466 warnings generated.
+[4/6] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\interfaces_test.cpp.
+189879 warnings generated.
+[5/6] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\main.cpp.
+240942 warnings generated.
+[6/6] Processing file C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\toolchain_test.cpp.
+306856 warnings generated.
+Suppressed 306926 warnings (306856 in non-user code, 70 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+clang-tidy exit code: 0

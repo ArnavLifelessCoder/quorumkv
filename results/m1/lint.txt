@@ -1,4 +1,5 @@
-clang-format --dry-run --Werror (tracked C++ sources)
-PASS: clang-format
+clang-format --dry-run --Werror: PASS
 All checks passed!
-2 files already formatted
+
+5 files already formatted
+

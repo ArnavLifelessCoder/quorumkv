@@ -1,4 +1,7 @@
 {
+  "producer": "scripts/summarize_m1.py",
+  "source_revision": "9e52c6af10109adb220007d5c1cdc5f7201a91a4",
+  "source_status": "",
   "unique_seeds": 10000,
   "seed_range": [
     0,
@@ -7,6 +10,7 @@
   "runs": {
     "debug": {
       "tests_passed": 16,
+      "ctest_cases": 16,
       "first_seed": 0,
       "seeds": 10000,
       "round_trips": 60000,
@@ -16,6 +20,7 @@
     },
     "asan": {
       "tests_passed": 16,
+      "ctest_cases": 16,
       "first_seed": 0,
       "seeds": 10000,
       "round_trips": 60000,
@@ -24,12 +29,11 @@
       "corpus_digest": "ddc03ddedd0aabdf"
     }
   },
-  "ci": "not run; awaiting push approval",
-  "threaded_code": false,
   "replay": {
     "seed": 42,
     "runs": 2,
     "matching_fingerprints": true,
+    "corpus_digest": "37c9f7593ffeef94",
     "invalid_seed_exit_code": 2
   }
 }
