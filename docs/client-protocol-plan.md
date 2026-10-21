@@ -1,9 +1,13 @@
 # Client codec plan before M4
 
 This is a design plan, not an implemented protocol extension. The M1 codec still
-accepts only peer tags 1 through 6. Implement and test the client extension at the
-start of M4, before using the codec for client sessions or ReadIndex. Real TCP
-connection handling remains M6 work.
+accepts only peer tags 1 through 6. Real TCP connection handling remains M6 work.
+
+Status after M4: the request, operation, and result encodings below are implemented
+in `src/kv/store.cpp` (`kv::EncodeRequest`, `kv::EncodeResponse`, `kv::EncodeRead`),
+with the open semantic questions settled in [the KV design](kv.md). M4 simulated
+clients call nodes directly, so the wire framing with tags 7 and 8, the request ID,
+and `NotLeader{leader_hint}` on the TCP path move to M6, where they first carry traffic.
 
 ## Framing and separation
 

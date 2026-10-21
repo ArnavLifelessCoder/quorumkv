@@ -6,12 +6,14 @@ tested with deterministic failures and used with a TCP transport. The initial st
 machine will use `std::map` behind a replaceable interface.
 
 M3 adds durable log replication, batching and pipelining, conflict recovery, and
-historical log/commit safety checks to the election simulator. The KV implementation
-and real networking remain later milestones. No performance results have been collected.
+historical log/commit safety checks to the election simulator. M4 adds the KV state
+machine, client sessions for exactly-once retries, and linearizable reads through
+ReadIndex, all exercised by simulated clients. Real networking remains a later
+milestone. No performance results have been collected.
 
 ## Build and test
 
-Use CMake 3.29 or newer, Ninja, and Python 3.11 or newer. Windows requires Visual
+Use CMake 3.20 or newer (3.29 or newer enables the exit-hang watchdog), Ninja, and Python 3.11 or newer. Windows requires Visual
 Studio 2022 C++ Build Tools with the Windows SDK and C++ AddressSanitizer component.
 The Windows helper enters the x64 developer shell and saves complete configure,
 build, and test output under `build/test-logs/`:
@@ -97,7 +99,9 @@ hash. M1 was approved after all jobs passed in
 [CI run 39425744602](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39425744602)
 on `5cbbb40`. M2 was approved after
 [CI run 39454980609](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39454980609).
-M3 awaits review and approval.
+M3 was approved after
+[CI run 39557568364](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39557568364)
+on `be1ae16`. M4 awaits review and approval.
 
 ## Tests and replay
 
@@ -177,8 +181,27 @@ the Figure 8 schedules, and crash boundaries.
 
 CTest has a deadline for every discovered test. A separate launcher detects hangs
 after a passing summary, captures native thread stacks under `build/stacks/`, and
-fails the run. CMake's test launcher support is the reason for the newer minimum
-CMake version.
+fails the run. The launcher needs CMake 3.29 or newer; with older CMake the
+per-test deadlines still apply but a post-pass hang is reported only as a timeout.
+
+## KV store and linearizable reads
+
+[The KV design](docs/kv.md) documents the command semantics, session dedupe, the
+ReadIndex protocol, and why reading straight from leader memory is not linearizable.
+`KvFuzz` runs simulated clients that time out and resend the same request, through
+the full M3 fault schedule, then checks the history for exactly-once application,
+durability of acknowledged writes, real-time order, and stale or uncommitted reads.
+Two deliberately broken modes, reads from local state on any node and a store without
+session dedupe, must be flagged by that checker or the suite fails.
+
+```powershell
+.\build\debug\quorumkv_tests.exe --gtest_filter=KvFuzz.Exactly* --seed=42
+.\.venv\Scripts\python.exe scripts/verify_kv_replay.py build/debug/quorumkv_tests.exe --output build/review/kv-replay.txt
+```
+
+Capture M4 evidence with `.\scripts\capture_m4.ps1` from a clean committed tree;
+`scripts/summarize_m4.py` adds the KV campaign, negative controls, and KV replay to
+the M3 summary.
 
 ## Bugs found by the simulator
 
