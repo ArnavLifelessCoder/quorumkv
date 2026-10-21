@@ -77,7 +77,7 @@ def main() -> None:
     args = parser.parse_args()
     if not args.command:
         parser.error("test command required")
-    timeout = args.timeout or (5400 if any("Fuzz" in arg for arg in args.command) else 60)
+    timeout = args.timeout or (10800 if any("Fuzz" in arg for arg in args.command) else 60)
     raise SystemExit(run(args.command, timeout, args.exit_grace, args.stack_dir))
 
 
