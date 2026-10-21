@@ -49,17 +49,24 @@ struct Cluster::Impl {
     MemoryStorage storage;
     SeededRandom random;
     Link link;
+    // Declared before the node, so the node is always destroyed first.
+    std::unique_ptr<StateMachine> machine;
     std::unique_ptr<RaftNode> node;
     std::optional<std::uint64_t> checked_revision;
     RaftLog checked_log;
     LogIndex applied{};
+    std::uint64_t epoch{};
+    std::vector<NodeApplied> applied_out;
+    std::vector<NodeRead> reads_out;
   };
 
   explicit Impl(const ClusterConfig& config)
       : random(config.seed),
         recording(config.record_trace),
         manual_delivery(config.manual_delivery),
-        max_append_entries(config.max_append_entries) {
+        max_append_entries(config.max_append_entries),
+        machine_factory(config.machine_factory),
+        unsafe_reads(config.unsafe_reads) {
     if (config.size != 3 && config.size != 5) {
       throw std::invalid_argument("election simulator uses three or five members");
     }
@@ -98,6 +105,10 @@ struct Cluster::Impl {
   bool recording;
   bool manual_delivery;
   std::size_t max_append_entries;
+  std::function<std::unique_ptr<StateMachine>()> machine_factory;
+  bool unsafe_reads;
+  // First response observed at each committed index; every replica must agree.
+  std::map<LogIndex, Applied> responses;
   std::string trace;
 
   [[nodiscard]] auto At(NodeId id) const -> Host& {
@@ -215,16 +226,48 @@ struct Cluster::Impl {
       return;
     }
     host.applied = 0;
-    host.node = std::make_unique<RaftNode>(
-        ElectionConfig{.id = id, .members = members, .max_append_entries = max_append_entries},
-        host.link, clock, host.storage, host.random);
+    ++host.epoch;
+    host.machine = machine_factory ? machine_factory() : nullptr;
+    host.node =
+        std::make_unique<RaftNode>(ElectionConfig{.id = id,
+                                                  .members = members,
+                                                  .max_append_entries = max_append_entries,
+                                                  .unsafe_local_reads = unsafe_reads},
+                                   host.link, clock, host.storage, host.random, host.machine.get());
     ++stats.restarts;
     Check("restart", id);
   }
 
+  // Responses leave the node as soon as they are produced, like a reply already sent.
+  void Collect(Host& host) {
+    if (!host.node) {
+      return;
+    }
+    for (auto& applied : host.node->TakeApplied()) {
+      ++stats.applied_commands;
+      const auto [found, inserted] = responses.emplace(applied.index, applied);
+      if (!inserted && found->second != applied) {
+        throw std::logic_error("State Machine Safety: replicas produced different responses");
+      }
+      Hash(applied.index);
+      for (const auto byte : applied.response) {
+        Hash(byte);
+      }
+      host.applied_out.push_back({.epoch = host.epoch, .applied = std::move(applied)});
+    }
+    for (auto& read : host.node->TakeReads()) {
+      ++(read.ok ? stats.reads_served : stats.reads_failed);
+      Hash(read.id);
+      Hash(read.ok ? 1 : 0);
+      host.reads_out.push_back({.epoch = host.epoch, .read = std::move(read)});
+    }
+  }
+
   void Crash(NodeId id) {
     auto& host = At(id);
+    Collect(host);
     host.node.reset();
+    host.machine.reset();
     host.storage.Crash();
     ++stats.crashes;
     Check("crash", id);
@@ -238,6 +281,7 @@ struct Cluster::Impl {
     }
     try {
       operation(*host.node);
+      Collect(host);
     } catch (const PowerLoss&) {
       Crash(id);
     } catch (const std::runtime_error&) {
@@ -350,6 +394,46 @@ auto Cluster::Propose(NodeId id, Bytes command) -> std::optional<LogIndex> {
   impl_->Check("propose", id);
   return index;
 }
+auto Cluster::Submit(NodeId id, Bytes command) -> std::optional<LogPosition> {
+  std::optional<LogPosition> position;
+  const auto epoch = impl_->At(id).epoch;
+  for (const auto byte : command) {
+    impl_->Hash(byte);
+  }
+  impl_->Run(id, [&](RaftNode& node) {
+    if (const auto index = node.Propose(std::move(command))) {
+      position = LogPosition{.index = *index, .term = node.hard_state().term};
+    }
+  });
+  // A crash inside the call means the client never heard back.
+  if (impl_->At(id).epoch != epoch || !impl_->At(id).node) {
+    position.reset();
+  }
+  ++impl_->stats.proposals;
+  impl_->Check(position ? "submit" : "submit-rejected", id);
+  return position;
+}
+auto Cluster::Read(NodeId id, ClientRead read) -> bool {
+  bool accepted = false;
+  const auto epoch = impl_->At(id).epoch;
+  impl_->Hash(read.id);
+  impl_->Run(id, [&](RaftNode& node) { accepted = node.Read(read.id, std::move(read.query)); });
+  accepted = accepted && impl_->At(id).epoch == epoch && impl_->At(id).node;
+  impl_->Check(accepted ? "read" : "read-rejected", id);
+  return accepted;
+}
+auto Cluster::TakeApplied(NodeId id) -> std::vector<NodeApplied> {
+  return std::exchange(impl_->At(id).applied_out, {});
+}
+auto Cluster::TakeReads(NodeId id) -> std::vector<NodeRead> {
+  return std::exchange(impl_->At(id).reads_out, {});
+}
+auto Cluster::Epoch(NodeId id) const -> std::uint64_t { return impl_->At(id).epoch; }
+auto Cluster::LeaderHint(NodeId id) const -> std::optional<NodeId> {
+  const auto& node = impl_->At(id).node;
+  return node ? node->leader_hint() : std::nullopt;
+}
+auto Cluster::Size() const -> std::size_t { return impl_->members.size(); }
 auto Cluster::Log(NodeId id) const -> PersistentState { return impl_->At(id).storage.Load(); }
 auto Cluster::CommitIndex(NodeId id) const -> LogIndex {
   const auto& node = impl_->At(id).node;

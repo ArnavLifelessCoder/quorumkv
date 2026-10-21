@@ -56,6 +56,7 @@ jobs:
           fi
           python scripts/verify_sim_replay.py "$executable" --output "build/${{ matrix.preset }}/Testing/Temporary/sim-replay.txt"
           python scripts/verify_replication_replay.py "$executable" --output "build/${{ matrix.preset }}/Testing/Temporary/replication-replay.txt"
+          python scripts/verify_kv_replay.py "$executable" --output "build/${{ matrix.preset }}/Testing/Temporary/kv-replay.txt"
       - name: Verify simulator catches unsafe mutations
         shell: bash
         run: |

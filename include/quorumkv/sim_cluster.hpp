@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -20,6 +21,30 @@ struct ClusterConfig {
   bool manual_delivery{};
   std::size_t max_append_entries{16};
   std::vector<PersistentState> initial{};
+  // When set, every boot gets a fresh state machine rebuilt from the retained log.
+  std::function<std::unique_ptr<StateMachine>()> machine_factory{};
+  bool unsafe_reads{};
+};
+
+struct ClientRead {
+  std::uint64_t id{};
+  Bytes query;
+};
+
+struct LogPosition {
+  LogIndex index{};
+  Term term{};
+  auto operator==(const LogPosition&) const -> bool = default;
+};
+
+// Output produced by one node lifetime. `epoch` increments on every boot.
+struct NodeApplied {
+  std::uint64_t epoch{};
+  Applied applied;
+};
+struct NodeRead {
+  std::uint64_t epoch{};
+  ReadResult read;
 };
 
 struct SimStats {
@@ -40,6 +65,9 @@ struct SimStats {
   std::uint64_t application_checks{};
   std::uint64_t candidate_crashes{};
   std::uint64_t append_reply_crashes{};
+  std::uint64_t applied_commands{};
+  std::uint64_t reads_served{};
+  std::uint64_t reads_failed{};
   auto operator==(const SimStats&) const -> bool = default;
 };
 
@@ -63,6 +91,14 @@ class Cluster {
   void SetVoteCrashPercent(std::uint64_t percent);
   void SetReplicationCrashPercent(std::uint64_t candidate, std::uint64_t append_reply);
   auto Propose(NodeId id, Bytes command) -> std::optional<LogIndex>;
+  // Client entry points. Both fail when the node is down, not leader, or crashes mid-call.
+  auto Submit(NodeId id, Bytes command) -> std::optional<LogPosition>;
+  auto Read(NodeId id, ClientRead read) -> bool;
+  auto TakeApplied(NodeId id) -> std::vector<NodeApplied>;
+  auto TakeReads(NodeId id) -> std::vector<NodeRead>;
+  [[nodiscard]] auto Epoch(NodeId id) const -> std::uint64_t;
+  [[nodiscard]] auto LeaderHint(NodeId id) const -> std::optional<NodeId>;
+  [[nodiscard]] auto Size() const -> std::size_t;
   [[nodiscard]] auto Log(NodeId id) const -> PersistentState;
   [[nodiscard]] auto CommitIndex(NodeId id) const -> LogIndex;
   [[nodiscard]] auto Committed() const -> const std::vector<LogEntry>&;

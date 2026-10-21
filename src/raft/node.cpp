@@ -10,12 +10,13 @@
 namespace quorumkv {
 
 RaftNode::RaftNode(ElectionConfig config, Transport& transport, Clock& clock, Storage& storage,
-                   Random& random)
+                   Random& random, StateMachine* machine)
     : config_(std::move(config)),
       transport_(transport),
       clock_(clock),
       storage_(storage),
-      random_(random) {
+      random_(random),
+      machine_(machine) {
   auto& members = config_.members;
   std::ranges::sort(members);
   if (members.empty() || !std::ranges::binary_search(members, config_.id) ||
@@ -29,8 +30,90 @@ RaftNode::RaftNode(ElectionConfig config, Transport& transport, Clock& clock, St
   hard_state_ = persistent_.hard_state;
   log_ = RaftLog(persistent_);
   commit_index_ = log_.base_index();
+  last_applied_ = log_.base_index();
   ResetElectionTimer();
 }
+
+void RaftNode::ApplyCommitted() {
+  // Only committed entries are applied, once each and in log order.
+  while (last_applied_ < commit_index_) {
+    const auto& entry = log_.at(last_applied_ + 1);
+    ++last_applied_;
+    if (machine_ != nullptr && entry.kind == EntryKind::Command) {
+      applied_.push_back(
+          {.index = entry.index, .term = entry.term, .response = machine_->Apply(entry.command)});
+    }
+  }
+}
+
+auto RaftNode::ReadConfirmed(std::uint64_t context) const -> bool {
+  std::size_t acknowledgements = 1;
+  for (const auto& [peer, progress] : progress_) {
+    static_cast<void>(peer);
+    if (progress.acked_context >= context) {
+      ++acknowledgements;
+    }
+  }
+  return acknowledgements > config_.members.size() / 2;
+}
+
+void RaftNode::ServeReads() {
+  if (role_ != Role::Leader) {
+    return;
+  }
+  const bool current_term_committed = log_.term(commit_index_) == hard_state_.term;
+  std::vector<PendingRead> waiting;
+  for (auto& read : reads_) {
+    // A new leader learns the commit point only after committing an entry of its own term.
+    if (!read.read_index && current_term_committed) {
+      read.read_index = commit_index_;
+    }
+    if (read.read_index && last_applied_ >= *read.read_index && ReadConfirmed(read.context)) {
+      read_results_.push_back(
+          {.id = read.id,
+           .ok = true,
+           .response = machine_ != nullptr ? machine_->Read(read.query) : Bytes{}});
+    } else {
+      waiting.push_back(std::move(read));
+    }
+  }
+  reads_ = std::move(waiting);
+}
+
+void RaftNode::FailReads() {
+  for (const auto& read : reads_) {
+    read_results_.push_back({.id = read.id, .ok = false, .response = {}});
+  }
+  reads_.clear();
+}
+
+auto RaftNode::Read(std::uint64_t id, Bytes query) -> bool {
+  EnsureRunning();
+  if (config_.unsafe_local_reads) {
+    read_results_.push_back(
+        {.id = id, .ok = true, .response = machine_ != nullptr ? machine_->Read(query) : Bytes{}});
+    return true;
+  }
+  if (role_ != Role::Leader) {
+    return false;
+  }
+  if (read_context_ == std::numeric_limits<std::uint64_t>::max()) {
+    stopped_ = true;
+    throw std::overflow_error("read context exhausted");
+  }
+  reads_.push_back({.id = id,
+                    .query = std::move(query),
+                    .context = ++read_context_,
+                    .read_index = std::nullopt});
+  // The heartbeat round carries the new context; only replies to it confirm leadership.
+  Heartbeat();
+  ServeReads();
+  return true;
+}
+
+auto RaftNode::TakeApplied() -> std::vector<Applied> { return std::exchange(applied_, {}); }
+
+auto RaftNode::TakeReads() -> std::vector<ReadResult> { return std::exchange(read_results_, {}); }
 
 void RaftNode::EnsureRunning() const {
   if (stopped_) {
@@ -132,6 +215,8 @@ auto RaftNode::Propose(Bytes command) -> std::optional<LogIndex> {
   const auto index = AppendLocal(EntryKind::Command, std::move(command));
   AdvanceCommit();
   Heartbeat();
+  ApplyCommitted();
+  ServeReads();
   return index;
 }
 
@@ -170,6 +255,7 @@ void RaftNode::SendAppend(NodeId peer) {
        AppendEntries{.prev_log_index = previous,
                      .prev_log_term = log_.term(previous),
                      .leader_commit = commit_index_,
+                     .read_context = read_context_,
                      .entries = std::move(entries)},
        rpc);
 }
@@ -208,6 +294,8 @@ void RaftNode::Tick() {
   } else if (now - election_start_ >= election_timeout_) {
     StartElection();
   }
+  ApplyCommitted();
+  ServeReads();
 }
 
 void RaftNode::Step(const Message& message) {
@@ -222,6 +310,7 @@ void RaftNode::Step(const Message& message) {
     leader_.reset();
     votes_.clear();
     progress_.clear();
+    FailReads();
     // A higher term alone must not postpone an election indefinitely.
   }
   if (const auto* vote = std::get_if<RequestVote>(&message.body)) {
@@ -233,6 +322,8 @@ void RaftNode::Step(const Message& message) {
   } else if (const auto* append_reply = std::get_if<AppendResponse>(&message.body)) {
     Receive(message, *append_reply);
   }
+  ApplyCommitted();
+  ServeReads();
 }
 
 void RaftNode::Receive(const Message& message, const RequestVote& vote) {
@@ -270,6 +361,7 @@ void RaftNode::Receive(const Message& message, const AppendEntries& append) {
   leader_ = message.from;
   votes_.clear();
   progress_.clear();
+  FailReads();
   ResetElectionTimer();
   if (append.prev_log_index < log_.base_index()) {
     reply.conflict_index = log_.base_index() + 1;
@@ -331,6 +423,9 @@ void RaftNode::Receive(const Message& message, const AppendResponse& reply) {
     return;
   }
   auto& progress = progress_.at(message.from);
+  // Any current-term reply to a heartbeat sent after a read was registered shows this
+  // peer had not moved to a newer term, so it counts toward that read's leadership check.
+  progress.acked_context = std::max(progress.acked_context, reply.read_context);
   const auto found = progress.flights.find(message.rpc_id);
   if (found == progress.flights.end()) {
     return;

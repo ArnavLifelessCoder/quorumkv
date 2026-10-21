@@ -17,16 +17,42 @@ struct ElectionConfig {
   TimePoint election_max{30};
   TimePoint heartbeat_interval{3};
   std::size_t max_append_entries{16};
+  // Deliberately unsafe: serve reads from local state on any node without ReadIndex.
+  // Exists only so the history checkers can prove they detect stale reads.
+  bool unsafe_local_reads{};
 };
 
-// Callers serialize Step/Tick/Propose and stop on exceptions.
+// The result of applying one committed command, in log order.
+struct Applied {
+  LogIndex index{};
+  Term term{};
+  Bytes response;
+  auto operator==(const Applied&) const -> bool = default;
+};
+
+// `ok` is false when leadership was lost before the read could be served safely.
+struct ReadResult {
+  std::uint64_t id{};
+  bool ok{};
+  Bytes response;
+  auto operator==(const ReadResult&) const -> bool = default;
+};
+
+// Callers serialize Step/Tick/Propose/Read and stop on exceptions.
 class RaftNode {
  public:
+  // `machine` may be null for protocol-only use. It must start empty: entries are
+  // reapplied from the retained log after every restart.
   RaftNode(ElectionConfig config, Transport& transport, Clock& clock, Storage& storage,
-           Random& random);
+           Random& random, StateMachine* machine = nullptr);
   void Step(const Message& message);
   void Tick();
   auto Propose(Bytes command) -> std::optional<LogIndex>;
+  // Linearizable read through ReadIndex. Returns false when this node is not leader.
+  auto Read(std::uint64_t id, Bytes query) -> bool;
+  auto TakeApplied() -> std::vector<Applied>;
+  auto TakeReads() -> std::vector<ReadResult>;
+  [[nodiscard]] auto last_applied() const -> LogIndex { return last_applied_; }
   [[nodiscard]] auto role() const -> Role { return role_; }
   [[nodiscard]] auto hard_state() const -> HardState { return hard_state_; }
   [[nodiscard]] auto leader_hint() const -> std::optional<NodeId> { return leader_; }
@@ -50,12 +76,17 @@ class RaftNode {
   void Receive(const Message& message, const AppendEntries& append);
   void Receive(const Message& message, const AppendResponse& reply);
   void EnsureRunning() const;
+  void ApplyCommitted();
+  void ServeReads();
+  void FailReads();
+  [[nodiscard]] auto ReadConfirmed(std::uint64_t context) const -> bool;
 
   ElectionConfig config_;
   Transport& transport_;
   Clock& clock_;
   Storage& storage_;
   Random& random_;
+  StateMachine* machine_;
   HardState hard_state_;
   PersistentState persistent_;
   RaftLog log_;
@@ -70,10 +101,23 @@ class RaftNode {
     auto operator=(const Progress&) -> Progress& = delete;
     LogIndex next{};
     LogIndex match{};
+    // Highest read context echoed by this peer in the current term.
+    std::uint64_t acked_context{};
     std::map<std::uint64_t, Flight> flights;
+  };
+  struct PendingRead {
+    std::uint64_t id{};
+    Bytes query;
+    std::uint64_t context{};
+    std::optional<LogIndex> read_index;
   };
   std::map<NodeId, Progress> progress_;
   std::uint64_t rpc_sequence_{};
+  LogIndex last_applied_{};
+  std::vector<Applied> applied_;
+  std::vector<PendingRead> reads_;
+  std::vector<ReadResult> read_results_;
+  std::uint64_t read_context_{};
   Role role_{Role::Follower};
   std::optional<NodeId> leader_;
   std::set<NodeId> votes_;

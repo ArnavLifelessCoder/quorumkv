@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.20)
 project(quorumkv VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -53,8 +53,9 @@ if(QUORUMKV_BUILD_MUTATION_TESTS AND NOT BUILD_TESTING)
   message(FATAL_ERROR "Mutation executables require BUILD_TESTING")
 endif()
 add_library(quorumkv_common OBJECT
-  src/rpc/codec.cpp src/raft/log.cpp src/raft/file_storage.cpp src/sim/support.cpp
-  src/sim/cluster.cpp src/sim/replication_safety.cpp)
+  src/rpc/codec.cpp src/raft/log.cpp src/raft/file_storage.cpp src/kv/store.cpp
+  src/sim/support.cpp src/sim/cluster.cpp src/sim/replication_safety.cpp src/sim/kv_history.cpp
+  src/sim/kv_workload.cpp)
 if(WIN32)
   target_sources(quorumkv_common PRIVATE src/platform/windows/file.cpp)
 else()
@@ -92,12 +93,19 @@ if(BUILD_TESTING)
     tests/sim_support_test.cpp
     tests/sim_cluster_test.cpp
     tests/election_fuzz_test.cpp
+    tests/kv_store_test.cpp
+    tests/read_index_test.cpp
+    tests/kv_history_test.cpp
+    tests/kv_fuzz_test.cpp
   )
   target_link_libraries(quorumkv_tests PRIVATE quorumkv GTest::gtest)
   target_compile_definitions(quorumkv_tests PRIVATE QUORUMKV_TEST_ROOT="${PROJECT_BINARY_DIR}")
   include(GoogleTest)
-  set_property(TARGET quorumkv_tests PROPERTY TEST_LAUNCHER
-    "${Python3_EXECUTABLE};${PROJECT_SOURCE_DIR}/scripts/test_watchdog.py")
+  # The exit-hang watchdog needs TEST_LAUNCHER. Older CMake still enforces per-test timeouts.
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.29)
+    set_property(TARGET quorumkv_tests PROPERTY TEST_LAUNCHER
+      "${Python3_EXECUTABLE};${PROJECT_SOURCE_DIR}/scripts/test_watchdog.py")
+  endif()
   gtest_discover_tests(quorumkv_tests DISCOVERY_MODE PRE_TEST DISCOVERY_TIMEOUT 120
     TEST_LIST quorumkv_test_names PROPERTIES TIMEOUT 90)
   set_property(DIRECTORY APPEND PROPERTY TEST_INCLUDE_FILES
