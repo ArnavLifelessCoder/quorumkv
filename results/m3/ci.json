@@ -1,0 +1,51 @@
+{
+  "producer": "scripts/fetch_ci.py",
+  "source_revision": "835ecdfc9e4a5c0648d2591a40fee128bb5be814",
+  "run_id": 39471776603,
+  "url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39471776603",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 118797387713,
+      "name": "lint",
+      "conclusion": "success",
+      "html_url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39471776603/job/118797387713"
+    },
+    {
+      "id": 118797387955,
+      "name": "test (windows-latest, asan)",
+      "conclusion": "success",
+      "html_url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39471776603/job/118797387955"
+    },
+    {
+      "id": 118797387963,
+      "name": "test (windows-latest, debug)",
+      "conclusion": "success",
+      "html_url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39471776603/job/118797387963"
+    },
+    {
+      "id": 118797388156,
+      "name": "test (ubuntu-24.04, asan)",
+      "conclusion": "success",
+      "html_url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39471776603/job/118797388156"
+    },
+    {
+      "id": 118797388221,
+      "name": "tidy",
+      "conclusion": "success",
+      "html_url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39471776603/job/118797388221"
+    },
+    {
+      "id": 118797388260,
+      "name": "test (ubuntu-24.04, tsan)",
+      "conclusion": "success",
+      "html_url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39471776603/job/118797388260"
+    },
+    {
+      "id": 118797388299,
+      "name": "test (ubuntu-24.04, debug)",
+      "conclusion": "success",
+      "html_url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39471776603/job/118797388299"
+    }
+  ]
+}

@@ -1,0 +1,268 @@
+{
+  "producer": "scripts/summarize_m3.py",
+  "source_revision": "835ecdfc9e4a5c0648d2591a40fee128bb5be814",
+  "source_status": "",
+  "unique_seeds": 10000,
+  "seed_range": [
+    0,
+    9999
+  ],
+  "runs": {
+    "debug": {
+      "tests_passed": 65,
+      "ctest_cases": 65,
+      "first_seed": 0,
+      "seeds": 10000,
+      "round_trips": 60000,
+      "probe_accepted": 52898,
+      "probe_rejected": 27102,
+      "corpus_digest": "ddc03ddedd0aabdf"
+    },
+    "asan": {
+      "tests_passed": 65,
+      "ctest_cases": 65,
+      "first_seed": 0,
+      "seeds": 10000,
+      "round_trips": 60000,
+      "probe_accepted": 52898,
+      "probe_rejected": 27102,
+      "corpus_digest": "ddc03ddedd0aabdf"
+    }
+  },
+  "replay": {
+    "seed": 42,
+    "runs": 2,
+    "matching_fingerprints": true,
+    "corpus_digest": "37c9f7593ffeef94",
+    "invalid_seed_exit_code": 2
+  },
+  "replication": {
+    "debug": {
+      "first_seed": 0,
+      "seeds": 10000,
+      "steps": 20070722,
+      "safety_checks": 20070722,
+      "log_checks": 84881878,
+      "application_checks": 84881878,
+      "proposals": 34236,
+      "committed_commands": 29418,
+      "figure8_runs": 1250,
+      "ack_crash_runs": 1250,
+      "crashes": 378010,
+      "sync_failures": 163317,
+      "candidate_crashes": 45459,
+      "append_reply_crashes": 13393,
+      "long_delay_packets": 118402,
+      "partitions": 60000,
+      "dropped": 639103,
+      "duplicated": 214470,
+      "max_recovery_ticks": 81,
+      "digest": "b53df2db42c093f2"
+    },
+    "asan": {
+      "first_seed": 0,
+      "seeds": 10000,
+      "steps": 20070722,
+      "safety_checks": 20070722,
+      "log_checks": 84881878,
+      "application_checks": 84881878,
+      "proposals": 34236,
+      "committed_commands": 29418,
+      "figure8_runs": 1250,
+      "ack_crash_runs": 1250,
+      "crashes": 378010,
+      "sync_failures": 163317,
+      "candidate_crashes": 45459,
+      "append_reply_crashes": 13393,
+      "long_delay_packets": 118402,
+      "partitions": 60000,
+      "dropped": 639103,
+      "duplicated": 214470,
+      "max_recovery_ticks": 81,
+      "digest": "b53df2db42c093f2"
+    }
+  },
+  "elections": {
+    "debug": {
+      "first_seed": 0,
+      "seeds": 10000,
+      "p50_cold_ticks": 20,
+      "p99_cold_ticks": 50,
+      "p50_reelection_ticks": 24,
+      "p99_reelection_ticks": 97,
+      "election_bound": 300,
+      "max_cold_ticks": 89,
+      "max_reelection_ticks": 187,
+      "max_recovery_ticks": 91,
+      "steps": 19677168,
+      "safety_checks": 19677168,
+      "delivered": 2968750,
+      "dropped": 706136,
+      "duplicated": 228428,
+      "partitions": 60000,
+      "crashes": 219479,
+      "restarts": 258663,
+      "sync_failures": 155143,
+      "vote_grant_crashes": 14336,
+      "long_delay_packets": 161992,
+      "stale_vote_deliveries": 5912,
+      "digest": "f8710b2d905e8cff"
+    },
+    "asan": {
+      "first_seed": 0,
+      "seeds": 10000,
+      "p50_cold_ticks": 20,
+      "p99_cold_ticks": 50,
+      "p50_reelection_ticks": 24,
+      "p99_reelection_ticks": 97,
+      "election_bound": 300,
+      "max_cold_ticks": 89,
+      "max_reelection_ticks": 187,
+      "max_recovery_ticks": 91,
+      "steps": 19677168,
+      "safety_checks": 19677168,
+      "delivered": 2968750,
+      "dropped": 706136,
+      "duplicated": 228428,
+      "partitions": 60000,
+      "crashes": 219479,
+      "restarts": 258663,
+      "sync_failures": 155143,
+      "vote_grant_crashes": 14336,
+      "long_delay_packets": 161992,
+      "stale_vote_deliveries": 5912,
+      "digest": "f8710b2d905e8cff"
+    }
+  },
+  "replication_replay": {
+    "seed": 47,
+    "runs": 3,
+    "trace_sha256": "9d1fcb3e8f9d9a19b77313778280d3e2707fde998045d737c57aede2bba7562b",
+    "summary": {
+      "first_seed": 47,
+      "seeds": 1,
+      "steps": 2520,
+      "safety_checks": 2520,
+      "log_checks": 12600,
+      "application_checks": 12600,
+      "proposals": 1,
+      "committed_commands": 2,
+      "figure8_runs": 1,
+      "ack_crash_runs": 0,
+      "crashes": 50,
+      "sync_failures": 15,
+      "candidate_crashes": 10,
+      "append_reply_crashes": 1,
+      "long_delay_packets": 31,
+      "partitions": 6,
+      "dropped": 95,
+      "duplicated": 30,
+      "max_recovery_ticks": 71,
+      "digest": "852c794765a54cc8"
+    }
+  },
+  "mutations": {
+    "debug": {
+      "count_stale_votes": {
+        "seed": 1649,
+        "trace_sha256": "47745bf727438948257a683e0a2a4484d2cb96e9c3d1db6b6519a154053d1949",
+        "failing_replays": 2,
+        "control_passed": true,
+        "survey_seeds": 10000,
+        "detected_seeds": 3
+      },
+      "reply_before_persist": {
+        "seed": 348,
+        "trace_sha256": "f0a9936a5b8a142f270cc90732a0bc9221028210b7d6daaedbf816189989cc52",
+        "failing_replays": 2,
+        "control_passed": true,
+        "survey_seeds": 10000,
+        "detected_seeds": 9
+      },
+      "self_vote_after_send": {
+        "seed": 1,
+        "trace_sha256": "322f0d5ee59925faef94316de44f58c83c1b87e3c6453081340b260d043a9dde",
+        "failing_replays": 2,
+        "control_passed": true,
+        "survey_seeds": 10000,
+        "detected_seeds": 9794
+      },
+      "commit_old_term": {
+        "seed": 7,
+        "trace_sha256": "189265074b1e222268c2d3b7e76547f9021e18aaf6ab3245fbeebfcd9b01a28f",
+        "failing_replays": 2,
+        "control_passed": true,
+        "survey_seeds": 10000,
+        "detected_seeds": 1250
+      },
+      "append_reply_before_persist": {
+        "seed": 6,
+        "trace_sha256": "d26a1655d747b77f23b81ae11491a7fd8ee64b2f68b1e6925fa224de629b2afb",
+        "failing_replays": 2,
+        "control_passed": true,
+        "survey_seeds": 10000,
+        "detected_seeds": 1588
+      },
+      "double_vote": {
+        "seed": 7,
+        "trace_sha256": "aa4c457f730d0c4274dc7e7336e12a433c9a022ce11a89a56505796a928a4c48",
+        "failing_replays": 2,
+        "control_passed": true,
+        "survey_seeds": 10000,
+        "detected_seeds": 5075
+      },
+      "two_of_five": {
+        "seed": 7,
+        "trace_sha256": "a747a22a89532ff93ca4625e4fcc3760fbfd8f88e3121eae57deb9b32f8f6c50",
+        "failing_replays": 2,
+        "control_passed": true,
+        "survey_seeds": 10000,
+        "detected_seeds": 2434
+      }
+    },
+    "asan": {
+      "count_stale_votes": {
+        "seed": 1649,
+        "trace_sha256": "47745bf727438948257a683e0a2a4484d2cb96e9c3d1db6b6519a154053d1949",
+        "failing_replays": 2,
+        "control_passed": true
+      },
+      "reply_before_persist": {
+        "seed": 348,
+        "trace_sha256": "f0a9936a5b8a142f270cc90732a0bc9221028210b7d6daaedbf816189989cc52",
+        "failing_replays": 2,
+        "control_passed": true
+      },
+      "self_vote_after_send": {
+        "seed": 1,
+        "trace_sha256": "322f0d5ee59925faef94316de44f58c83c1b87e3c6453081340b260d043a9dde",
+        "failing_replays": 2,
+        "control_passed": true
+      },
+      "commit_old_term": {
+        "seed": 7,
+        "trace_sha256": "189265074b1e222268c2d3b7e76547f9021e18aaf6ab3245fbeebfcd9b01a28f",
+        "failing_replays": 2,
+        "control_passed": true
+      },
+      "append_reply_before_persist": {
+        "seed": 6,
+        "trace_sha256": "d26a1655d747b77f23b81ae11491a7fd8ee64b2f68b1e6925fa224de629b2afb",
+        "failing_replays": 2,
+        "control_passed": true
+      },
+      "double_vote": {
+        "seed": 7,
+        "trace_sha256": "aa4c457f730d0c4274dc7e7336e12a433c9a022ce11a89a56505796a928a4c48",
+        "failing_replays": 2,
+        "control_passed": true
+      },
+      "two_of_five": {
+        "seed": 7,
+        "trace_sha256": "a747a22a89532ff93ca4625e4fcc3760fbfd8f88e3121eae57deb9b32f8f6c50",
+        "failing_replays": 2,
+        "control_passed": true
+      }
+    }
+  }
+}

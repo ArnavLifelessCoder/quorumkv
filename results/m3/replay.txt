@@ -1,0 +1,32 @@
+Replay attempt 1
+Note: Google Test filter = CodecFuzz.*
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CodecFuzz
+[ RUN      ] CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe
+[fuzz] first_seed=42 seeds=1 round_trips=6 probe_accepted=5 probe_rejected=3 corpus_digest=37c9f7593ffeef94
+[       OK ] CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe (9 ms)
+[----------] 1 test from CodecFuzz (9 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (10 ms total)
+[  PASSED  ] 1 test.
+
+Replay attempt 2
+Note: Google Test filter = CodecFuzz.*
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from CodecFuzz
+[ RUN      ] CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe
+[fuzz] first_seed=42 seeds=1 round_trips=6 probe_accepted=5 probe_rejected=3 corpus_digest=37c9f7593ffeef94
+[       OK ] CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe (1 ms)
+[----------] 1 test from CodecFuzz (1 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (1 ms total)
+[  PASSED  ] 1 test.
+
+Invalid CLI seed: exit=2
+seed options require unsigned decimal integers
+
+PASS: both replay fingerprints match; invalid CLI seed is rejected.

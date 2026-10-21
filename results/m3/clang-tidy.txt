@@ -1,0 +1,199 @@
+LLVM (http://llvm.org/):
+  LLVM version 19.1.5
+  Optimized build.
+
+Translation units:
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\platform\windows\file.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\raft\file_storage.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\raft\log.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\raft\node.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\rpc\codec.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\sim\cluster.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\sim\replication_safety.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\sim\support.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\codec_fuzz_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\codec_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\election_fuzz_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\election_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\figure8_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\file_storage_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\interfaces_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\log_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\main.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\replication_fuzz_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\replication_safety_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\replication_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\sim_cluster_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\sim_support_test.cpp
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\toolchain_test.cpp
+
+Other-platform translation units (checked on that platform):
+C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\platform\posix\file.cpp
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\platform\windows\file.cpp
+74332 warnings generated.
+Suppressed 74332 warnings (74332 in non-user code).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\raft\file_storage.cpp
+61405 warnings generated.
+Suppressed 61405 warnings (61405 in non-user code).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\raft\log.cpp
+38593 warnings generated.
+Suppressed 38593 warnings (38593 in non-user code).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\raft\node.cpp
+38487 warnings generated.
+Suppressed 38487 warnings (38487 in non-user code).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\rpc\codec.cpp
+30793 warnings generated.
+Suppressed 30793 warnings (30793 in non-user code).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\sim\cluster.cpp
+49366 warnings generated.
+Suppressed 49366 warnings (49366 in non-user code).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\sim\replication_safety.cpp
+38000 warnings generated.
+Suppressed 38000 warnings (38000 in non-user code).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\src\sim\support.cpp
+32772 warnings generated.
+Suppressed 32772 warnings (32772 in non-user code).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\codec_fuzz_test.cpp
+57726 warnings generated.
+Suppressed 57740 warnings (57726 in non-user code, 14 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\codec_test.cpp
+50947 warnings generated.
+Suppressed 50961 warnings (50947 in non-user code, 14 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\election_fuzz_test.cpp
+57993 warnings generated.
+115986 warnings generated.
+Suppressed 116014 warnings (115986 in non-user code, 28 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\election_test.cpp
+50769 warnings generated.
+101538 warnings generated.
+Suppressed 101566 warnings (101538 in non-user code, 28 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\figure8_test.cpp
+58723 warnings generated.
+117446 warnings generated.
+Suppressed 117474 warnings (117446 in non-user code, 28 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\file_storage_test.cpp
+67954 warnings generated.
+Suppressed 67968 warnings (67954 in non-user code, 14 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\interfaces_test.cpp
+50413 warnings generated.
+Suppressed 50427 warnings (50413 in non-user code, 14 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\log_test.cpp
+50249 warnings generated.
+Suppressed 50263 warnings (50249 in non-user code, 14 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\main.cpp
+51065 warnings generated.
+102130 warnings generated.
+Suppressed 102158 warnings (102130 in non-user code, 28 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\replication_fuzz_test.cpp
+58416 warnings generated.
+116832 warnings generated.
+Suppressed 116860 warnings (116832 in non-user code, 28 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\replication_safety_test.cpp
+50594 warnings generated.
+Suppressed 50608 warnings (50594 in non-user code, 14 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\replication_test.cpp
+52954 warnings generated.
+Suppressed 52968 warnings (52954 in non-user code, 14 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\sim_cluster_test.cpp
+51087 warnings generated.
+Suppressed 51101 warnings (51087 in non-user code, 14 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\sim_support_test.cpp
+51092 warnings generated.
+Suppressed 51106 warnings (51092 in non-user code, 14 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+Translation unit: C:\Users\arnav\Downloads\SDE PROJs\raft kv storage\tests\toolchain_test.cpp
+65914 warnings generated.
+Suppressed 65928 warnings (65914 in non-user code, 14 NOLINT).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+
+Translation unit exit code: 0
+
+clang-tidy exit code: 0
