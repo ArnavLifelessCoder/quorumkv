@@ -52,7 +52,7 @@ try {
         (Get-Content -LiteralPath (Join-Path $stage "ruff-format.txt") -Raw)
     ) | Set-Content -Encoding utf8 (Join-Path $stage "lint.txt")
     Invoke-Check -Arguments @("scripts/summarize_m4.py", "--results-dir", $stage) -LogName "summary-driver.txt"
-    Invoke-Check -Arguments @("scripts/fetch_ci.py", "--revision", $revision, "--output-dir", $stage, "--wait-seconds", "3600") -LogName "ci-driver.txt"
+    Invoke-Check -Arguments @("scripts/fetch_ci.py", "--revision", $revision, "--branch", "m4", "--output-dir", $stage, "--wait-seconds", "3600") -LogName "ci-driver.txt"
     if ((Get-CleanRevision) -ne $revision) {
         throw "Source HEAD changed during evidence capture."
     }
