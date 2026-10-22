@@ -54,6 +54,10 @@ void RaftNode::MaybeCompact() {
 
 void RaftNode::SendSnapshot(NodeId peer) {
   auto& progress = progress_.at(peer);
+  // Only called once the log is compacted, so a snapshot always exists here.
+  if (!persistent_.snapshot.has_value()) {
+    return;
+  }
   const auto& snapshot = *persistent_.snapshot;
   if (!progress.snapshot || progress.snapshot->index != snapshot.last_included_index) {
     progress.snapshot =

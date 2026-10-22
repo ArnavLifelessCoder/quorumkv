@@ -157,8 +157,9 @@ struct Cluster::Impl {
       if (host.checked_revision != host.storage.revision()) {
         const auto previous_base = host.checked_log.base_index();
         host.checked_log = RaftLog(host.storage.durable());
-        if (host.checked_log.base_index() != previous_base && host.storage.durable().snapshot) {
-          replication.ObserveSnapshot(*host.storage.durable().snapshot);
+        const auto& durable = host.storage.durable();
+        if (host.checked_log.base_index() != previous_base && durable.snapshot.has_value()) {
+          replication.ObserveSnapshot(*durable.snapshot);
           ++(installing ? stats.snapshot_installs : stats.snapshots_taken);
         }
         stats.max_retained_entries =

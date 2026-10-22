@@ -73,7 +73,7 @@ class LocalCluster {
     }
   }
 
-  auto Addresses() const -> std::vector<net::Address> {
+  [[nodiscard]] auto Addresses() const -> std::vector<net::Address> {
     std::vector<net::Address> addresses;
     addresses.reserve(nodes_.size());
     for (const auto& node : nodes_) {
