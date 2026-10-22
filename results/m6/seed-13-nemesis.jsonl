@@ -1,0 +1,37 @@
+{"ts": 17349811961300, "action": "cut", "source": 3, "target": 1}
+{"ts": 17353840040800, "action": "delay", "source": 3, "target": 1, "seconds": 0.096}
+{"ts": 17357464803400, "action": "delay", "source": 3, "target": 2, "seconds": 0.06}
+{"ts": 17359883138700, "action": "partition", "groups": {"1": 0, "2": 0, "3": 1}}
+{"ts": 17365243181500, "action": "kill", "node": 2, "was_leader": true}
+{"ts": 17367921083400, "action": "restart", "node": 2}
+{"ts": 17369482621200, "action": "cut", "source": 2, "target": 3}
+{"ts": 17374066348800, "action": "heal"}
+{"ts": 17378800250600, "action": "pause", "node": 3}
+{"ts": 17380562440800, "action": "resume", "node": 3}
+{"ts": 17383240609600, "action": "kill", "node": 3, "was_leader": false}
+{"ts": 17384518104400, "action": "restart", "node": 3}
+{"ts": 17388091083000, "action": "kill", "node": 1, "was_leader": true}
+{"ts": 17390521063500, "action": "restart", "node": 1}
+{"ts": 17391780681700, "action": "cut", "source": 2, "target": 3}
+{"ts": 17395459577000, "action": "kill", "node": 2, "was_leader": true}
+{"ts": 17396894536000, "action": "restart", "node": 2}
+{"ts": 17400326131300, "action": "kill", "node": 2, "was_leader": false}
+{"ts": 17402312994800, "action": "restart", "node": 2}
+{"ts": 17404177602100, "action": "pause", "node": 1}
+{"ts": 17406340923500, "action": "resume", "node": 1}
+{"ts": 17407851711400, "action": "delay", "source": 1, "target": 2, "seconds": 0.096}
+{"ts": 17411172789800, "action": "heal"}
+{"ts": 17414343992900, "action": "pause", "node": 1}
+{"ts": 17415802897100, "action": "resume", "node": 1}
+{"ts": 17417866774200, "action": "heal"}
+{"ts": 17421793475400, "action": "cut", "source": 3, "target": 2}
+{"ts": 17427574305900, "action": "kill", "node": 2, "was_leader": false}
+{"ts": 17429006979000, "action": "restart", "node": 2}
+{"ts": 17432765693000, "action": "kill", "node": 3, "was_leader": false}
+{"ts": 17435183071100, "action": "delay", "source": 3, "target": 2, "seconds": 0.124}
+{"ts": 17435256328300, "action": "restart", "node": 3}
+{"ts": 17439083419300, "action": "partition", "groups": {"1": 0, "2": 1, "3": 1}}
+{"ts": 17442002228600, "action": "cut", "source": 3, "target": 1}
+{"ts": 17446731612400, "action": "cut", "source": 1, "target": 2}
+{"ts": 28936658913900, "action": "partition", "groups": {"1": 0, "2": 1, "3": 1}}
+{"ts": 28936710295100, "action": "settle"}

@@ -1,0 +1,26 @@
+{
+  "seed": 103,
+  "nodes": 3,
+  "clients": 4,
+  "keys": 3,
+  "duration_s": 60.0,
+  "unsafe_reads": true,
+  "operations": 8450,
+  "results": {
+    "ok": 8423,
+    "fail": 0,
+    "info": 27
+  },
+  "nemesis": {
+    "heal": 3,
+    "delay": 2,
+    "pause": 3,
+    "resume": 3,
+    "partition": 2,
+    "kill": 4,
+    "restart": 4,
+    "settle": 1
+  },
+  "linearizable": false,
+  "counterexample": "key 'k0': no order consistent with real time explains these operations:\n  client 3 put(k0, 'c3-302') [32200865433300, 32200884972600]\n  client 4 append(k0, 'c4-298;') [32200893850500, 32200914802300]\n  client 2 append(k0, 'c2-302;') [32200904411500, 32201027138000]\n  client 3 get(k0) -> 'c3-302c4-298;' [32202004540300, 32202004652000]\n  client 3 get(k0) -> 'c3-302c4-298;' [32202004540300, 32202004652000] cannot be placed: 3 operation(s) finished before it started, and every valid order leaves the register in one of 'c3-302c2-302;c4-298;', 'c3-302c4-298;c2-302;' at that point, none of which matches its result."
+}

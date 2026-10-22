@@ -1,0 +1,174 @@
+{
+  "producer": "scripts/recheck_m6.py",
+  "runs": [
+    {
+      "run": "seed-1",
+      "unsafe_reads": false,
+      "operations": 24759,
+      "linearizable": true,
+      "check_seconds": 0.25
+    },
+    {
+      "run": "seed-2",
+      "unsafe_reads": false,
+      "operations": 38769,
+      "linearizable": true,
+      "check_seconds": 0.45
+    },
+    {
+      "run": "seed-3",
+      "unsafe_reads": false,
+      "operations": 43571,
+      "linearizable": true,
+      "check_seconds": 0.52
+    },
+    {
+      "run": "seed-4",
+      "unsafe_reads": false,
+      "operations": 44374,
+      "linearizable": true,
+      "check_seconds": 0.66
+    },
+    {
+      "run": "seed-5",
+      "unsafe_reads": false,
+      "operations": 43482,
+      "linearizable": true,
+      "check_seconds": 0.66
+    },
+    {
+      "run": "seed-6",
+      "unsafe_reads": false,
+      "operations": 44771,
+      "linearizable": true,
+      "check_seconds": 0.75
+    },
+    {
+      "run": "seed-7",
+      "unsafe_reads": false,
+      "operations": 37692,
+      "linearizable": true,
+      "check_seconds": 0.5
+    },
+    {
+      "run": "seed-8",
+      "unsafe_reads": false,
+      "operations": 39527,
+      "linearizable": true,
+      "check_seconds": 0.63
+    },
+    {
+      "run": "seed-9",
+      "unsafe_reads": false,
+      "operations": 41183,
+      "linearizable": true,
+      "check_seconds": 0.59
+    },
+    {
+      "run": "seed-10",
+      "unsafe_reads": false,
+      "operations": 26008,
+      "linearizable": true,
+      "check_seconds": 0.32
+    },
+    {
+      "run": "seed-11",
+      "unsafe_reads": false,
+      "operations": 10692,
+      "linearizable": true,
+      "check_seconds": 0.09
+    },
+    {
+      "run": "seed-12",
+      "unsafe_reads": false,
+      "operations": 41082,
+      "linearizable": true,
+      "check_seconds": 0.66
+    },
+    {
+      "run": "seed-13",
+      "unsafe_reads": false,
+      "operations": 12101,
+      "linearizable": true,
+      "check_seconds": 0.1
+    },
+    {
+      "run": "seed-14",
+      "unsafe_reads": false,
+      "operations": 29602,
+      "linearizable": true,
+      "check_seconds": 0.41
+    },
+    {
+      "run": "seed-15",
+      "unsafe_reads": false,
+      "operations": 44357,
+      "linearizable": true,
+      "check_seconds": 0.59
+    },
+    {
+      "run": "seed-16",
+      "unsafe_reads": false,
+      "operations": 32798,
+      "linearizable": true,
+      "check_seconds": 0.42
+    },
+    {
+      "run": "seed-17",
+      "unsafe_reads": false,
+      "operations": 41618,
+      "linearizable": true,
+      "check_seconds": 0.5
+    },
+    {
+      "run": "seed-18",
+      "unsafe_reads": false,
+      "operations": 35713,
+      "linearizable": true,
+      "check_seconds": 0.51
+    },
+    {
+      "run": "seed-19",
+      "unsafe_reads": false,
+      "operations": 38612,
+      "linearizable": true,
+      "check_seconds": 0.49
+    },
+    {
+      "run": "seed-20",
+      "unsafe_reads": false,
+      "operations": 32398,
+      "linearizable": true,
+      "check_seconds": 0.4
+    },
+    {
+      "run": "unsafe-101",
+      "unsafe_reads": true,
+      "operations": 6161,
+      "linearizable": false,
+      "check_seconds": 0.19,
+      "counterexample": "key 'k0': no order consistent with real time explains these operations:\n  client 2 put(k0, 'c2-401') [31140745183800, 31140762384300]\n  client 3 put(k0, 'c3-630') [31142759853400, 31142779834600]\n  client 4 get(k0) -> 'c2-401' [31156017776600, 31156017868500]\n  client 4 get(k0) -> 'c2-401' [31156017776600, 31156017868500] cannot be placed: 2 operation(s) finished before it started, and every valid order leaves the register in one of 'c3-630' at that point, none of which matches its result.",
+      "counterexample_operations": 3
+    },
+    {
+      "run": "unsafe-102",
+      "unsafe_reads": true,
+      "operations": 11201,
+      "linearizable": false,
+      "check_seconds": 1.16,
+      "counterexample": "key 'k0': no order consistent with real time explains these operations:\n  client 4 put(k0, 'c4-2160') [31253097587800, 31253120655700]\n  client 2 put(k0, 'c2-2272') [31257489725200, 31257512674500]\n  client 3 get(k0) -> 'c4-2160' [31257644376600, 31258667152200]\n  client 3 get(k0) -> 'c4-2160' [31257644376600, 31258667152200] cannot be placed: 2 operation(s) finished before it started, and every valid order leaves the register in one of 'c2-2272' at that point, none of which matches its result.",
+      "counterexample_operations": 3
+    },
+    {
+      "run": "unsafe-103",
+      "unsafe_reads": true,
+      "operations": 8450,
+      "linearizable": false,
+      "check_seconds": 0.16,
+      "counterexample": "key 'k0': no order consistent with real time explains these operations:\n  client 3 put(k0, 'c3-302') [32200865433300, 32200884972600]\n  client 4 append(k0, 'c4-298;') [32200893850500, 32200914802300]\n  client 2 append(k0, 'c2-302;') [32200904411500, 32201027138000]\n  client 3 get(k0) -> 'c3-302c4-298;' [32202004540300, 32202004652000]\n  client 3 get(k0) -> 'c3-302c4-298;' [32202004540300, 32202004652000] cannot be placed: 3 operation(s) finished before it started, and every valid order leaves the register in one of 'c3-302c2-302;c4-298;', 'c3-302c4-298;c2-302;' at that point, none of which matches its result.",
+      "counterexample_operations": 4
+    }
+  ],
+  "all_safe_linearizable": true,
+  "all_unsafe_flagged": true
+}

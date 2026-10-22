@@ -1,0 +1,26 @@
+{
+  "seed": 19,
+  "nodes": 3,
+  "clients": 4,
+  "keys": 3,
+  "duration_s": 300.0,
+  "unsafe_reads": false,
+  "operations": 38612,
+  "results": {
+    "ok": 38531,
+    "fail": 39,
+    "info": 42
+  },
+  "nemesis": {
+    "partition": 25,
+    "kill": 19,
+    "restart": 19,
+    "delay": 12,
+    "pause": 8,
+    "resume": 8,
+    "cut": 11,
+    "heal": 10,
+    "settle": 1
+  },
+  "linearizable": true
+}
