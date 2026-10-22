@@ -22,6 +22,12 @@ struct ServerConfig {
   unsigned tick_ms{10};
   LogIndex snapshot_threshold{1000};
   bool unsafe_reads{};
+  // Batching: commands arriving in one event-loop pass share one durable write, and one
+  // AppendEntries carries up to max_append_entries entries. Pipelining: several
+  // AppendEntries in flight per follower. Both can be turned off for measurement.
+  bool batching{true};
+  std::size_t max_append_entries{256};
+  bool pipeline{true};
 };
 
 // One Raft node behind TCP. A single thread runs Run(); every socket, the clock, and the

@@ -3,7 +3,8 @@
 //   quorumkv_server --id 1 --members 1,2,3 --peer-listen 127.0.0.1:7101
 //                   --client-listen 127.0.0.1:7201 --peer 2=127.0.0.1:7302
 //                   --peer 3=127.0.0.1:7303 --data data/n1 [--tick-ms 10]
-//                   [--snapshot-threshold 1000] [--unsafe-reads]
+//                   [--snapshot-threshold 1000] [--unsafe-reads] [--no-batching]
+//                   [--no-pipeline] [--max-append-entries 256]
 //
 // Prints "ready id=<id> peer=<port> client=<port>" once both listeners are bound.
 
@@ -74,6 +75,12 @@ auto Run(int argc, char** argv) -> int {
       config.snapshot_threshold = Number(value());
     } else if (flag == "--unsafe-reads") {
       config.unsafe_reads = true;
+    } else if (flag == "--no-batching") {
+      config.batching = false;
+    } else if (flag == "--no-pipeline") {
+      config.pipeline = false;
+    } else if (flag == "--max-append-entries") {
+      config.max_append_entries = Number(value());
     } else {
       throw std::invalid_argument("unknown flag " + std::string(flag));
     }

@@ -20,6 +20,9 @@ struct ElectionConfig {
   // Compact once this many applied entries are retained. Zero disables snapshots.
   LogIndex snapshot_threshold{};
   std::size_t snapshot_chunk_bytes{std::size_t{64} * 1024};
+  // False sends one AppendEntries per follower at a time; only the heartbeat timer
+  // retransmits. Used to measure what pipelining is worth.
+  bool pipeline{true};
   // Deliberately unsafe: serve reads from local state on any node without ReadIndex.
   // Exists only so the history checkers can prove they detect stale reads.
   bool unsafe_local_reads{};
@@ -51,6 +54,8 @@ class RaftNode {
   void Step(const Message& message);
   void Tick();
   auto Propose(Bytes command) -> std::optional<LogIndex>;
+  // Appends every command under one durable write (group commit). Empty if not leader.
+  auto ProposeBatch(std::vector<Bytes> commands) -> std::vector<LogIndex>;
   // Linearizable read through ReadIndex. Returns false when this node is not leader.
   auto Read(std::uint64_t id, Bytes query) -> bool;
   auto TakeApplied() -> std::vector<Applied>;
@@ -67,12 +72,12 @@ class RaftNode {
   void Save(HardState state);
   void Persist(const StorageBatch& batch);
   auto AppendLocal(EntryKind kind, Bytes command) -> LogIndex;
-  void SendAppend(NodeId peer);
+  void SendAppend(NodeId peer, bool retransmit = true);
   auto AdvanceCommit() -> bool;
   void ResetElectionTimer();
   void StartElection();
   void BecomeLeader();
-  void Heartbeat();
+  void Heartbeat(bool timer = true);
   void Send(NodeId to, MessageBody body, std::uint64_t rpc_id = 0);
   void Receive(const Message& message, const RequestVote& vote);
   void Receive(const Message& message, const VoteResponse& vote);

@@ -150,7 +150,7 @@ auto RaftNode::Read(std::uint64_t id, Bytes query) -> bool {
                     .context = ++read_context_,
                     .read_index = std::nullopt});
   // The heartbeat round carries the new context; only replies to it confirm leadership.
-  Heartbeat();
+  Heartbeat(false);
   ServeReads();
   return true;
 }
@@ -258,14 +258,52 @@ auto RaftNode::Propose(Bytes command) -> std::optional<LogIndex> {
   }
   const auto index = AppendLocal(EntryKind::Command, std::move(command));
   AdvanceCommit();
-  Heartbeat();
+  Heartbeat(false);
   ApplyCommitted();
   ServeReads();
   return index;
 }
 
-void RaftNode::SendAppend(NodeId peer) {
+auto RaftNode::ProposeBatch(std::vector<Bytes> commands) -> std::vector<LogIndex> {
+  EnsureRunning();
+  if (role_ != Role::Leader || commands.empty()) {
+    return {};
+  }
+  StorageBatch batch;
+  std::vector<LogIndex> indices;
+  auto index = log_.last_index();
+  for (auto& command : commands) {
+    if (command.size() > kMaxBlobBytes) {
+      throw std::invalid_argument("command exceeds peer codec limit");
+    }
+    if (index == std::numeric_limits<LogIndex>::max()) {
+      stopped_ = true;
+      throw std::overflow_error("log index exhausted");
+    }
+    batch.append.push_back({.index = ++index,
+                            .term = hard_state_.term,
+                            .kind = EntryKind::Command,
+                            .command = std::move(command)});
+    indices.push_back(index);
+  }
+  Persist(batch);
+  AdvanceCommit();
+  Heartbeat(false);
+  ApplyCommitted();
+  ServeReads();
+  return indices;
+}
+
+void RaftNode::SendAppend(NodeId peer, bool retransmit) {
   auto& progress = progress_.at(peer);
+  if (!config_.pipeline && !progress.flights.empty()) {
+    if (!retransmit) {
+      return;  // Stop and wait for the outstanding request.
+    }
+    // The heartbeat timer resends from the acknowledged point.
+    progress.flights.clear();
+    progress.next = progress.match + 1;
+  }
   if (progress.next <= log_.base_index()) {
     // The entries this follower needs were compacted away.
     SendSnapshot(peer);
@@ -321,11 +359,11 @@ auto RaftNode::AdvanceCommit() -> bool {
   return false;
 }
 
-void RaftNode::Heartbeat() {
+void RaftNode::Heartbeat(bool timer) {
   last_heartbeat_ = clock_.Now();
   for (const auto peer : config_.members) {
     if (peer != config_.id) {
-      SendAppend(peer);
+      SendAppend(peer, timer);
     }
   }
 }
@@ -448,7 +486,7 @@ void RaftNode::Receive(const Message& message, const SnapshotResponse& reply) {
     progress.next = std::max(progress.next, progress.match + 1);
     progress.snapshot.reset();
     if (AdvanceCommit()) {
-      Heartbeat();
+      Heartbeat(false);
     } else {
       SendAppend(message.from);
     }
@@ -573,7 +611,7 @@ void RaftNode::Receive(const Message& message, const AppendResponse& reply) {
     std::erase_if(progress.flights,
                   [&](const auto& item) { return item.second.last <= progress.match; });
     if (AdvanceCommit()) {
-      Heartbeat();
+      Heartbeat(false);
     } else if (progress.match < log_.last_index()) {
       SendAppend(message.from);
     }

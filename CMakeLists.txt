@@ -72,6 +72,8 @@ add_executable(quorumkv_server src/server/main.cpp)
 target_link_libraries(quorumkv_server PRIVATE quorumkv)
 add_executable(quorumkv_client src/client/main.cpp)
 target_link_libraries(quorumkv_client PRIVATE quorumkv)
+add_executable(quorumkv_load bench/load.cpp)
+target_link_libraries(quorumkv_load PRIVATE quorumkv)
 if(BUILD_TESTING)
   find_package(Python3 REQUIRED COMPONENTS Interpreter)
   include(FetchContent)
@@ -108,6 +110,7 @@ if(BUILD_TESTING)
     tests/snapshot_test.cpp
     tests/client_protocol_test.cpp
     tests/server_test.cpp
+    tests/batching_test.cpp
   )
   target_link_libraries(quorumkv_tests PRIVATE quorumkv GTest::gtest)
   target_compile_definitions(quorumkv_tests PRIVATE QUORUMKV_TEST_ROOT="${PROJECT_BINARY_DIR}")

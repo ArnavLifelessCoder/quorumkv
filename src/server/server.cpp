@@ -87,7 +87,9 @@ struct Server::Impl {
         client_listener(net::Listen(config.client_listen)),
         node(ElectionConfig{.id = config.id,
                             .members = config.members,
+                            .max_append_entries = config.batching ? config.max_append_entries : 1,
                             .snapshot_threshold = config.snapshot_threshold,
+                            .pipeline = config.pipeline,
                             .unsafe_local_reads = config.unsafe_reads},
              link, clock, storage, random, &machine) {}
 
@@ -107,6 +109,39 @@ struct Server::Impl {
   std::map<std::uint64_t, PendingRead> reads;
   std::uint64_t next_connection{1};
   std::uint64_t next_read{1};
+  struct QueuedCommand {
+    std::uint64_t connection{};
+    std::uint64_t request{};
+    Bytes payload;
+  };
+  std::vector<QueuedCommand> queued;
+
+  // Proposes every command received in this event-loop pass under one durable write.
+  void ProposeQueued() {
+    if (queued.empty()) {
+      return;
+    }
+    auto commands = std::exchange(queued, {});
+    if (node.role() != Role::Leader) {
+      for (const auto& command : commands) {
+        NotLeader(command.connection, command.request);
+      }
+      return;
+    }
+    const auto term = node.hard_state().term;
+    std::vector<Bytes> payloads;
+    payloads.reserve(commands.size());
+    for (auto& command : commands) {
+      payloads.push_back(std::move(command.payload));
+    }
+    const auto indices = node.ProposeBatch(std::move(payloads));
+    for (std::size_t index = 0; index < indices.size(); ++index) {
+      writes[indices[index]] = {.connection = commands[index].connection,
+                                .request = commands[index].request,
+                                .term = term};
+    }
+    Drain();
+  }
 
   void QueuePeer(NodeId to, const Message& message) {
     const auto found = peers.find(to);
@@ -194,6 +229,12 @@ struct Server::Impl {
         return;
       }
       case ClientKind::Command: {
+        if (config.batching) {
+          queued.push_back({.connection = connection,
+                            .request = request.request_id,
+                            .payload = request.payload});
+          return;
+        }
         const auto term = node.hard_state().term;
         const auto index =
             node.role() == Role::Leader ? node.Propose(request.payload) : std::optional<LogIndex>{};
@@ -336,6 +377,7 @@ struct Server::Impl {
           it = alive ? std::next(it) : group->erase(it);
         }
       }
+      ProposeQueued();
       if (peer_pending) {
         Accept(peer_listener, inbound_peers);
       }
