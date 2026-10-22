@@ -50,7 +50,7 @@ TEST(SnapshotStorage, MatchingSnapshotKeepsTheSuffixAndOtherwiseReplacesTheLog) 
   const auto compacted = ApplyStorageBatch(kept, SnapshotBatch(3, 3, {8}));
   EXPECT_TRUE(compacted.entries.empty());
   ASSERT_TRUE(compacted.snapshot.has_value());
-  const auto& latest = *compacted.snapshot;
+  const auto latest = compacted.snapshot.value_or(Snapshot{});
   EXPECT_EQ(latest.state, (Bytes{8}));
   EXPECT_THROW(static_cast<void>(ApplyStorageBatch(compacted, SnapshotBatch(2, 2, {}))),
                std::invalid_argument);
@@ -81,7 +81,7 @@ TEST_F(SnapshotFileTest, SnapshotAndSuffixSurviveReopen) {
   }
   const auto loaded = FileStorage(directory).Load();
   ASSERT_TRUE(loaded.snapshot.has_value());
-  const auto& snapshot = *loaded.snapshot;
+  const auto snapshot = loaded.snapshot.value_or(Snapshot{});
   EXPECT_EQ(snapshot.last_included_index, 2U);
   EXPECT_EQ(snapshot.state, Bytes(70000, 0xab));
   EXPECT_EQ(loaded.entries, (std::vector<LogEntry>{Command(3, 3, 3)}));
@@ -167,7 +167,7 @@ TEST_F(SnapshotNodeTest, FollowerAssemblesChunksInOrderPersistsThenRestores) {
   EXPECT_EQ(LastReply(), (SnapshotResponse{.success = true, .next_offset = state.size()}));
   const auto durable = storage.Load();
   ASSERT_TRUE(durable.snapshot.has_value());
-  const auto& installed = *durable.snapshot;
+  const auto installed = durable.snapshot.value_or(Snapshot{});
   EXPECT_EQ(installed.state, state);
   EXPECT_EQ(node.commit_index(), 5U);
   EXPECT_EQ(node.last_applied(), 5U);
@@ -251,7 +251,7 @@ TEST(SimSnapshot, LaggingFollowerCatchesUpThroughChunkedInstallSnapshot) {
   }
   const auto compacted = cluster.Log(leader);
   ASSERT_TRUE(compacted.snapshot.has_value());
-  const auto& snapshot = *compacted.snapshot;
+  const auto snapshot = compacted.snapshot.value_or(Snapshot{});
   ASSERT_GT(snapshot.last_included_index, 1U);
   cluster.Restart(lagging);
   for (unsigned tick = 0; tick < 200; ++tick) {
