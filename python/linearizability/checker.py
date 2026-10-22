@@ -276,17 +276,37 @@ def minimize(ops: list[Operation], budget_s: float = 20.0) -> list[Operation]:
             high = middle
     ops = _prefix(ops, times[low])
     deadline = time.monotonic() + budget_s
+
+    def drop(candidate: list[Operation], removed: list[Operation]) -> bool:
+        if not candidate:
+            return False
+        observed = _observed(candidate)
+        if any(_protected(op, observed) for op in removed):
+            return False
+        return not linearizable(candidate)[0]
+
+    # Delta debugging: remove ever smaller chunks while the history keeps failing.
+    parts = 2
+    while len(ops) >= 2 and time.monotonic() < deadline:
+        size = -(-len(ops) // parts)
+        for start in range(0, len(ops), size):
+            candidate = ops[:start] + ops[start + size :]
+            if drop(candidate, ops[start : start + size]):
+                ops = candidate
+                parts = max(parts - 1, 2)
+                break
+        else:
+            if parts >= len(ops):
+                break
+            parts = min(len(ops), parts * 2)
+    # A final pass removes single operations until nothing more can go.
     changed = True
     while changed and time.monotonic() < deadline:
         changed = False
         index = 0
         while index < len(ops) and time.monotonic() < deadline:
             candidate = ops[:index] + ops[index + 1 :]
-            if (
-                candidate
-                and not _protected(ops[index], _observed(candidate))
-                and not linearizable(candidate)[0]
-            ):
+            if drop(candidate, [ops[index]]):
                 ops = candidate
                 changed = True
             else:
