@@ -56,4 +56,56 @@ void AtomicReplace(const std::filesystem::path& source, const std::filesystem::p
   }
 }
 
+void SyncDirectory(const std::filesystem::path& /*directory*/) {}
+
+struct AppendFile::Native {
+  HANDLE handle;
+};
+
+AppendFile::AppendFile(const std::filesystem::path& path)
+    : native_(std::make_unique<Native>(Native{CreateFileW(
+          path.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+          nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr)})) {
+  if (native_->handle == INVALID_HANDLE_VALUE) {
+    throw std::system_error(static_cast<int>(GetLastError()), std::system_category(),
+                            "open storage journal");
+  }
+}
+
+AppendFile::~AppendFile() { CloseHandle(native_->handle); }
+
+void AppendFile::Append(std::span<const std::uint8_t> bytes) {
+  if (!SetFilePointerEx(native_->handle, LARGE_INTEGER{}, nullptr, FILE_END)) {
+    throw std::system_error(static_cast<int>(GetLastError()), std::system_category(),
+                            "seek storage journal");
+  }
+  while (!bytes.empty()) {
+    const auto count = static_cast<DWORD>(std::min(bytes.size(), std::size_t{1024} * 1024));
+    DWORD written{};
+    if (!WriteFile(native_->handle, bytes.data(), count, &written, nullptr) || written == 0) {
+      throw std::system_error(static_cast<int>(GetLastError()), std::system_category(),
+                              "append storage journal");
+    }
+    bytes = bytes.subspan(written);
+  }
+}
+
+void AppendFile::Sync() {
+  if (!FlushFileBuffers(native_->handle)) {
+    throw std::system_error(static_cast<int>(GetLastError()), std::system_category(),
+                            "sync storage journal");
+  }
+}
+
+void AppendFile::Truncate(std::uint64_t size) {
+  LARGE_INTEGER position{};
+  position.QuadPart = static_cast<LONGLONG>(size);
+  if (!SetFilePointerEx(native_->handle, position, nullptr, FILE_BEGIN) ||
+      !SetEndOfFile(native_->handle)) {
+    throw std::system_error(static_cast<int>(GetLastError()), std::system_category(),
+                            "truncate storage journal");
+  }
+  Sync();
+}
+
 }  // namespace quorumkv::platform

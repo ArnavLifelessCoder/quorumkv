@@ -64,4 +64,55 @@ void AtomicReplace(const std::filesystem::path& source, const std::filesystem::p
   directory.Sync();
 }
 
+void SyncDirectory(const std::filesystem::path& directory) {
+  const File handle(directory, O_RDONLY | O_DIRECTORY | O_CLOEXEC);
+  handle.Sync();
+}
+
+struct AppendFile::Native {
+  int descriptor;
+};
+
+AppendFile::AppendFile(const std::filesystem::path& path)
+    : native_(std::make_unique<Native>(
+          Native{open(path.c_str(), O_WRONLY | O_CREAT | O_APPEND | O_CLOEXEC, 0600)})) {
+  if (native_->descriptor < 0) {
+    throw std::system_error(errno, std::generic_category(), "open storage journal");
+  }
+}
+
+AppendFile::~AppendFile() { close(native_->descriptor); }
+
+void AppendFile::Append(std::span<const std::uint8_t> bytes) {
+  while (!bytes.empty()) {
+    const auto count = std::min(bytes.size(), std::size_t{1024} * 1024);
+    const auto written = write(native_->descriptor, bytes.data(), count);
+    if (written < 0 && errno == EINTR) {
+      continue;
+    }
+    if (written <= 0) {
+      throw std::system_error(written == 0 ? EIO : errno, std::generic_category(),
+                              "append storage journal");
+    }
+    bytes = bytes.subspan(static_cast<std::size_t>(written));
+  }
+}
+
+void AppendFile::Sync() {
+  int result{};
+  do {
+    result = fsync(native_->descriptor);
+  } while (result < 0 && errno == EINTR);
+  if (result < 0) {
+    throw std::system_error(errno, std::generic_category(), "sync storage journal");
+  }
+}
+
+void AppendFile::Truncate(std::uint64_t size) {
+  if (ftruncate(native_->descriptor, static_cast<off_t>(size)) != 0) {
+    throw std::system_error(errno, std::generic_category(), "truncate storage journal");
+  }
+  Sync();
+}
+
 }  // namespace quorumkv::platform
