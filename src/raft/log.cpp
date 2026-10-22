@@ -67,9 +67,6 @@ auto RaftLog::last_in_term(Term wanted) const -> std::optional<LogIndex> {
 
 auto ApplyStorageBatch(const PersistentState& state, const StorageBatch& batch) -> PersistentState {
   const RaftLog before(state);
-  if (batch.snapshot) {
-    throw std::invalid_argument("snapshot publication requires M5 storage support");
-  }
   auto result = state;
   if (batch.truncate_from) {
     const auto first = *batch.truncate_from;
@@ -79,6 +76,25 @@ auto ApplyStorageBatch(const PersistentState& state, const StorageBatch& batch) 
     result.entries.resize(static_cast<std::size_t>(first - before.base_index() - 1));
   }
   result.entries.insert(result.entries.end(), batch.append.begin(), batch.append.end());
+  if (batch.snapshot) {
+    const auto& snapshot = *batch.snapshot;
+    if (snapshot.last_included_index < before.base_index() || snapshot.last_included_term == 0) {
+      throw std::invalid_argument("snapshot must not move the compacted prefix backwards");
+    }
+    // Keep the suffix only if the log already holds the snapshot's last entry; otherwise the
+    // snapshot supersedes the whole log (Figure 13, receiver rules 6 and 7).
+    const RaftLog appended(result);
+    const auto index = snapshot.last_included_index;
+    const bool matches =
+        index <= appended.last_index() && appended.term(index) == snapshot.last_included_term;
+    if (matches) {
+      const auto keep = static_cast<std::ptrdiff_t>(index - appended.base_index());
+      result.entries.erase(result.entries.begin(), result.entries.begin() + keep);
+    } else {
+      result.entries.clear();
+    }
+    result.snapshot = snapshot;
+  }
   if (batch.hard_state) {
     result.hard_state = *batch.hard_state;
   }

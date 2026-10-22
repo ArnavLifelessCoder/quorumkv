@@ -15,7 +15,10 @@
 namespace quorumkv {
 namespace {
 
-constexpr std::array<std::uint8_t, 8> kMagic{'Q', 'K', 'V', 'L', 'O', 'G', '0', '1'};
+// Version 02 appends a snapshot section. Version 01 images, which never held a snapshot,
+// remain readable.
+constexpr std::array<std::uint8_t, 8> kMagic{'Q', 'K', 'V', 'L', 'O', 'G', '0', '2'};
+constexpr std::array<std::uint8_t, 8> kMagicV1{'Q', 'K', 'V', 'L', 'O', 'G', '0', '1'};
 constexpr std::size_t kMaxImageBytes = std::size_t{64} * 1024 * 1024;
 
 auto Checksum(std::span<const std::uint8_t> bytes) -> std::uint32_t {
@@ -49,9 +52,6 @@ auto Integer(std::span<const std::uint8_t>& bytes, unsigned width) -> std::uint6
 }
 
 auto Serialize(const PersistentState& state) -> Bytes {
-  if (state.snapshot) {
-    throw std::invalid_argument("file snapshots require M5");
-  }
   Bytes bytes(kMagic.begin(), kMagic.end());
   Integer<8>(bytes, state.hard_state.term);
   Integer<1>(bytes, state.hard_state.voted_for.has_value() ? 1 : 0);
@@ -65,12 +65,24 @@ auto Serialize(const PersistentState& state) -> Bytes {
     }
     bytes.insert(bytes.end(), frame.begin(), frame.end());
   }
+  Integer<1>(bytes, state.snapshot ? 1 : 0);
+  if (state.snapshot) {
+    const auto& snapshot = *state.snapshot;
+    if (snapshot.state.size() > kMaxImageBytes - bytes.size() - 28) {
+      throw std::length_error("storage image exceeds 64 MiB limit");
+    }
+    Integer<8>(bytes, snapshot.last_included_index);
+    Integer<8>(bytes, snapshot.last_included_term);
+    Integer<8>(bytes, snapshot.state.size());
+    bytes.insert(bytes.end(), snapshot.state.begin(), snapshot.state.end());
+  }
   Integer<4>(bytes, Checksum(bytes));
   return bytes;
 }
 
 auto Deserialize(std::span<const std::uint8_t> bytes) -> PersistentState {
-  if (bytes.size() < 37 || !std::ranges::equal(bytes.first(8), kMagic)) {
+  const bool version1 = bytes.size() >= 8 && std::ranges::equal(bytes.first(8), kMagicV1);
+  if (bytes.size() < 37 || (!version1 && !std::ranges::equal(bytes.first(8), kMagic))) {
     throw std::runtime_error("invalid storage image header");
   }
   auto checksum_bytes = bytes.last(4);
@@ -105,6 +117,24 @@ auto Deserialize(std::span<const std::uint8_t> bytes) -> PersistentState {
     }
     state.entries.push_back(append->entries.front());
     bytes = bytes.subspan(static_cast<std::size_t>(length + 4));
+  }
+  if (!version1) {
+    const auto has_snapshot = Integer(bytes, 1);
+    if (has_snapshot > 1) {
+      throw std::runtime_error("invalid stored snapshot flag");
+    }
+    if (has_snapshot == 1) {
+      Snapshot snapshot;
+      snapshot.last_included_index = Integer(bytes, 8);
+      snapshot.last_included_term = Integer(bytes, 8);
+      const auto size = Integer(bytes, 8);
+      if (size > bytes.size() || snapshot.last_included_term == 0) {
+        throw std::runtime_error("invalid stored snapshot");
+      }
+      snapshot.state.assign(bytes.begin(), bytes.begin() + static_cast<std::ptrdiff_t>(size));
+      bytes = bytes.subspan(static_cast<std::size_t>(size));
+      state.snapshot = std::move(snapshot);
+    }
   }
   if (!bytes.empty()) {
     throw std::runtime_error("trailing bytes in storage image");

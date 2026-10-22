@@ -23,15 +23,59 @@ RaftNode::RaftNode(ElectionConfig config, Transport& transport, Clock& clock, St
       std::ranges::adjacent_find(members) != members.end() || config_.heartbeat_interval == 0 ||
       config_.election_min <= config_.heartbeat_interval ||
       config_.election_max < config_.election_min || config_.max_append_entries == 0 ||
-      config_.max_append_entries > kMaxEntries) {
+      config_.max_append_entries > kMaxEntries || config_.snapshot_chunk_bytes == 0 ||
+      config_.snapshot_chunk_bytes > kMaxBlobBytes) {
     throw std::invalid_argument("invalid election configuration");
   }
   persistent_ = storage_.Load();
   hard_state_ = persistent_.hard_state;
   log_ = RaftLog(persistent_);
+  // A snapshot holds only committed, applied state, so the machine resumes from it and the
+  // retained log is reapplied once the commit point is learned again.
+  if (persistent_.snapshot && machine_ != nullptr) {
+    machine_->Restore(persistent_.snapshot->state);
+  }
   commit_index_ = log_.base_index();
   last_applied_ = log_.base_index();
   ResetElectionTimer();
+}
+
+void RaftNode::MaybeCompact() {
+  if (config_.snapshot_threshold == 0 ||
+      last_applied_ - log_.base_index() < config_.snapshot_threshold) {
+    return;
+  }
+  StorageBatch batch;
+  batch.snapshot = Snapshot{.last_included_index = last_applied_,
+                            .last_included_term = log_.term(last_applied_),
+                            .state = machine_ != nullptr ? machine_->Snapshot() : Bytes{}};
+  Persist(batch);
+}
+
+void RaftNode::SendSnapshot(NodeId peer) {
+  auto& progress = progress_.at(peer);
+  const auto& snapshot = *persistent_.snapshot;
+  if (!progress.snapshot || progress.snapshot->index != snapshot.last_included_index) {
+    progress.snapshot =
+        Progress::SnapshotTransfer{.index = snapshot.last_included_index, .offset = 0, .rpc = 0};
+  }
+  auto& transfer = *progress.snapshot;
+  const auto size = static_cast<std::uint64_t>(snapshot.state.size());
+  const auto offset = std::min(transfer.offset, size);
+  const auto length = std::min<std::uint64_t>(config_.snapshot_chunk_bytes, size - offset);
+  if (rpc_sequence_ == std::numeric_limits<std::uint64_t>::max()) {
+    stopped_ = true;
+    throw std::overflow_error("RPC sequence exhausted");
+  }
+  transfer.rpc = ++rpc_sequence_;
+  const auto begin = snapshot.state.begin() + static_cast<std::ptrdiff_t>(offset);
+  Send(peer,
+       InstallSnapshot{.last_included_index = snapshot.last_included_index,
+                       .last_included_term = snapshot.last_included_term,
+                       .offset = offset,
+                       .done = offset + length == size,
+                       .data = Bytes(begin, begin + static_cast<std::ptrdiff_t>(length))},
+       transfer.rpc);
 }
 
 void RaftNode::ApplyCommitted() {
@@ -223,7 +267,9 @@ auto RaftNode::Propose(Bytes command) -> std::optional<LogIndex> {
 void RaftNode::SendAppend(NodeId peer) {
   auto& progress = progress_.at(peer);
   if (progress.next <= log_.base_index()) {
-    return;  // Snapshot transfer is introduced in M5.
+    // The entries this follower needs were compacted away.
+    SendSnapshot(peer);
+    return;
   }
   auto entries = log_.slice(progress.next, config_.max_append_entries);
   std::size_t bytes = 128;
@@ -296,6 +342,8 @@ void RaftNode::Tick() {
   }
   ApplyCommitted();
   ServeReads();
+  // Compaction runs only on ticks, never in the same step that commits or applies an entry.
+  MaybeCompact();
 }
 
 void RaftNode::Step(const Message& message) {
@@ -321,9 +369,93 @@ void RaftNode::Step(const Message& message) {
     Receive(message, *append);
   } else if (const auto* append_reply = std::get_if<AppendResponse>(&message.body)) {
     Receive(message, *append_reply);
+  } else if (const auto* install = std::get_if<InstallSnapshot>(&message.body)) {
+    Receive(message, *install);
+  } else if (const auto* snapshot_reply = std::get_if<SnapshotResponse>(&message.body)) {
+    Receive(message, *snapshot_reply);
   }
   ApplyCommitted();
   ServeReads();
+}
+
+void RaftNode::Receive(const Message& message, const InstallSnapshot& install) {
+  SnapshotResponse reply{.success = false, .next_offset = 0};
+  const auto respond = [&] { Send(message.from, reply, message.rpc_id); };
+  if (message.term != hard_state_.term || install.last_included_term == 0 ||
+      install.last_included_term > message.term) {
+    respond();
+    return;
+  }
+  role_ = Role::Follower;
+  leader_ = message.from;
+  votes_.clear();
+  progress_.clear();
+  FailReads();
+  ResetElectionTimer();
+  if (install.last_included_index <= commit_index_) {
+    // Everything the snapshot covers is already committed here.
+    reply = {.success = true, .next_offset = std::numeric_limits<std::uint64_t>::max()};
+    respond();
+    return;
+  }
+  if (install.offset == 0) {
+    incoming_ = IncomingSnapshot{
+        .index = install.last_included_index, .term = install.last_included_term, .data = {}};
+  }
+  const bool same = incoming_ && incoming_->index == install.last_included_index &&
+                    incoming_->term == install.last_included_term;
+  if (!same || install.offset != incoming_->data.size() ||
+      install.data.size() > kMaxBlobBytes * 64 - incoming_->data.size()) {
+    // Ask for the next byte we can accept, or a restart when this is another snapshot.
+    reply.next_offset = same ? incoming_->data.size() : 0;
+    respond();
+    return;
+  }
+  incoming_->data.insert(incoming_->data.end(), install.data.begin(), install.data.end());
+  if (!install.done) {
+    reply = {.success = true, .next_offset = incoming_->data.size()};
+    respond();
+    return;
+  }
+  auto received = std::move(*incoming_);
+  incoming_.reset();
+  StorageBatch batch;
+  batch.snapshot = Snapshot{.last_included_index = received.index,
+                            .last_included_term = received.term,
+                            .state = received.data};
+  Persist(batch);
+  if (machine_ != nullptr) {
+    machine_->Restore(received.data);
+  }
+  commit_index_ = std::max(commit_index_, received.index);
+  last_applied_ = received.index;
+  reply = {.success = true, .next_offset = received.data.size()};
+  respond();
+}
+
+void RaftNode::Receive(const Message& message, const SnapshotResponse& reply) {
+  if (role_ != Role::Leader || message.term != hard_state_.term) {
+    return;
+  }
+  auto& progress = progress_.at(message.from);
+  if (!progress.snapshot || progress.snapshot->rpc != message.rpc_id || !persistent_.snapshot ||
+      persistent_.snapshot->last_included_index != progress.snapshot->index) {
+    return;
+  }
+  const auto size = static_cast<std::uint64_t>(persistent_.snapshot->state.size());
+  if (reply.success && reply.next_offset >= size) {
+    progress.match = std::max(progress.match, progress.snapshot->index);
+    progress.next = std::max(progress.next, progress.match + 1);
+    progress.snapshot.reset();
+    if (AdvanceCommit()) {
+      Heartbeat();
+    } else {
+      SendAppend(message.from);
+    }
+    return;
+  }
+  progress.snapshot->offset = std::min(reply.next_offset, size);
+  SendSnapshot(message.from);
 }
 
 void RaftNode::Receive(const Message& message, const RequestVote& vote) {

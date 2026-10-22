@@ -17,6 +17,9 @@ struct ElectionConfig {
   TimePoint election_max{30};
   TimePoint heartbeat_interval{3};
   std::size_t max_append_entries{16};
+  // Compact once this many applied entries are retained. Zero disables snapshots.
+  LogIndex snapshot_threshold{};
+  std::size_t snapshot_chunk_bytes{std::size_t{64} * 1024};
   // Deliberately unsafe: serve reads from local state on any node without ReadIndex.
   // Exists only so the history checkers can prove they detect stale reads.
   bool unsafe_local_reads{};
@@ -75,6 +78,10 @@ class RaftNode {
   void Receive(const Message& message, const VoteResponse& vote);
   void Receive(const Message& message, const AppendEntries& append);
   void Receive(const Message& message, const AppendResponse& reply);
+  void Receive(const Message& message, const InstallSnapshot& install);
+  void Receive(const Message& message, const SnapshotResponse& reply);
+  void SendSnapshot(NodeId peer);
+  void MaybeCompact();
   void EnsureRunning() const;
   void ApplyCommitted();
   void ServeReads();
@@ -104,7 +111,21 @@ class RaftNode {
     // Highest read context echoed by this peer in the current term.
     std::uint64_t acked_context{};
     std::map<std::uint64_t, Flight> flights;
+    // One chunk is outstanding at a time; heartbeats resend it until it is acknowledged.
+    struct SnapshotTransfer {
+      LogIndex index{};
+      std::uint64_t offset{};
+      std::uint64_t rpc{};
+    };
+    std::optional<SnapshotTransfer> snapshot;
   };
+  // Chunks of a snapshot being received, accepted only in order.
+  struct IncomingSnapshot {
+    LogIndex index{};
+    Term term{};
+    Bytes data;
+  };
+  std::optional<IncomingSnapshot> incoming_;
   struct PendingRead {
     std::uint64_t id{};
     Bytes query;
