@@ -1,0 +1,26 @@
+{
+  "seed": 101,
+  "nodes": 3,
+  "clients": 4,
+  "keys": 3,
+  "duration_s": 60.0,
+  "unsafe_reads": true,
+  "operations": 6161,
+  "results": {
+    "ok": 6113,
+    "fail": 28,
+    "info": 20
+  },
+  "nemesis": {
+    "delay": 4,
+    "partition": 5,
+    "kill": 5,
+    "restart": 5,
+    "pause": 2,
+    "resume": 2,
+    "heal": 1,
+    "settle": 1
+  },
+  "linearizable": false,
+  "counterexample": "key 'k0': no order consistent with real time explains these operations:\n  client 2 put(k0, 'c2-401') [31140745183800, 31140762384300]\n  client 1 put(k0, 'c1-551') [31142876762500, 31142896210200]\n  client 4 get(k0) -> 'c2-401' [31156017776600, 31156017868500]\n  client 4 get(k0) -> 'c2-401' [31156017776600, 31156017868500] cannot be placed: 2 operation(s) finished before it started, and every valid order leaves the register in one of 'c1-551' at that point, none of which matches its result."
+}

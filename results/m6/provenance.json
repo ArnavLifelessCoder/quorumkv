@@ -1,0 +1,7 @@
+{
+  "producer": "scripts/run_m6_campaign.py",
+  "server_and_client_source": "9fc5c7f (no C++ changes through e23d1ef)",
+  "harness_and_checker_source": "e23d1ef",
+  "build": "release preset, MSVC, binaries built from the committed tree",
+  "note": "Full histories stay in the campaign directory because of their size; each run records the SHA-256 of its history."
+}
