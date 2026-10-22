@@ -101,7 +101,7 @@ on `5cbbb40`. M2 was approved after
 [CI run 39454980609](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39454980609).
 M3 was approved after
 [CI run 39557568364](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39557568364)
-on `be1ae16`. M4 awaits review and approval.
+on `be1ae16`. M4 and M5 await review and approval.
 
 ## Tests and replay
 
@@ -202,6 +202,14 @@ session dedupe, must be flagged by that checker or the suite fails.
 Capture M4 evidence with `.\scripts\capture_m4.ps1` from a clean committed tree;
 `scripts/summarize_m4.py` adds the KV campaign, negative controls, and KV replay to
 the M3 summary.
+
+## Snapshots and log compaction
+
+[The snapshot design](docs/snapshots.md) covers compaction, chunked InstallSnapshot, restore
+on boot, and the extra oracle checks. Snapshots carry the KV session table, so the M4
+exactly-once checks keep holding across restores and installs. Capture M5 evidence with
+`.\scripts\capture_m5.ps1`; `scripts/summarize_m5.py` adds the snapshot campaign, the
+long-run log bound, and the sessionless-snapshot control to the M4 summary.
 
 ## Bugs found by the simulator
 
