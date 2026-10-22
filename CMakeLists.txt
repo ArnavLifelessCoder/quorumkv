@@ -40,6 +40,9 @@ endif()
 add_library(quorumkv_options INTERFACE)
 target_include_directories(quorumkv_options INTERFACE "${PROJECT_SOURCE_DIR}/include")
 target_compile_features(quorumkv_options INTERFACE cxx_std_20)
+if(WIN32)
+  target_link_libraries(quorumkv_options INTERFACE ws2_32)
+endif()
 if(MSVC)
   target_compile_options(quorumkv_options INTERFACE /W4 /WX /permissive- /Zc:__cplusplus)
 else()
@@ -55,7 +58,8 @@ endif()
 add_library(quorumkv_common OBJECT
   src/rpc/codec.cpp src/raft/log.cpp src/raft/file_storage.cpp src/kv/store.cpp
   src/sim/support.cpp src/sim/cluster.cpp src/sim/replication_safety.cpp src/sim/kv_history.cpp
-  src/sim/kv_workload.cpp)
+  src/sim/kv_workload.cpp src/rpc/net.cpp src/rpc/client_protocol.cpp src/server/server.cpp
+  src/client/client.cpp)
 if(WIN32)
   target_sources(quorumkv_common PRIVATE src/platform/windows/file.cpp)
 else()
@@ -64,6 +68,10 @@ endif()
 target_link_libraries(quorumkv_common PUBLIC quorumkv_options)
 add_library(quorumkv src/raft/node.cpp $<TARGET_OBJECTS:quorumkv_common>)
 target_link_libraries(quorumkv PUBLIC quorumkv_options)
+add_executable(quorumkv_server src/server/main.cpp)
+target_link_libraries(quorumkv_server PRIVATE quorumkv)
+add_executable(quorumkv_client src/client/main.cpp)
+target_link_libraries(quorumkv_client PRIVATE quorumkv)
 if(BUILD_TESTING)
   find_package(Python3 REQUIRED COMPONENTS Interpreter)
   include(FetchContent)
@@ -98,6 +106,8 @@ if(BUILD_TESTING)
     tests/kv_history_test.cpp
     tests/kv_fuzz_test.cpp
     tests/snapshot_test.cpp
+    tests/client_protocol_test.cpp
+    tests/server_test.cpp
   )
   target_link_libraries(quorumkv_tests PRIVATE quorumkv GTest::gtest)
   target_compile_definitions(quorumkv_tests PRIVATE QUORUMKV_TEST_ROOT="${PROJECT_BINARY_DIR}")
