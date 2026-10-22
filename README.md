@@ -211,6 +211,20 @@ exactly-once checks keep holding across restores and installs. Capture M5 eviden
 `.\scripts\capture_m5.ps1`; `scripts/summarize_m5.py` adds the snapshot campaign, the
 long-run log bound, and the sessionless-snapshot control to the M4 summary.
 
+## Real cluster, fault harness, and linearizability checker
+
+`quorumkv_server` runs one node per process over TCP; `quorumkv_client` talks to a cluster
+and records histories. `python/harness/` starts real processes behind per-link proxies and
+runs a nemesis of partitions, one-way cuts, delays, leader kills and process pauses.
+`python/linearizability/` checks each history with a Wing-Gong/Lowe search. See
+[networking](docs/networking.md), [the harness and checker](docs/linearizability.md), and the
+[M6](docs/m6-review.md) and [M7](docs/m7-review.md) review packets for the campaign results.
+
+```powershell
+cd python
+..\.venv\Scripts\python.exe -m harness.run --server ..\build\release\quorumkv_server.exe --client ..\build\release\quorumkv_client.exe --seed 7 --duration 300 --out ..\build\runs\seed-7
+```
+
 ## Bugs found by the simulator
 
 No implementation bug has been found by the election seed campaign so far.
