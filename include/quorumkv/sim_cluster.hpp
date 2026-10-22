@@ -24,6 +24,8 @@ struct ClusterConfig {
   // When set, every boot gets a fresh state machine rebuilt from the retained log.
   std::function<std::unique_ptr<StateMachine>()> machine_factory{};
   bool unsafe_reads{};
+  LogIndex snapshot_threshold{};
+  std::size_t snapshot_chunk_bytes{std::size_t{64} * 1024};
 };
 
 struct ClientRead {
@@ -68,6 +70,11 @@ struct SimStats {
   std::uint64_t applied_commands{};
   std::uint64_t reads_served{};
   std::uint64_t reads_failed{};
+  std::uint64_t snapshots_taken{};
+  std::uint64_t snapshot_installs{};
+  std::uint64_t snapshot_chunks{};
+  std::uint64_t restore_checks{};
+  std::uint64_t max_retained_entries{};
   auto operator==(const SimStats&) const -> bool = default;
 };
 
@@ -99,6 +106,9 @@ class Cluster {
   [[nodiscard]] auto Epoch(NodeId id) const -> std::uint64_t;
   [[nodiscard]] auto LeaderHint(NodeId id) const -> std::optional<NodeId>;
   [[nodiscard]] auto Size() const -> std::size_t;
+  // Encoded state machine of a live node, or empty when the node is down.
+  [[nodiscard]] auto MachineSnapshot(NodeId id) const -> Bytes;
+  [[nodiscard]] auto LastApplied(NodeId id) const -> LogIndex;
   [[nodiscard]] auto Log(NodeId id) const -> PersistentState;
   [[nodiscard]] auto CommitIndex(NodeId id) const -> LogIndex;
   [[nodiscard]] auto Committed() const -> const std::vector<LogEntry>&;

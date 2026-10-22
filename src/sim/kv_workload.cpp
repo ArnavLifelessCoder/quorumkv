@@ -12,7 +12,6 @@ namespace quorumkv::sim {
 namespace {
 
 constexpr std::uint64_t kTimeout = 30;
-constexpr unsigned kActiveTicks = 300;
 constexpr unsigned kQuiesceLimit = 1500;
 const std::vector<std::string> kAppendKeys{"a0", "a1"};
 const std::vector<std::string> kRegisterKeys{"r0", "r1"};
@@ -40,15 +39,18 @@ class Driver {
  public:
   explicit Driver(const KvScenarioConfig& config)
       : config_(config),
-        cluster_(
-            ClusterConfig{.seed = config.seed,
-                          .size = config.seed % 2 == 0 ? 3U : 5U,
-                          .record_trace = config.record_trace,
-                          .max_append_entries = 1 + config.seed % 8,
-                          .machine_factory = config.machine_factory
-                                                 ? config.machine_factory
-                                                 : [] { return std::make_unique<kv::Store>(); },
-                          .unsafe_reads = config.unsafe_reads}),
+        cluster_(ClusterConfig{
+            .seed = config.seed,
+            .size = config.seed % 2 == 0 ? 3U : 5U,
+            .record_trace = config.record_trace,
+            .max_append_entries = 1 + config.seed % 8,
+            .machine_factory = config.machine_factory
+                                   ? config.machine_factory
+                                   : [] { return std::make_unique<kv::Store>(); },
+            .unsafe_reads = config.unsafe_reads,
+            .snapshot_threshold =
+                config.snapshot_threshold.value_or(config.seed % 5 == 0 ? 0 : 4 + config.seed % 13),
+            .snapshot_chunk_bytes = config.snapshot_chunk_bytes.value_or(8 + config.seed % 61)}),
         nemesis_(config.seed ^ 0x6b766e656d657369ULL),
         choice_(config.seed ^ 0x6b76636c69656e74ULL) {
     const auto count = 3 + config.seed % 3;
@@ -64,10 +66,16 @@ class Driver {
   auto Run() -> KvScenarioResult {
     const auto size = cluster_.Size();
     // Power loss right after a granted vote, a sent RequestVote, or an append acknowledgement.
-    cluster_.SetVoteCrashPercent(5 + nemesis_.Next() % 11);
-    cluster_.SetReplicationCrashPercent(1 + nemesis_.Next() % 4, 1 + nemesis_.Next() % 3);
-    for (unsigned tick = 0; tick < kActiveTicks; ++tick) {
-      Nemesis(tick);
+    if (config_.faults) {
+      cluster_.SetVoteCrashPercent(5 + nemesis_.Next() % 11);
+      cluster_.SetReplicationCrashPercent(1 + nemesis_.Next() % 4, 1 + nemesis_.Next() % 3);
+    } else {
+      cluster_.SetFaults({.drop_percent = 0, .duplicate_percent = 0, .max_delay = 1});
+    }
+    for (unsigned tick = 0; tick < config_.active_ticks; ++tick) {
+      if (config_.faults) {
+        Nemesis(tick);
+      }
       Step(true);
     }
     cluster_.Heal();

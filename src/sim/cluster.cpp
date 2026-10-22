@@ -56,6 +56,7 @@ struct Cluster::Impl {
     RaftLog checked_log;
     LogIndex applied{};
     std::uint64_t epoch{};
+    LogIndex checked_applied{};
     std::vector<NodeApplied> applied_out;
     std::vector<NodeRead> reads_out;
   };
@@ -66,7 +67,9 @@ struct Cluster::Impl {
         manual_delivery(config.manual_delivery),
         max_append_entries(config.max_append_entries),
         machine_factory(config.machine_factory),
-        unsafe_reads(config.unsafe_reads) {
+        unsafe_reads(config.unsafe_reads),
+        snapshot_threshold(config.snapshot_threshold),
+        snapshot_chunk_bytes(config.snapshot_chunk_bytes) {
     if (config.size != 3 && config.size != 5) {
       throw std::invalid_argument("election simulator uses three or five members");
     }
@@ -107,6 +110,10 @@ struct Cluster::Impl {
   std::size_t max_append_entries;
   std::function<std::unique_ptr<StateMachine>()> machine_factory;
   bool unsafe_reads;
+  LogIndex snapshot_threshold;
+  std::size_t snapshot_chunk_bytes;
+  // Set while an InstallSnapshot is being delivered, to tell installs from compactions.
+  bool installing{};
   // First response observed at each committed index; every replica must agree.
   std::map<LogIndex, Applied> responses;
   std::string trace;
@@ -148,7 +155,14 @@ struct Cluster::Impl {
         throw std::logic_error("node hard state differs from durable storage");
       }
       if (host.checked_revision != host.storage.revision()) {
+        const auto previous_base = host.checked_log.base_index();
         host.checked_log = RaftLog(host.storage.durable());
+        if (host.checked_log.base_index() != previous_base && host.storage.durable().snapshot) {
+          replication.ObserveSnapshot(*host.storage.durable().snapshot);
+          ++(installing ? stats.snapshot_installs : stats.snapshots_taken);
+        }
+        stats.max_retained_entries =
+            std::max<std::uint64_t>(stats.max_retained_entries, host.checked_log.entries().size());
         replication.ObserveLog(member, host.checked_log);
         host.checked_revision = host.storage.revision();
         for (const auto& entry : host.checked_log.entries()) {
@@ -232,8 +246,18 @@ struct Cluster::Impl {
         std::make_unique<RaftNode>(ElectionConfig{.id = id,
                                                   .members = members,
                                                   .max_append_entries = max_append_entries,
+                                                  .snapshot_threshold = snapshot_threshold,
+                                                  .snapshot_chunk_bytes = snapshot_chunk_bytes,
                                                   .unsafe_local_reads = unsafe_reads},
                                    host.link, clock, host.storage, host.random, host.machine.get());
+    host.checked_applied = host.node->last_applied();
+    // Restart from a snapshot must reproduce exactly the state that was saved.
+    if (const auto& snapshot = host.storage.durable().snapshot; snapshot && host.machine) {
+      ++stats.restore_checks;
+      if (host.machine->Snapshot() != snapshot->state) {
+        throw std::logic_error("restored state machine differs from its durable snapshot");
+      }
+    }
     ++stats.restarts;
     Check("restart", id);
   }
@@ -242,6 +266,17 @@ struct Cluster::Impl {
   void Collect(Host& host) {
     if (!host.node) {
       return;
+    }
+    // Snapshot plus replayed log must reach the same state other replicas saved there.
+    if (const auto applied = host.node->last_applied();
+        host.machine && applied != host.checked_applied) {
+      host.checked_applied = applied;
+      if (const auto* snapshot = replication.SnapshotAt(applied)) {
+        ++stats.restore_checks;
+        if (host.machine->Snapshot() != snapshot->state) {
+          throw std::logic_error("replayed state differs from a snapshot of the same index");
+        }
+      }
     }
     for (auto& applied : host.node->TakeApplied()) {
       ++stats.applied_commands;
@@ -317,12 +352,18 @@ struct Cluster::Impl {
     HashMessage(message);
     if (At(message.to).node && Connected(message)) {
       ++stats.delivered;
+      const bool install = std::holds_alternative<InstallSnapshot>(message.body);
+      if (install) {
+        ++stats.snapshot_chunks;
+      }
       if (const auto* vote = std::get_if<VoteResponse>(&message.body);
           vote && vote->granted && message.term < At(message.to).node->hard_state().term) {
         ++stats.stale_vote_deliveries;
       }
+      installing = install;
       Run(message.to, [&message](RaftNode& node) { node.Step(message); });
       Check("deliver", message.to);
+      installing = false;
     } else {
       ++stats.dropped;
       Check("drop", message.to);
@@ -434,6 +475,14 @@ auto Cluster::LeaderHint(NodeId id) const -> std::optional<NodeId> {
   return node ? node->leader_hint() : std::nullopt;
 }
 auto Cluster::Size() const -> std::size_t { return impl_->members.size(); }
+auto Cluster::MachineSnapshot(NodeId id) const -> Bytes {
+  const auto& host = impl_->At(id);
+  return host.node && host.machine ? host.machine->Snapshot() : Bytes{};
+}
+auto Cluster::LastApplied(NodeId id) const -> LogIndex {
+  const auto& node = impl_->At(id).node;
+  return node ? node->last_applied() : 0;
+}
 auto Cluster::Log(NodeId id) const -> PersistentState { return impl_->At(id).storage.Load(); }
 auto Cluster::CommitIndex(NodeId id) const -> LogIndex {
   const auto& node = impl_->At(id).node;

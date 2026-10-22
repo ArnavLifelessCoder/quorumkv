@@ -35,6 +35,33 @@ class NoDedupeStore final : public StateMachine {
   std::uint64_t fresh_{};
 };
 
+// Test-only broken store: snapshots keep the data but drop the session table, so a
+// retry applied after a restore or InstallSnapshot executes a second time.
+class SessionlessSnapshotStore final : public StateMachine {
+ public:
+  auto Apply(std::span<const std::uint8_t> command) -> Bytes override {
+    return store_.Apply(command);
+  }
+  [[nodiscard]] auto Read(std::span<const std::uint8_t> query) const -> Bytes override {
+    return store_.Read(query);
+  }
+  [[nodiscard]] auto Snapshot() const -> Bytes override {
+    kv::Store data_only;
+    std::uint64_t sequence = 0;
+    for (const auto& [key, value] : store_.data()) {
+      static_cast<void>(
+          data_only.Apply(kv::EncodeRequest({.client = {.high = 0, .low = 0},
+                                             .sequence = ++sequence,
+                                             .operation = kv::Put{.key = key, .value = value}})));
+    }
+    return data_only.Snapshot();
+  }
+  void Restore(std::span<const std::uint8_t> snapshot) override { store_.Restore(snapshot); }
+
+ private:
+  kv::Store store_;
+};
+
 // Searches seeds for the first checker violation of a deliberately broken mode.
 auto FirstViolation(const KvScenarioConfig& base,
                     std::uint64_t limit) -> std::pair<std::uint64_t, std::string> {
@@ -80,6 +107,12 @@ TEST(KvFuzz, ExactlyOnceAndFreshReadsAcrossSeededFaults) {
       totals.stats.reads_failed += result.stats.reads_failed;
       totals.stats.crashes += result.stats.crashes;
       totals.stats.partitions += result.stats.partitions;
+      totals.stats.snapshots_taken += result.stats.snapshots_taken;
+      totals.stats.snapshot_installs += result.stats.snapshot_installs;
+      totals.stats.snapshot_chunks += result.stats.snapshot_chunks;
+      totals.stats.restore_checks += result.stats.restore_checks;
+      totals.stats.max_retained_entries =
+          std::max(totals.stats.max_retained_entries, result.stats.max_retained_entries);
       digest = (digest ^ result.digest) * 1099511628211ULL;
     } catch (const std::exception& error) {
       std::cerr << "[sim-failure] seed=" << seed << " replay=" << replay << '\n';
@@ -104,6 +137,12 @@ TEST(KvFuzz, ExactlyOnceAndFreshReadsAcrossSeededFaults) {
             << " steps=" << totals.stats.steps << " safety_checks=" << totals.stats.safety_checks
             << " max_quiesce_ticks=" << totals.quiesce_ticks << " digest=" << std::hex << digest
             << std::dec << '\n';
+  std::cout << "[kv-snapshot] first_seed=" << config.first << " seeds=" << config.count
+            << " snapshots_taken=" << totals.stats.snapshots_taken
+            << " snapshot_installs=" << totals.stats.snapshot_installs
+            << " snapshot_chunks=" << totals.stats.snapshot_chunks
+            << " restore_checks=" << totals.stats.restore_checks
+            << " max_retained_entries=" << totals.stats.max_retained_entries << '\n';
 }
 
 TEST(KvFuzz, SeedReplaysIdentically) {
@@ -131,6 +170,17 @@ TEST(KvFuzz, CheckerFlagsMissingSessionDedupe) {
   std::cout << "[kv-negative] mode=no_dedupe first_seed=" << seed << " error=" << error << '\n';
   ASSERT_LT(seed, 1000U) << "the checker never flagged duplicate application of a retry";
   EXPECT_TRUE(error.starts_with("Exactly-once")) << error;
+}
+
+TEST(KvFuzz, CheckerFlagsSnapshotsThatDropSessions) {
+  const auto [seed, error] = FirstViolation(
+      {.machine_factory = [] { return std::make_unique<SessionlessSnapshotStore>(); }}, 1000);
+  std::cout << "[kv-snapshot-negative] mode=sessionless_snapshot first_seed=" << seed
+            << " error=" << error << '\n';
+  ASSERT_LT(seed, 1000U) << "nothing flagged snapshots that lose the session table";
+  EXPECT_TRUE(error.starts_with("Exactly-once") || error.find("snapshot") != std::string::npos ||
+              error.starts_with("State Machine Safety"))
+      << error;
 }
 
 }  // namespace

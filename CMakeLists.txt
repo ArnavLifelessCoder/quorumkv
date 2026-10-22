@@ -97,6 +97,7 @@ if(BUILD_TESTING)
     tests/read_index_test.cpp
     tests/kv_history_test.cpp
     tests/kv_fuzz_test.cpp
+    tests/snapshot_test.cpp
   )
   target_link_libraries(quorumkv_tests PRIVATE quorumkv GTest::gtest)
   target_compile_definitions(quorumkv_tests PRIVATE QUORUMKV_TEST_ROOT="${PROJECT_BINARY_DIR}")

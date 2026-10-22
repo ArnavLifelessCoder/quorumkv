@@ -16,6 +16,13 @@ struct KvScenarioConfig {
   // Deliberately broken modes used to prove the checkers find real bugs.
   bool unsafe_reads{};
   std::function<std::unique_ptr<StateMachine>()> machine_factory{};
+  // Unset: derived from the seed. One seed in five runs without snapshots, and chunks are
+  // small enough that most transfers span several InstallSnapshot messages.
+  std::optional<LogIndex> snapshot_threshold{};
+  std::optional<std::size_t> snapshot_chunk_bytes{};
+  unsigned active_ticks{300};
+  // False runs the same clients with no nemesis, for long steady workloads.
+  bool faults{true};
 };
 
 struct KvScenarioResult {
