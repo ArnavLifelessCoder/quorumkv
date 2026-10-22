@@ -35,10 +35,10 @@ jobs:
         run: |
           python -m venv .venv
           if [ "$RUNNER_OS" = "Windows" ]; then
-            .venv/Scripts/python -m pip install cmake ninja
+            .venv/Scripts/python -m pip install cmake ninja psutil==7.0.0 pytest==8.4.2
             echo "$GITHUB_WORKSPACE/.venv/Scripts" >> "$GITHUB_PATH"
           else
-            .venv/bin/python -m pip install cmake ninja
+            .venv/bin/python -m pip install cmake ninja psutil==7.0.0 pytest==8.4.2
             echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
           fi
       - name: Configure
@@ -47,6 +47,12 @@ jobs:
         run: cmake --build --preset ${{ matrix.preset }}
       - name: Test
         run: ctest --preset ${{ matrix.preset }} --verbose
+      - name: Real cluster harness smoke run
+        if: matrix.preset == 'debug'
+        shell: bash
+        env:
+          QUORUMKV_BIN: build/debug
+        run: python -m pytest tests/python/test_proxy.py -q --basetemp=build/pytest-harness
       - name: Verify simulator replay
         shell: bash
         run: |
@@ -84,7 +90,7 @@ jobs:
       - name: Install lint tools
         run: |
           python -m venv .venv
-          .venv/bin/python -m pip install clang-format==18.1.8 ruff==0.11.13 pytest==8.4.2
+          .venv/bin/python -m pip install clang-format==18.1.8 ruff==0.11.13 pytest==8.4.2 psutil==7.0.0
           echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"
       - run: python scripts/check_format.py
       - run: ruff check .
