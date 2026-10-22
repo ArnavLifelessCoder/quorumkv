@@ -54,12 +54,17 @@ class Cluster:
         tick_ms: int = 10,
         snapshot_threshold: int = 500,
         unsafe_reads: bool = False,
+        direct: bool = False,
+        server_args: list[str] | None = None,
     ) -> None:
         if size not in (3, 5):
             raise ValueError("cluster size must be 3 or 5")
         self.server, self.client, self.root = server, client, root
         self.tick_ms, self.snapshot_threshold = tick_ms, snapshot_threshold
         self.unsafe_reads = unsafe_reads
+        # Direct clusters skip the proxies, for benchmarks; link faults then do nothing.
+        self.direct = direct
+        self.server_args = list(server_args or [])
         self.hub = ProxyHub()
         links = [(i, j) for i in range(1, size + 1) for j in range(1, size + 1) if i != j]
         ports = free_ports(2 * size + len(links))
@@ -74,8 +79,9 @@ class Cluster:
             for i in range(1, size + 1)
         }
         self.proxy_ports = dict(zip(links, ports[2 * size :], strict=True))
-        for link, port in self.proxy_ports.items():
-            self.hub.add_link(link, port, self.nodes[link[1]].peer_port)
+        if not direct:
+            for link, port in self.proxy_ports.items():
+                self.hub.add_link(link, port, self.nodes[link[1]].peer_port)
 
     @property
     def size(self) -> int:
@@ -99,7 +105,13 @@ class Cluster:
         ]  # fmt: skip
         for other in sorted(self.nodes):
             if other != node_id:
-                command += ["--peer", f"{other}=127.0.0.1:{self.proxy_ports[(node_id, other)]}"]
+                port = (
+                    self.nodes[other].peer_port
+                    if self.direct
+                    else self.proxy_ports[(node_id, other)]
+                )
+                command += ["--peer", f"{other}=127.0.0.1:{port}"]
+        command += self.server_args
         if self.unsafe_reads:
             command.append("--unsafe-reads")
         log = node.log_path.open("ab")
