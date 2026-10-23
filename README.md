@@ -10,6 +10,10 @@ partitions, crashes and torn syncs, and checks Raft's safety properties after ev
 step. The other is a cluster of real processes over TCP, attacked by a fault-injection harness,
 whose client histories are checked by a linearizability checker.
 
+The [project page](https://arnavlifelesscoder.github.io/quorumkv/) has a small interactive model
+of the cluster to crash and partition, and the results below as charts. Its source is
+`site/index.html`.
+
 ## Results
 
 All numbers come from files in `results/`, produced by the scripts named next to them. The

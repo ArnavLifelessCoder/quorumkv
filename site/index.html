@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="quorumkv: a Raft-replicated, linearizable key-value store in C++20. A live cluster you can crash and partition, and the measured results.">
+<title>quorumkv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one 1120px column. A live cluster opens the page, then evidence sections, each a
+   label column beside its content on wide screens and stacked on phones. */
+:root {
+  --bg: #f3f5f4;
+  --surface: #ffffff;
+  --ink: #142029;
+  --muted: #56646e;
+  --rule: #d6dddf;
+  --accent: #1d6a86;
+  --leader: #c47f08;
+  --candidate: #7454c0;
+  --down: #a7b0b5;
+  --ok: #2b7f49;
+  --bad: #bf3b33;
+  --t0: #1d6a86; --t1: #c47f08; --t2: #7454c0; --t3: #2b7f49; --t4: #b4466e; --t5: #5a6b7a;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1317; --surface: #141c21; --ink: #e2e9ec; --muted: #93a2ab; --rule: #25313a;
+    --accent: #58aecb; --leader: #eea733; --candidate: #a58be8; --down: #4a565d;
+    --ok: #57b97a; --bad: #e8695e;
+    --t0: #58aecb; --t1: #eea733; --t2: #a58be8; --t3: #57b97a; --t4: #e07aa0; --t5: #8d9daa;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1317; --surface: #141c21; --ink: #e2e9ec; --muted: #93a2ab; --rule: #25313a;
+  --accent: #58aecb; --leader: #eea733; --candidate: #a58be8; --down: #4a565d;
+  --ok: #57b97a; --bad: #e8695e;
+  --t0: #58aecb; --t1: #eea733; --t2: #a58be8; --t3: #57b97a; --t4: #e07aa0; --t5: #8d9daa;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px;
+  line-height: 1.55;
+}
+.wrap {
+  max-width: 1120px; margin: 0 auto; padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 72px;
+}
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: clamp(44px, 7vw, 76px); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 30px; font-weight: 600; }
+h3 { font-size: 19px; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible, .node:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.mono, code { font-family: var(--mono); font-size: 0.88em; }
+.label {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted);
+}
+.num { font-variant-numeric: tabular-nums; }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 40px; align-items: start; }
+.intro { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.lede { font-size: 19px; color: var(--ink); }
+.intro .sub { color: var(--muted); }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+button {
+  font: 500 14px var(--body); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--rule); border-radius: 6px; padding: 8px 12px; cursor: pointer;
+}
+button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.toggle { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; color: var(--muted); }
+.oracle {
+  display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; font-size: 14px;
+  border-top: 1px solid var(--rule); padding-top: 16px;
+}
+.oracle dt { color: var(--muted); }
+.oracle dd { margin: 0; font-family: var(--mono); font-size: 13px; }
+.pill {
+  display: inline-block; padding: 1px 8px; border-radius: 999px; font-family: var(--mono);
+  font-size: 12px; border: 1px solid currentColor;
+}
+.pill.ok { color: var(--ok); }
+.pill.bad { color: var(--bad); }
+
+.stage { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 12px; min-width: 0; }
+.stage svg { display: block; width: 100%; height: auto; }
+.stage .hint { font-size: 13px; color: var(--muted); padding: 4px 6px 0; }
+.ring-line { stroke: var(--rule); fill: none; }
+.node { cursor: pointer; }
+.node circle.body { stroke-width: 2.5; }
+.node text { font-family: var(--mono); text-anchor: middle; }
+.node .name { font-size: 13px; fill: var(--muted); }
+.node .term { font-size: 15px; font-weight: 500; }
+.node .role { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+.timer { fill: none; stroke-width: 3; stroke-linecap: round; }
+.partition { stroke: var(--bad); stroke-width: 2; stroke-dasharray: 6 6; }
+.partition-label { fill: var(--bad); font: 12px var(--mono); }
+.clock { fill: var(--muted); font: 12px var(--mono); }
+
+.below { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 24px; margin-top: -40px; }
+.panel { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.logs { overflow-x: auto; }
+.logrow { display: grid; grid-template-columns: 118px repeat(14, 26px); gap: 3px; align-items: center; }
+.logrow .who { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+.logrow .idx { font-family: var(--mono); font-size: 10px; color: var(--muted); text-align: center; }
+.cell {
+  height: 24px; border-radius: 4px; font: 500 11px/22px var(--mono); text-align: center;
+  border: 1px solid transparent;
+}
+.cell.empty { border: 1px dashed var(--rule); }
+.cell.committed { color: var(--bg); }
+.cell.pending { background: transparent !important; }
+.feed { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.feed li { display: grid; grid-template-columns: 64px 1fr; gap: 8px; }
+.feed .t { font-family: var(--mono); color: var(--muted); font-size: 12px; }
+
+/* Sections */
+section.block { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 32px; border-top: 1px solid var(--rule); padding-top: 28px; }
+section.block > header { display: flex; flex-direction: column; gap: 10px; }
+section.block > header p { font-size: 14px; color: var(--muted); }
+.content { min-width: 0; display: flex; flex-direction: column; gap: 28px; }
+
+.claims { display: flex; flex-direction: column; }
+.claim { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.claim:first-child { padding-top: 0; }
+.claim .big { font-family: var(--display); font-size: 30px; font-weight: 600; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.claim .big small { display: block; font: 12px var(--mono); color: var(--muted); margin-top: 4px; letter-spacing: 0.04em; }
+.claim .what { display: flex; flex-direction: column; gap: 4px; }
+.claim .src { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+.group { display: flex; flex-direction: column; gap: 10px; }
+.bar-row { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 14px; align-items: center; }
+.bar-row .name { font-size: 14px; }
+.bar-track { position: relative; height: 22px; }
+.bar { position: absolute; left: 0; top: 3px; height: 16px; background: var(--accent); border-radius: 2px; opacity: 0.85; }
+.bar.alt { background: var(--muted); }
+.whisker { position: absolute; top: 10px; height: 2px; background: var(--ink); }
+.whisker::before, .whisker::after { content: ""; position: absolute; top: -4px; width: 2px; height: 10px; background: var(--ink); }
+.whisker::before { left: 0; }
+.whisker::after { right: 0; }
+.bar-val { position: absolute; top: 0; font: 12px/22px var(--mono); white-space: nowrap; color: var(--ink); }
+.bar-val span { color: var(--muted); }
+.scale-note { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
+.strip svg { width: 100%; height: auto; display: block; }
+.axis text { fill: var(--muted); font: 11px var(--mono); }
+.axis line { stroke: var(--rule); }
+.strip .rowlabel { fill: var(--ink); font: 500 13px var(--body); }
+.strip .note { fill: var(--muted); font: 12px var(--body); }
+
+.findings { display: flex; flex-direction: column; gap: 16px; }
+.findings ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; max-width: 70ch; }
+
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 9px 12px 9px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font: 500 12px var(--mono); color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; }
+td .src { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+pre.mermaid { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; overflow-x: auto; margin: 0; }
+.cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 32px; }
+.cols div { display: flex; flex-direction: column; gap: 6px; }
+.cols p { font-size: 15px; color: var(--muted); }
+
+footer { border-top: 1px solid var(--rule); padding-top: 20px; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+
+@media (max-width: 900px) {
+  .hero, .below, section.block { grid-template-columns: minmax(0, 1fr); }
+  .below { margin-top: -48px; }
+  section.block { gap: 20px; }
+}
+@media (max-width: 560px) {
+  .claim { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .bar-row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .cols { grid-template-columns: minmax(0, 1fr); }
+  .wrap { gap: 56px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}
+</style>
+<style>
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="intro">
+      <span class="label">C++20 · Raft · linearizable key-value store</span>
+      <h1>quorumkv</h1>
+      <p class="lede">A key-value store that stays correct when machines crash, networks split and
+        messages arrive late, twice, or not at all. Five copies agree on every write through the
+        Raft consensus protocol.</p>
+      <p class="sub">The cluster on this page runs a small JavaScript model of the same protocol.
+        Crash the leader and watch the others elect a new one. Split the network and watch the
+        minority side stop accepting writes. A safety check runs on every step, like the one in
+        the project's simulator.</p>
+      <div class="controls">
+        <button class="primary" id="btn-write" type="button">Send a write</button>
+        <button id="btn-kill" type="button">Crash the leader</button>
+        <button id="btn-part" type="button" aria-pressed="false">Split the network</button>
+        <button id="btn-pause" type="button" aria-pressed="false">Pause</button>
+        <label class="toggle"><input type="checkbox" id="auto" checked> Steady writes</label>
+      </div>
+      <dl class="oracle">
+        <dt>Safety checks</dt><dd><span class="pill ok" id="safety">passing</span> <span id="checks" class="num">0</span> steps checked</dd>
+        <dt>Leader</dt><dd id="leader-readout">none yet</dd>
+        <dt>Committed</dt><dd id="commit-readout">0 entries</dd>
+      </dl>
+    </div>
+
+    <div class="stage">
+      <svg id="ring" viewBox="0 0 520 430" role="img" aria-label="Five Raft nodes in a ring, exchanging messages"></svg>
+      <p class="hint">Click a node to crash it or bring it back. The arc around each follower is its
+        election timer. Purple dots are vote requests, blue dots are log replication.</p>
+    </div>
+  </div>
+
+  <div class="below">
+    <div class="panel">
+      <span class="label">Each node's log (numbers are terms; filled means committed)</span>
+      <div class="logs" id="logs"></div>
+    </div>
+    <div class="panel">
+      <span class="label">What just happened</span>
+      <ul class="feed" id="feed"></ul>
+    </div>
+  </div>
+
+  <section class="block">
+    <header>
+      <span class="label">01 · Correctness</span>
+      <h2>What was checked</h2>
+      <p>Every number traces to a CI log or a results file in the repository.</p>
+    </header>
+    <div class="content">
+      <div class="claims">
+        <div class="claim">
+          <div class="big">19.7M<small>simulated steps</small></div>
+          <div class="what"><h3>Never two leaders in one term</h3>
+            <p>10,000 seeded election runs with drops, duplicates, long delays, partitions,
+              crashes and power loss right after a vote reply. Checked after every step.</p>
+            <span class="src">results/m8/ci.json</span></div>
+        </div>
+        <div class="claim">
+          <div class="big">20.1M<small>simulated steps</small></div>
+          <div class="what"><h3>Logs never diverge once committed</h3>
+            <p>Log Matching, State Machine Safety and Leader Completeness checked after every
+              step of 10,000 replication runs, including the Figure 8 schedule from the Raft paper.</p>
+            <span class="src">results/m8/ci.json</span></div>
+        </div>
+        <div class="claim">
+          <div class="big">175,018<small>client operations</small></div>
+          <div class="what"><h3>Retries apply exactly once, reads are never stale</h3>
+            <p>Clients time out and resend to other nodes while nodes crash and snapshots are
+              taken and installed (34,870 snapshots, 141 installs). No duplicate or stale read.</p>
+            <span class="src">results/m8/ci.json</span></div>
+        </div>
+        <div class="claim">
+          <div class="big">703,109<small>operations, 20 runs</small></div>
+          <div class="what"><h3>Linearizable on a real cluster under attack</h3>
+            <p>Real server processes over TCP, five minutes per run, with 389 leader kills, 180
+              process pauses and 414 network partitions. Every history passed the
+              linearizability checker.</p>
+            <span class="src">results/m6/campaign.json</span></div>
+        </div>
+        <div class="claim">
+          <div class="big">3 of 3<small>unsafe runs flagged</small></div>
+          <div class="what"><h3>The checker catches real violations</h3>
+            <p>With a deliberately unsafe read path turned on, every run was flagged, each with a
+              counterexample of 3 to 4 operations.</p>
+            <span class="src">results/m6/recheck.json</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <header>
+      <span class="label">02 · Proof the checks work</span>
+      <h2>Bugs planted on purpose</h2>
+      <p>Each check was first shown to catch a deliberately broken variant. The seed is the first
+        simulated run that exposes it.</p>
+    </header>
+    <div class="content">
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Injected defect</th><th>Caught by</th><th class="r">First seed</th></tr></thead>
+          <tbody id="defects"></tbody>
+        </table>
+      </div>
+      <div class="findings">
+        <h3>Real bugs found during development</h3>
+        <ul>
+          <li>The server's event loop accepted new connections before reading every polled entry, and read past the end of its poll list. The three-server TCP test crashed on it.</li>
+          <li>The checker's counterexample shrinking cut the history at the wrong operation, and later removed writes that remaining reads had observed.</li>
+          <li>On Windows the journal file was opened without write sharing, so reopening a data directory failed.</li>
+          <li>An early replication sender waited for an acknowledgement before sending the next batch.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <header>
+      <span class="label">03 · Performance</span>
+      <h2>Measured, with the caveats</h2>
+      <p>Release build, 32 closed-loop clients, each configuration run 5 times. Bars are medians,
+        whiskers span min to max. All nodes share one machine, so this measures one CPU and one
+        disk, not a network. Differences under about 20% are noise.</p>
+    </header>
+    <div class="content" id="perf"></div>
+  </section>
+
+  <section class="block">
+    <header>
+      <span class="label">04 · Design</span>
+      <h2>One Raft core, two worlds</h2>
+      <p>The protocol code never touches sockets, threads or clocks. It only sees four
+        interfaces, so the simulator tests the exact code that serves clients.</p>
+    </header>
+    <div class="content">
+<pre class="mermaid">
+flowchart LR
+    subgraph Core["Raft core: no sockets, threads or clocks"]
+        Node["RaftNode"]
+        Log["RaftLog"]
+    end
+    KV["kv::Store, data and client sessions"]
+    Node --> Log
+    Node -- "committed entries, ReadIndex reads" --> KV
+    subgraph Sim["Simulator, one thread"]
+        SimT["seeded drops, duplicates, delays, partitions"]
+        Oracle["safety oracle after every step"]
+    end
+    subgraph Real["quorumkv_server, one event loop per node"]
+        TCP["TCP transport"]
+        Disk["journal and image, fsync"]
+    end
+    Node <-- "Transport, Clock, Storage, Random" --> SimT
+    SimT --- Oracle
+    Node <-- "Transport, Clock, Storage, Random" --> TCP
+    TCP --- Disk
+    Harness["fault-injection harness"] -.-> Real
+    Checker["linearizability checker"] -.-> Harness
+</pre>
+      <div class="cols">
+        <div><h3>ReadIndex instead of leases</h3><p>A read costs one heartbeat round and stays correct with any clock drift. Reading the leader's memory directly is not linearizable, and the checker proves it.</p></div>
+        <div><h3>Sessions in the state machine</h3><p>Every replica and every snapshot carries each client's last sequence number and reply, so a retry is recognized by whichever node leads next.</p></div>
+        <div><h3>An append-only journal</h3><p>Each batch is one checksummed record and one fsync. A torn final record is detected and dropped on restart, and the log is compacted into an image now and then.</p></div>
+        <div><h3>Per-link TCP proxies for faults</h3><p>Blocking one proxy cuts exactly one direction of one link, with no root access and no firewall rules.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <header>
+      <span class="label">05 · Limits</span>
+      <h2>What it does not do</h2>
+    </header>
+    <div class="content">
+      <div class="cols">
+        <div><h3>One machine</h3><p>Every benchmark runs on localhost. Threads are not pinned and turbo boost is not disabled.</p></div>
+        <div><h3>Fixed membership</h3><p>No adding or removing nodes, no sharding, transactions or TLS.</p></div>
+        <div><h3>State fits in memory</h3><p>The store is an in-memory map, and snapshots serialize all of it, within a 64 MiB image limit.</p></div>
+        <div><h3>Disk-bound writes</h3><p>Every batch waits for an fsync on the leader and on a majority of followers.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Performance numbers: Windows 11, AMD Ryzen 9 8940HX (16 cores, 32 threads), 15.1 GiB RAM, MSVC 19.44 at /O2. Correctness numbers come from CI on Windows and Linux, debug and AddressSanitizer builds plus ThreadSanitizer on Linux.</span>
+    <span>Source and every results file: <a href="https://github.com/ArnavLifelessCoder/quorumkv">github.com/ArnavLifelessCoder/quorumkv</a></span>
+  </footer>
+</div>
+
+<script>
+// ---------- Measured data (results/m8/benchmarks.json) ----------
+const BENCH = {
+  write_3_nodes: [2694.2, 1565.2, 3198.9, 7.5, 20.0],
+  write_5_nodes: [2908.1, 2163.4, 3077.1, 7.8, 20.2],
+  batching_on_pipelining_on: [2787.1, 2647.8, 2929.1, 7.5, 19.0],
+  pipelining_off: [3280.6, 3052.9, 3827.2, 5.9, 15.6],
+  batching_off: [361.0, 342.3, 378.0, 64.7, 202.1],
+  batching_and_pipelining_off: [345.0, 338.9, 389.0, 62.9, 1389.4],
+  read_index: [38764.5, 38025.4, 40723.9, 0.8, 1.2],
+  read_through_log: [3763.6, 3102.9, 4188.3, 6.5, 15.4],
+  value_100_b: [3225.3, 2793.3, 4134.0, 7.2, 17.1],
+  value_1_kb: [2122.4, 1577.5, 2443.5, 11.3, 54.3],
+  value_10_kb: [190.1, 169.6, 217.1, 115.8, 850.4],
+};
+const ELECTION_MS = [164,505,686,369,348,350,325,329,311,312,344,330,330,484,317,330,310,321,336,352,388,350,315,314,310,311,337,311,310,311,494,338,326,174,333,328,316,618,313,310,348,317,317,339,312,312,323,171,328,337];
+const FAILOVER_MS = [1061,1064,1041,1054,1107,1053,1062,1140,1043,1055,1052,1052,1032,1065,1057,1035,1059,1056,1082,1058,1070,1067,1059,1041,1047,1075,1073,1062,1084,1054,1049,1043,1064,1047,1041,1083,1104,1047,1032,1073,1048,1036,1062,1054,1067,1062,1093,1074,1083,1070];
+const CATCH_UP = [[1008249, 0.685], [1005673, 0.499], [1001768, 1.028], [1009200, 0.335], [1003141, 0.278]];
+const DEFECTS = [
+  ["Counting vote replies from an earlier term", "election simulator", 216, "results/m2/summary.json"],
+  ["Replying to a vote before saving it", "election simulator", 217, "results/m2/summary.json"],
+  ["Saving the self-vote after sending vote requests", "replication simulator", 1, "results/m3/summary.json"],
+  ["Committing an entry from an earlier term (Figure 8)", "replication simulator", 7, "results/m3/summary.json"],
+  ["Acknowledging AppendEntries before saving", "replication simulator", 6, "results/m3/summary.json"],
+  ["Voting twice in one term", "replication simulator", 7, "results/m3/summary.json"],
+  ["Treating 2 of 5 votes as a majority", "replication simulator", 7, "results/m3/summary.json"],
+  ["Serving reads from local state on any node", "KV history checker", 4, "results/m8/ci.json"],
+  ["A store that forgets client sessions", "KV history checker", 0, "results/m8/ci.json"],
+  ["Snapshots that drop the session table", "snapshot replay check", 1, "results/m8/ci.json"],
+];
+
+const fmt = (n) => n.toLocaleString("en-US", { maximumFractionDigits: 0 });
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+document.getElementById("defects").innerHTML = DEFECTS.map(([d, by, seed, src]) =>
+  `<tr><td>${esc(d)}<br><span class="src">${esc(src)}</span></td><td>${esc(by)}</td><td class="r">${seed}</td></tr>`).join("");
+
+// ---------- Performance panels ----------
+function barGroup(title, note, rows) {
+  const max = Math.max(...rows.map((r) => BENCH[r[0]][2])) * 1.32;
+  const html = rows.map(([key, label, alt]) => {
+    const [med, lo, hi, p50, p99] = BENCH[key];
+    const pc = (v) => (v / max * 100).toFixed(2) + "%";
+    return `<div class="bar-row"><span class="name">${esc(label)}</span>
+      <div class="bar-track" title="median ${fmt(med)} ops/s, min ${fmt(lo)}, max ${fmt(hi)}">
+        <div class="bar${alt ? " alt" : ""}" style="width:${pc(med)}"></div>
+        <div class="whisker" style="left:${pc(lo)};width:calc(${pc(hi)} - ${pc(lo)})"></div>
+        <span class="bar-val num" style="left:calc(${pc(hi)} + 8px)">${fmt(med)} <span>· p50 ${p50} ms · p99 ${p99} ms</span></span>
+      </div></div>`;
+  }).join("");
+  return `<div class="group"><h3>${esc(title)}</h3>${note ? `<p class="scale-note">${esc(note)}</p>` : ""}${html}</div>`;
+}
+
+function strip() {
+  const W = 640, H = 196, L = 120, R = 20, max = 1200;
+  const x = (v) => L + (v / max) * (W - L - R);
+  const jitter = (i) => ((i * 2654435761) % 1000) / 1000 - 0.5;
+  const row = (vals, y, color) => vals.map((v, i) =>
+    `<circle cx="${x(v).toFixed(1)}" cy="${(y + jitter(i) * 18).toFixed(1)}" r="3.4" fill="${color}" fill-opacity="0.7"></circle>`).join("");
+  const med = (a) => { const s = [...a].sort((p, q) => p - q); return (s[24] + s[25]) / 2; };
+  const ticks = [0, 300, 600, 900, 1200].map((t) =>
+    `<line x1="${x(t)}" x2="${x(t)}" y1="30" y2="150"></line><text x="${x(t)}" y="168" text-anchor="middle">${t} ms</text>`).join("");
+  const mE = med(ELECTION_MS), mF = med(FAILOVER_MS);
+  return `<div class="group strip"><h3>Failover after killing the leader, 50 trials</h3>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Election times cluster near 330 ms, client-visible failover near 1060 ms">
+      <g class="axis">${ticks}</g>
+      <text class="rowlabel" x="0" y="64">New leader</text>
+      <text class="note" x="0" y="80">median ${Math.round(mE)} ms</text>
+      ${row(ELECTION_MS, 66, "var(--candidate)")}
+      <line x1="${x(mE)}" x2="${x(mE)}" y1="50" y2="84" stroke="var(--ink)" stroke-width="2"></line>
+      <text class="rowlabel" x="0" y="118">Client write</text>
+      <text class="note" x="0" y="134">median ${Math.round(mF)} ms</text>
+      ${row(FAILOVER_MS, 120, "var(--accent)")}
+      <line x1="${x(mF)}" x2="${x(mF)}" y1="104" y2="138" stroke="var(--ink)" stroke-width="2"></line>
+    </svg>
+    <p style="font-size:15px;color:var(--muted)">The election itself takes about a third of a second. Clients wait longer because they spend a 1 s attempt timeout on the dead leader, since on Windows a refused local connection takes about 2 s to fail.</p></div>`;
+}
+
+function catchUp() {
+  const rows = CATCH_UP.map(([behind, s], i) =>
+    `<tr><td>Run ${i + 1}</td><td class="r">${fmt(behind)}</td><td class="r">${s.toFixed(2)} s</td></tr>`).join("");
+  return `<div class="group"><h3>A follower 1 million entries behind catches up in under a second</h3>
+    <p style="font-size:15px;color:var(--muted)">It is past the leader's snapshot, so it installs one snapshot (1,000 keys and the client sessions) and replays a short tail. The time grows with the size of the data, not the length of the history.</p>
+    <div class="tablewrap"><table><thead><tr><th></th><th class="r">Entries behind</th><th class="r">Catch-up</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+document.getElementById("perf").innerHTML = [
+  barGroup("Batching is the big win", "writes per second, 3 nodes, 100 B values", [
+    ["batching_on_pipelining_on", "Batching and pipelining on"],
+    ["pipelining_off", "Pipelining off"],
+    ["batching_off", "Batching off", true],
+    ["batching_and_pipelining_off", "Both off", true],
+  ]),
+  barGroup("Cluster size and value size", "writes per second", [
+    ["write_3_nodes", "3 nodes"],
+    ["write_5_nodes", "5 nodes"],
+    ["value_100_b", "100 B values"],
+    ["value_1_kb", "1 KB values"],
+    ["value_10_kb", "10 KB values", true],
+  ]),
+  barGroup("ReadIndex reads skip the disk", "reads per second, 3 nodes", [
+    ["read_index", "ReadIndex"],
+    ["read_through_log", "Through the log", true],
+  ]),
+  strip(),
+  catchUp(),
+].join("");
+
+// ---------- Live Raft model ----------
+// Times are simulated milliseconds, shown 10 times slower than real time.
+const N = 5, SLOW = 10, ELECT_MIN = 150, ELECT_MAX = 300, HEARTBEAT = 50, LAT_MIN = 14, LAT_MAX = 26;
+const CX = 260, CY = 205, RAD = 150, NODE_R = 30;
+const pos = [...Array(N)].map((_, i) => {
+  const a = (-90 + i * 72) * Math.PI / 180;
+  return [CX + RAD * Math.cos(a), CY + RAD * Math.sin(a)];
+});
+const rand = (a, b) => a + Math.random() * (b - a);
+
+let now = 0, speed = 1, paused = false, partitioned = false, nextWrite = 400, keySeq = 0;
+let msgs = [], feed = [], checks = 0, violation = null, dirty = true;
+const leaderOfTerm = new Map();
+const committedAt = [];
+const nodes = [...Array(N)].map((_, id) => ({
+  id, alive: true, role: "follower", term: 0, votedFor: null, log: [], commit: 0,
+  deadline: rand(ELECT_MIN, ELECT_MAX), started: 0, votes: new Set(), next: [], match: [], hbAt: 0,
+}));
+
+const sideA = new Set([0, 1]);
+const separated = (a, b) => partitioned && sideA.has(a) !== sideA.has(b);
+const lastTerm = (n) => (n.log.length ? n.log[n.log.length - 1].term : 0);
+
+function note(text) {
+  feed.unshift([now, text]);
+  feed = feed.slice(0, 7);
+  dirty = true;
+}
+function resetTimer(n) { n.started = now; n.deadline = now + rand(ELECT_MIN, ELECT_MAX); }
+function send(from, to, type, p) {
+  const lat = rand(LAT_MIN, LAT_MAX);
+  msgs.push({ from, to, type, p, sent: now, arrive: now + lat, drop: separated(from, to) });
+}
+function stepDown(n, term) {
+  n.term = term; n.role = "follower"; n.votedFor = null; n.votes.clear();
+}
+
+function startElection(n) {
+  n.term += 1; n.role = "candidate"; n.votedFor = n.id; n.votes = new Set([n.id]);
+  resetTimer(n);
+  note(`n${n.id + 1} timed out and asks for votes in term ${n.term}`);
+  for (let p = 0; p < N; p++) if (p !== n.id)
+    send(n.id, p, "RV", { term: n.term, lastIndex: n.log.length, lastTerm: lastTerm(n) });
+}
+function becomeLeader(n) {
+  n.role = "leader";
+  for (let p = 0; p < N; p++) { n.next[p] = n.log.length + 1; n.match[p] = 0; }
+  // A no-op in the new term lets earlier entries commit safely (the Figure 8 rule).
+  n.log.push({ term: n.term, cmd: "no-op" });
+  n.hbAt = now;
+  const prior = leaderOfTerm.get(n.term);
+  if (prior !== undefined && prior !== n.id) violation = `two leaders in term ${n.term}`;
+  leaderOfTerm.set(n.term, n.id);
+  note(`n${n.id + 1} won ${n.votes.size} of ${N} votes and leads term ${n.term}`);
+}
+function sendAppend(n, p) {
+  const prev = n.next[p] - 1;
+  send(n.id, p, "AE", {
+    term: n.term, prevIndex: prev, prevTerm: prev > 0 ? n.log[prev - 1].term : 0,
+    entries: n.log.slice(prev, prev + 4).map((e) => ({ ...e })), commit: n.commit,
+  });
+}
+function advanceCommit(n) {
+  for (let i = n.log.length; i > n.commit; i--) {
+    if (n.log[i - 1].term !== n.term) break;
+    let count = 1;
+    for (let p = 0; p < N; p++) if (p !== n.id && n.match[p] >= i) count++;
+    if (count > N / 2) { setCommit(n, i); break; }
+  }
+}
+function setCommit(n, i) {
+  if (i <= n.commit) return;
+  for (let k = n.commit; k < i; k++) {
+    const e = n.log[k], seen = committedAt[k];
+    if (seen && (seen.term !== e.term || seen.cmd !== e.cmd)) violation = `two different entries committed at index ${k + 1}`;
+    if (!seen) committedAt[k] = { term: e.term, cmd: e.cmd };
+  }
+  n.commit = i;
+  dirty = true;
+}
+
+function deliver(m) {
+  const n = nodes[m.to], p = m.p;
+  if (!n.alive) return;
+  if (p.term > n.term) stepDown(n, p.term);
+  if (m.type === "RV") {
+    const upToDate = p.lastTerm > lastTerm(n) || (p.lastTerm === lastTerm(n) && p.lastIndex >= n.log.length);
+    const grant = p.term === n.term && (n.votedFor === null || n.votedFor === m.from) && upToDate;
+    if (grant) { n.votedFor = m.from; resetTimer(n); }
+    send(n.id, m.from, "RVR", { term: n.term, granted: grant });
+  } else if (m.type === "RVR") {
+    if (n.role === "candidate" && p.term === n.term && p.granted) {
+      n.votes.add(m.from);
+      if (n.votes.size > N / 2) becomeLeader(n);
+    }
+  } else if (m.type === "AE") {
+    if (p.term < n.term) { send(n.id, m.from, "AER", { term: n.term, ok: false, hint: n.log.length }); return; }
+    if (n.role !== "follower") n.role = "follower";
+    resetTimer(n);
+    if (p.prevIndex > n.log.length || (p.prevIndex > 0 && n.log[p.prevIndex - 1].term !== p.prevTerm)) {
+      send(n.id, m.from, "AER", { term: n.term, ok: false, hint: Math.min(n.log.length, p.prevIndex - 1) });
+      return;
+    }
+    let idx = p.prevIndex;
+    for (const e of p.entries) {
+      if (idx < n.log.length) {
+        if (n.log[idx].term !== e.term) { n.log.length = idx; n.log.push(e); dirty = true; }
+      } else { n.log.push(e); dirty = true; }
+      idx++;
+    }
+    const last = p.prevIndex + p.entries.length;
+    if (p.commit > n.commit) setCommit(n, Math.min(p.commit, last));
+    send(n.id, m.from, "AER", { term: n.term, ok: true, match: last });
+  } else if (m.type === "AER") {
+    if (n.role !== "leader" || p.term !== n.term) return;
+    if (p.ok) {
+      n.match[m.from] = Math.max(n.match[m.from], p.match);
+      n.next[m.from] = Math.max(n.next[m.from], n.match[m.from] + 1);
+      advanceCommit(n);
+    } else {
+      n.next[m.from] = Math.max(1, Math.min(n.next[m.from] - 1, p.hint + 1));
+    }
+  }
+}
+
+function leader() {
+  let best = null;
+  for (const n of nodes) if (n.alive && n.role === "leader" && (!best || n.term > best.term)) best = n;
+  return best;
+}
+function clientWrite(fromButton) {
+  const l = leader();
+  keySeq++;
+  if (!l) { if (fromButton) note("No leader right now, so the write waits. A real client retries."); return; }
+  l.log.push({ term: l.term, cmd: `put k${keySeq % 9}` });
+  dirty = true;
+  if (fromButton) note(`Client wrote k${keySeq % 9} to the leader n${l.id + 1}`);
+}
+function toggleNode(i) {
+  const n = nodes[i];
+  if (n.alive) {
+    n.alive = false; n.votes.clear();
+    note(`n${i + 1} crashed${n.role === "leader" ? " while leading" : ""}`);
+    n.role = "follower";
+  } else {
+    n.alive = true; n.role = "follower"; n.commit = 0; resetTimer(n);
+    note(`n${i + 1} restarted with its saved term and log`);
+  }
+  dirty = true;
+}
+
+function step(dt) {
+  const end = now + dt;
+  while (now < end) {
+    const tick = Math.min(2, end - now);
+    now += tick;
+    msgs.sort((a, b) => a.arrive - b.arrive);
+    while (msgs.length && msgs[0].arrive <= now) {
+      const m = msgs.shift();
+      if (!m.drop) deliver(m);
+    }
+    for (const n of nodes) {
+      if (!n.alive) continue;
+      if (n.role === "leader") {
+        if (now >= n.hbAt) { for (let p = 0; p < N; p++) if (p !== n.id) sendAppend(n, p); n.hbAt = now + HEARTBEAT; }
+      } else if (now >= n.deadline) startElection(n);
+    }
+    if (document.getElementById("auto").checked && now >= nextWrite) { clientWrite(false); nextWrite = now + 120; }
+    checks++;
+  }
+}
+
+// ---------- Rendering ----------
+const svgNS = "http://www.w3.org/2000/svg";
+const ring = document.getElementById("ring");
+ring.innerHTML = `
+  <circle class="ring-line" cx="${CX}" cy="${CY}" r="${RAD}"></circle>
+  <g id="part" hidden></g>
+  <g id="dots"></g>
+  <g id="nodes"></g>
+  <text class="clock" id="clock" x="10" y="420">t = 0 ms</text>`;
+(function drawPartition() {
+  const g = document.getElementById("part");
+  const a1 = 18 * Math.PI / 180, a2 = 234 * Math.PI / 180, r = 200;
+  g.innerHTML = `<line class="partition" x1="${CX + r * Math.cos(a1)}" y1="${CY + r * Math.sin(a1)}" x2="${CX + r * Math.cos(a2)}" y2="${CY + r * Math.sin(a2)}"></line>
+    <text class="partition-label" x="${CX + 150}" y="${CY + 92}">network split</text>`;
+})();
+const nodeEls = nodes.map((n, i) => {
+  const g = document.createElementNS(svgNS, "g");
+  g.setAttribute("class", "node");
+  g.setAttribute("tabindex", "0");
+  g.setAttribute("role", "button");
+  g.setAttribute("aria-label", `Node ${i + 1}: crash or restart`);
+  const [x, y] = pos[i];
+  const C = 2 * Math.PI * (NODE_R + 6);
+  g.innerHTML = `
+    <circle class="timer" cx="${x}" cy="${y}" r="${NODE_R + 6}" stroke-dasharray="${C}" stroke-dashoffset="0" transform="rotate(-90 ${x} ${y})"></circle>
+    <circle class="body" cx="${x}" cy="${y}" r="${NODE_R}"></circle>
+    <text class="term" x="${x}" y="${y + 5}"></text>
+    <text class="name" x="${x}" y="${y - NODE_R - 12}">n${i + 1}</text>
+    <text class="role" x="${x}" y="${y + NODE_R + 20}"></text>`;
+  g.addEventListener("click", () => toggleNode(i));
+  g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleNode(i); } });
+  document.getElementById("nodes").appendChild(g);
+  return { g, timer: g.querySelector(".timer"), body: g.querySelector(".body"), term: g.querySelector(".term"), role: g.querySelector(".role"), C };
+});
+
+const roleColor = { leader: "var(--leader)", candidate: "var(--candidate)", follower: "var(--accent)" };
+function drawNodes() {
+  nodes.forEach((n, i) => {
+    const el = nodeEls[i];
+    const color = n.alive ? roleColor[n.role] : "var(--down)";
+    el.body.setAttribute("stroke", color);
+    el.body.setAttribute("fill", n.alive && n.role === "leader" ? "var(--leader)" : "var(--surface)");
+    el.body.setAttribute("fill-opacity", n.alive && n.role === "leader" ? "0.18" : "1");
+    el.term.textContent = `T${n.term}`;
+    el.term.setAttribute("fill", n.alive ? "var(--ink)" : "var(--down)");
+    el.role.textContent = n.alive ? n.role : "crashed";
+    el.role.setAttribute("fill", color);
+    const showTimer = n.alive && n.role !== "leader";
+    el.timer.setAttribute("stroke", n.role === "candidate" ? "var(--candidate)" : "var(--rule)");
+    if (showTimer) {
+      const frac = Math.min(1, Math.max(0, (n.deadline - now) / (n.deadline - n.started || 1)));
+      el.timer.setAttribute("stroke-dashoffset", String(el.C * (1 - frac)));
+      el.timer.style.opacity = "1";
+    } else el.timer.style.opacity = "0";
+  });
+}
+function drawDots() {
+  const g = document.getElementById("dots");
+  let html = "";
+  for (const m of msgs) {
+    let t = (now - m.sent) / (m.arrive - m.sent);
+    if (m.drop && t > 0.5) continue;
+    const [x1, y1] = pos[m.from], [x2, y2] = pos[m.to];
+    const x = x1 + (x2 - x1) * t, y = y1 + (y2 - y1) * t;
+    const vote = m.type === "RV" || m.type === "RVR";
+    const big = m.type === "AE" && m.p.entries.length > 0;
+    const op = m.drop ? (1 - t * 2).toFixed(2) : "0.9";
+    html += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${big ? 5.5 : 3.5}" fill="${vote ? "var(--candidate)" : "var(--accent)"}" fill-opacity="${op}"></circle>`;
+  }
+  g.innerHTML = html;
+}
+function drawLogs() {
+  const maxLen = Math.max(1, ...nodes.map((n) => n.log.length));
+  const start = Math.max(1, maxLen - 13);
+  let html = `<div class="logrow"><span class="who">index</span>`;
+  for (let i = start; i < start + 14; i++) html += `<span class="idx">${i}</span>`;
+  html += `</div>`;
+  for (const n of nodes) {
+    html += `<div class="logrow"><span class="who">n${n.id + 1} ${n.alive ? n.role : "crashed"}</span>`;
+    for (let i = start; i < start + 14; i++) {
+      const e = n.log[i - 1];
+      if (!e) { html += `<span class="cell empty"></span>`; continue; }
+      const c = `var(--t${e.term % 6})`;
+      const committed = i <= n.commit;
+      html += `<span class="cell ${committed ? "committed" : "pending"}" title="${esc(e.cmd)}, term ${e.term}${committed ? ", committed" : ", not committed on this node"}" style="background:${c};border-color:${c};${committed ? "" : `color:${c}`}">${e.term}</span>`;
+    }
+    html += `</div>`;
+  }
+  document.getElementById("logs").innerHTML = html;
+  document.getElementById("feed").innerHTML = feed.map(([t, s]) =>
+    `<li><span class="t">${Math.round(t)} ms</span><span>${esc(s)}</span></li>`).join("");
+  const l = leader();
+  document.getElementById("leader-readout").textContent = l ? `n${l.id + 1}, term ${l.term}` : "none (election in progress)";
+  document.getElementById("commit-readout").textContent = `${committedAt.length} entries`;
+}
+function drawOracle() {
+  const pill = document.getElementById("safety");
+  pill.textContent = violation ? `violated: ${violation}` : "passing";
+  pill.className = `pill ${violation ? "bad" : "ok"}`;
+  document.getElementById("checks").textContent = checks.toLocaleString("en-US");
+  document.getElementById("clock").textContent = `simulated t = ${Math.round(now)} ms, shown ${SLOW / speed}x slower`;
+}
+
+let last = null;
+function frame(ts) {
+  if (last !== null && !paused) step(Math.min(50, ts - last) / SLOW * speed);
+  last = ts;
+  drawNodes();
+  drawDots();
+  if (dirty) { drawLogs(); dirty = false; }
+  drawOracle();
+  requestAnimationFrame(frame);
+}
+
+document.getElementById("btn-write").addEventListener("click", () => clientWrite(true));
+document.getElementById("btn-kill").addEventListener("click", () => {
+  const l = leader();
+  if (l) toggleNode(l.id); else note("There is no leader to crash right now.");
+});
+document.getElementById("btn-part").addEventListener("click", (e) => {
+  partitioned = !partitioned;
+  e.currentTarget.setAttribute("aria-pressed", String(partitioned));
+  e.currentTarget.textContent = partitioned ? "Heal the network" : "Split the network";
+  document.getElementById("part").hidden = !partitioned;
+  note(partitioned ? "Network split: n1 and n2 are cut off from n3, n4 and n5" : "Network healed");
+});
+document.getElementById("btn-pause").addEventListener("click", (e) => {
+  paused = !paused;
+  e.currentTarget.setAttribute("aria-pressed", String(paused));
+  e.currentTarget.textContent = paused ? "Resume" : "Pause";
+});
+if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) speed = 0.5;
+
+// Start with the cluster already settled, so the first frame shows a leader and a short log.
+step(900);
+requestAnimationFrame(frame);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "neutral",
+});
+</script>
+</body>
+</html>
