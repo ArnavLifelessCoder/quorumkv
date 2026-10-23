@@ -151,6 +151,7 @@ class Bench:
 
     def failover(self, trials: int, nodes: int = 3) -> dict:
         samples = []
+        elections = []
         cluster = None
         for trial in range(trials):
             # A fresh cluster every ten trials keeps log growth and restarts comparable.
@@ -159,6 +160,7 @@ class Bench:
                     cluster.stop()
                 cluster = self.cluster(nodes)
             leader = self.await_leader(cluster)
+            old_term = max(entry["term"] for entry in self._poll(cluster) if entry.get("up"))
             probe = subprocess.Popen(
                 [str(self.load), "--nodes", cluster.client_addresses(), "--mode", "probe",
                  "--duration-ms", "8000"],
@@ -173,10 +175,16 @@ class Bench:
                 successes += line.startswith("ok ")
             killed = time.monotonic_ns()
             cluster.kill(leader)
+            # The old leader can still acknowledge writes until the kill takes effect, so only
+            # writes invoked after the process is gone count.
+            dead = time.monotonic_ns()
+            elected = self._await_new_leader(cluster, leader, old_term)
+            if elected is not None:
+                elections.append((elected - killed) / 1e6)
             first = None
             for line in probe.stdout:
                 parts = line.split()
-                if parts[0] == "ok" and int(parts[2]) > killed:
+                if parts[0] == "ok" and int(parts[1]) > dead:
                     first = int(parts[2])
                     break
             probe.kill()
@@ -187,25 +195,53 @@ class Bench:
         if cluster is not None:
             cluster.stop()
         ordered = sorted(samples)
+        elected = sorted(elections)
         return {
             "trials": trials,
             "measured": len(samples),
             "failover_ms": samples,
             "median_ms": statistics.median(ordered),
-            "p99_ms": ordered[min(len(ordered) - 1, int(0.99 * (len(ordered) - 1) + 0.5))],
+            "p99_ms": percentile(ordered, 0.99),
             "min_ms": ordered[0],
             "max_ms": ordered[-1],
+            "election_ms": elections,
+            "election_median_ms": statistics.median(elected),
+            "election_p99_ms": percentile(elected, 0.99),
         }
+
+    def _await_new_leader(self, cluster: Cluster, old: int, old_term: int) -> int | None:
+        # Polls only the survivors: on Windows a connection to the dead node's port takes
+        # about two seconds to be refused, which would swamp the measurement. Each poll is one
+        # client process, so the resolution is a few tens of milliseconds.
+        survivors = ",".join(
+            f"127.0.0.1:{cluster.nodes[i].client_port}" for i in sorted(cluster.nodes) if i != old
+        )
+        deadline = time.monotonic() + 10
+        while time.monotonic() < deadline:
+            result = subprocess.run(
+                [str(self.client), "--nodes", survivors, "status"],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+            )
+            now = time.monotonic_ns()
+            for line in result.stdout.splitlines():
+                entry = json.loads(line) if line.strip() else {}
+                if entry.get("role") == "leader" and entry.get("term", 0) > old_term:
+                    return now
+        return None
 
     def catch_up(self, entries: int, repeats: int) -> dict:
         runs = []
         for _ in range(repeats):
             cluster = self.cluster(3)
+            load = None
             try:
                 leader = self.await_leader(cluster)
                 follower = next(i for i in sorted(cluster.nodes) if i != leader)
                 cluster.kill(follower)
-                start_commit = self._status(cluster, leader)["commit"]
+                start_commit = self._commit(cluster)
                 load = subprocess.Popen(
                     [str(self.load), "--nodes", cluster.client_addresses(), "--mode", "write",
                      "--threads", "64", "--duration-ms", "3600000", "--warmup-ms", "0",
@@ -213,25 +249,34 @@ class Bench:
                     stdout=subprocess.DEVNULL,
                 )  # fmt: skip
                 written_from = time.monotonic()
-                while self._status(cluster, leader)["commit"] - start_commit < entries:
+                while self._commit(cluster) - start_commit < entries:
                     time.sleep(0.5)
                 load.kill()
                 load.wait()
                 write_seconds = time.monotonic() - written_from
-                target = self._status(cluster, leader)["commit"]
+                target = self._commit(cluster)
                 restarted = time.monotonic()
                 cluster.start(follower)
                 while (self._status(cluster, follower) or {}).get("applied", 0) < target:
+                    if time.monotonic() - restarted > 900:
+                        raise RuntimeError("the follower did not catch up within 15 minutes")
                     time.sleep(0.05)
+                caught_up = time.monotonic() - restarted
+                print(f"catch-up run {len(runs) + 1}: {caught_up:.1f} s", flush=True)
                 runs.append(
                     {
                         "entries_behind": target - start_commit,
-                        "catch_up_seconds": round(time.monotonic() - restarted, 3),
+                        "catch_up_seconds": round(caught_up, 3),
                         "write_seconds": round(write_seconds, 1),
-                        "follower_snapshot_index": self._status(cluster, follower)["snapshot"],
+                        "follower_snapshot_index": (self._status(cluster, follower) or {}).get(
+                            "snapshot"
+                        ),
                     }
                 )
             finally:
+                if load is not None and load.poll() is None:
+                    load.kill()
+                    load.wait()
                 cluster.stop()
         seconds = sorted(run["catch_up_seconds"] for run in runs)
         return {
@@ -242,11 +287,33 @@ class Bench:
         }
 
     @staticmethod
+    def _commit(cluster: Cluster) -> int:
+        # Under heavy load a status request can miss a node, and leadership can move, so this
+        # takes the highest commit index any live node reports.
+        while True:
+            commits = [entry["commit"] for entry in Bench._poll(cluster) if entry.get("up")]
+            if commits:
+                return max(commits)
+            time.sleep(0.2)
+
+    @staticmethod
+    def _poll(cluster: Cluster) -> list[dict]:
+        # A node busy installing a large snapshot can leave a status request unanswered.
+        try:
+            return cluster.status()
+        except subprocess.TimeoutExpired:
+            return []
+
+    @staticmethod
     def _status(cluster: Cluster, node: int) -> dict | None:
-        for entry in cluster.status():
+        for entry in Bench._poll(cluster):
             if entry["id"] == node and entry.get("up"):
                 return entry
         return None
+
+
+def percentile(ordered: list[float], fraction: float) -> float:
+    return ordered[min(len(ordered) - 1, int(fraction * (len(ordered) - 1) + 0.5))]
 
 
 def summarize(runs: list[dict]) -> dict:
@@ -279,7 +346,12 @@ def main() -> None:
     args.out.mkdir(parents=True, exist_ok=True)
     scratch = pathlib.Path(tempfile.mkdtemp(prefix="quorumkv-bench-"))
     bench = Bench(args.bin, scratch, args.quick)
-    report = {"producer": "bench/run_benchmarks.py", "machine": machine(args.bin)}
+    output = args.out / ("benchmarks-quick.json" if args.quick else "benchmarks.json")
+    report = {}
+    if args.only and output.exists():
+        # A partial rerun keeps the other benchmarks' results.
+        report = json.loads(output.read_text())
+    report.update({"producer": "bench/run_benchmarks.py", "machine": machine(args.bin)})
     report["settings"] = {
         "repeats": args.repeats,
         "duration_ms": bench.duration_ms,
@@ -310,7 +382,6 @@ def main() -> None:
         "failover": lambda: bench.failover(args.failover_trials),
         "snapshot_catch_up": lambda: bench.catch_up(args.catch_up_entries, args.catch_up_repeats),
     }
-    output = args.out / ("benchmarks-quick.json" if args.quick else "benchmarks.json")
     for name, run in plan.items():
         if args.only and name not in args.only:
             continue
