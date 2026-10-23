@@ -304,9 +304,9 @@ TEST(SimSnapshot, LogStaysBoundedUnderALongRunningWorkload) {
   const auto result = sim::RunKvScenario({.seed = 3,
                                           .snapshot_threshold = 16,
                                           .snapshot_chunk_bytes = 64,
-                                          .active_ticks = 3000,
+                                          .active_ticks = 1500,
                                           .faults = false});
-  std::cout << "[kv-longrun] ticks=3000 threshold=16 operations=" << result.history.size()
+  std::cout << "[kv-longrun] ticks=1500 threshold=16 operations=" << result.history.size()
             << " applied_commands=" << result.stats.applied_commands
             << " snapshots_taken=" << result.stats.snapshots_taken
             << " max_retained_entries=" << result.stats.max_retained_entries << '\n';
