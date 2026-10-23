@@ -1,0 +1,2082 @@
+2026-10-21T16:47:28.5679529Z Current runner version: '2.338.0'
+2026-10-21T16:47:28.5700704Z ##[group]Runner Image Provisioner
+2026-10-21T16:47:28.5701584Z Hosted Compute Agent
+2026-10-21T16:47:28.5702204Z Version: 20261012.601
+2026-10-21T16:47:28.5702746Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-21T16:47:28.5703365Z Build Date: 2026-10-12T17:48:21Z
+2026-10-21T16:47:28.5703939Z Worker ID: {9bb09ea1-4d45-4fa4-8f51-12336a7dd808}
+2026-10-21T16:47:28.5704540Z Region: northcentralus
+2026-10-21T16:47:28.5705084Z Cloud: Azure
+2026-10-21T16:47:28.5705528Z ##[endgroup]
+2026-10-21T16:47:28.5706672Z ##[group]Operating System
+2026-10-21T16:47:28.5707558Z Ubuntu
+2026-10-21T16:47:28.5708192Z 24.04.5
+2026-10-21T16:47:28.5708977Z LTS
+2026-10-21T16:47:28.5709626Z ##[endgroup]
+2026-10-21T16:47:28.5710399Z ##[group]Runner Image
+2026-10-21T16:47:28.5711610Z Image: ubuntu-24.04
+2026-10-21T16:47:28.5712285Z Version: 20261012.334.1
+2026-10-21T16:47:28.5713963Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-21T16:47:28.5716056Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-21T16:47:28.5717436Z ##[endgroup]
+2026-10-21T16:47:28.5718916Z ##[group]GITHUB_TOKEN Permissions
+2026-10-21T16:47:28.5721703Z Contents: read
+2026-10-21T16:47:28.5722407Z Metadata: read
+2026-10-21T16:47:28.5723121Z Packages: read
+2026-10-21T16:47:28.5723818Z ##[endgroup]
+2026-10-21T16:47:28.5725891Z Secret source: Actions
+2026-10-21T16:47:28.5727117Z Cache mode: write
+2026-10-21T16:47:28.5728137Z Prepare workflow directory
+2026-10-21T16:47:28.6004655Z Prepare all required actions
+2026-10-21T16:47:28.6042897Z Getting action download info
+2026-10-21T16:47:28.8486640Z Download action repository 'actions/checkout@v5' (SHA:fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09)
+2026-10-21T16:47:28.9457018Z Download action repository 'actions/setup-python@v6' (SHA:ece7cb06caefa5fff74198d8649806c4678c61a1)
+2026-10-21T16:47:29.0312010Z Download action repository 'actions/upload-artifact@v6' (SHA:b7c566a772e6b6bfb58ed0dc250532a479d7789f)
+2026-10-21T16:47:29.2628454Z Complete job name: test (ubuntu-24.04, tsan)
+2026-10-21T16:47:29.3223864Z ##[group]Run actions/checkout@v5
+2026-10-21T16:47:29.3224496Z with:
+2026-10-21T16:47:29.3224861Z   repository: ArnavLifelessCoder/quorumkv
+2026-10-21T16:47:29.3228161Z   token: ***
+2026-10-21T16:47:29.3228499Z   ssh-strict: true
+2026-10-21T16:47:29.3228839Z   ssh-user: git
+2026-10-21T16:47:29.3229190Z   persist-credentials: true
+2026-10-21T16:47:29.3229561Z   clean: true
+2026-10-21T16:47:29.3229904Z   sparse-checkout-cone-mode: true
+2026-10-21T16:47:29.3230505Z   fetch-depth: 1
+2026-10-21T16:47:29.3230856Z   fetch-tags: false
+2026-10-21T16:47:29.3231195Z   show-progress: true
+2026-10-21T16:47:29.3231541Z   lfs: false
+2026-10-21T16:47:29.3231864Z   submodules: false
+2026-10-21T16:47:29.3232268Z   set-safe-directory: true
+2026-10-21T16:47:29.3232666Z   allow-unsafe-pr-checkout: false
+2026-10-21T16:47:29.3233225Z ##[endgroup]
+2026-10-21T16:47:29.4006173Z Syncing repository: ArnavLifelessCoder/quorumkv
+2026-10-21T16:47:29.4007600Z ##[group]Getting Git version info
+2026-10-21T16:47:29.4008225Z Working directory is '/home/runner/work/quorumkv/quorumkv'
+2026-10-21T16:47:29.4051505Z [command]/usr/bin/git version
+2026-10-21T16:47:29.4152794Z git version 2.55.0
+2026-10-21T16:47:29.4170518Z ##[endgroup]
+2026-10-21T16:47:29.4182816Z Temporarily overriding HOME='/home/runner/work/_temp/620dd88c-6369-4263-8534-09fea92600f4' before making global git config changes
+2026-10-21T16:47:29.4183940Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-21T16:47:29.4187231Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/quorumkv/quorumkv
+2026-10-21T16:47:29.4233200Z Deleting the contents of '/home/runner/work/quorumkv/quorumkv'
+2026-10-21T16:47:29.4237472Z ##[group]Initializing the repository
+2026-10-21T16:47:29.4241391Z [command]/usr/bin/git init /home/runner/work/quorumkv/quorumkv
+2026-10-21T16:47:29.4336602Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-21T16:47:29.4337964Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-21T16:47:29.4338738Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-21T16:47:29.4339317Z hint: call:
+2026-10-21T16:47:29.4339810Z hint:
+2026-10-21T16:47:29.4340320Z hint: 	git config --global init.defaultBranch <name>
+2026-10-21T16:47:29.4340812Z hint:
+2026-10-21T16:47:29.4341270Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-21T16:47:29.4342080Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-21T16:47:29.4342955Z hint:
+2026-10-21T16:47:29.4343430Z hint: 	git branch -m <name>
+2026-10-21T16:47:29.4343901Z hint:
+2026-10-21T16:47:29.4344394Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-21T16:47:29.4349069Z Initialized empty Git repository in /home/runner/work/quorumkv/quorumkv/.git/
+2026-10-21T16:47:29.4357792Z [command]/usr/bin/git remote add origin https://github.com/ArnavLifelessCoder/quorumkv
+2026-10-21T16:47:29.4401798Z ##[endgroup]
+2026-10-21T16:47:29.4402821Z ##[group]Disabling automatic garbage collection
+2026-10-21T16:47:29.4405329Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-21T16:47:29.4432382Z ##[endgroup]
+2026-10-21T16:47:29.4432963Z ##[group]Setting up auth
+2026-10-21T16:47:29.4438530Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-21T16:47:29.4468840Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-21T16:47:29.4789131Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-21T16:47:29.4819755Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-21T16:47:29.5007253Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-21T16:47:29.5036708Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-21T16:47:29.5224267Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-21T16:47:29.5259734Z ##[endgroup]
+2026-10-21T16:47:29.5266813Z ##[group]Fetching the repository
+2026-10-21T16:47:29.5267981Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ba0b91601ab3ea1ebe9699aa7ea07245e2c96b36:refs/remotes/origin/m4
+2026-10-21T16:47:30.0835536Z From https://github.com/ArnavLifelessCoder/quorumkv
+2026-10-21T16:47:30.0836903Z  * [new ref]         ba0b91601ab3ea1ebe9699aa7ea07245e2c96b36 -> origin/m4
+2026-10-21T16:47:30.0839391Z ##[endgroup]
+2026-10-21T16:47:30.0840515Z ##[group]Determining the checkout info
+2026-10-21T16:47:30.0841663Z ##[endgroup]
+2026-10-21T16:47:30.0847350Z [command]/usr/bin/git sparse-checkout disable
+2026-10-21T16:47:30.0898901Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-21T16:47:30.0928940Z ##[group]Checking out the ref
+2026-10-21T16:47:30.0933937Z [command]/usr/bin/git checkout --progress --force -B m4 refs/remotes/origin/m4
+2026-10-21T16:47:30.1184342Z Switched to a new branch 'm4'
+2026-10-21T16:47:30.1188525Z branch 'm4' set up to track 'origin/m4'.
+2026-10-21T16:47:30.1197438Z ##[endgroup]
+2026-10-21T16:47:30.1235181Z [command]/usr/bin/git log -1 --format=%H
+2026-10-21T16:47:30.1257874Z ba0b91601ab3ea1ebe9699aa7ea07245e2c96b36
+2026-10-21T16:47:30.1615174Z ##[group]Run actions/setup-python@v6
+2026-10-21T16:47:30.1616191Z with:
+2026-10-21T16:47:30.1616945Z   python-version: 3.11
+2026-10-21T16:47:30.1617780Z   check-latest: false
+2026-10-21T16:47:30.1625433Z   token: ***
+2026-10-21T16:47:30.1626253Z   update-environment: true
+2026-10-21T16:47:30.1627147Z   allow-prereleases: false
+2026-10-21T16:47:30.1628026Z   freethreaded: false
+2026-10-21T16:47:30.1628825Z ##[endgroup]
+2026-10-21T16:47:30.2614057Z ##[group]Installed versions
+2026-10-21T16:47:30.2693138Z Successfully set up CPython (3.11.17)
+2026-10-21T16:47:30.2694875Z ##[endgroup]
+2026-10-21T16:47:30.2843679Z ##[group]Run python -m venv .venv
+2026-10-21T16:47:30.2844672Z [36;1mpython -m venv .venv[0m
+2026-10-21T16:47:30.2845613Z [36;1mif [ "$RUNNER_OS" = "Windows" ]; then[0m
+2026-10-21T16:47:30.2846749Z [36;1m  .venv/Scripts/python -m pip install cmake ninja[0m
+2026-10-21T16:47:30.2848021Z [36;1m  echo "$GITHUB_WORKSPACE/.venv/Scripts" >> "$GITHUB_PATH"[0m
+2026-10-21T16:47:30.2849088Z [36;1melse[0m
+2026-10-21T16:47:30.2849926Z [36;1m  .venv/bin/python -m pip install cmake ninja[0m
+2026-10-21T16:47:30.2851411Z [36;1m  echo "$GITHUB_WORKSPACE/.venv/bin" >> "$GITHUB_PATH"[0m
+2026-10-21T16:47:30.2852456Z [36;1mfi[0m
+2026-10-21T16:47:30.3118342Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-21T16:47:30.3119440Z env:
+2026-10-21T16:47:30.3120439Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:47:30.3121764Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-21T16:47:30.3123125Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:47:30.3124308Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:47:30.3125505Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:47:30.3126700Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-21T16:47:30.3127726Z ##[endgroup]
+2026-10-21T16:47:34.0911719Z Collecting cmake
+2026-10-21T16:47:34.1182075Z   Downloading cmake-4.4.4-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (7.0 kB)
+2026-10-21T16:47:34.1467640Z Collecting ninja
+2026-10-21T16:47:34.1499675Z   Downloading ninja-1.13.2-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (5.4 kB)
+2026-10-21T16:47:34.1567323Z Downloading cmake-4.4.4-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (30.2 MB)
+2026-10-21T16:47:34.4463287Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 30.2/30.2 MB 52.1 MB/s eta 0:00:00
+2026-10-21T16:47:34.4496882Z Downloading ninja-1.13.2-py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (183 kB)
+2026-10-21T16:47:34.4532128Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 183.4/183.4 kB 83.7 MB/s eta 0:00:00
+2026-10-21T16:47:34.5386980Z Installing collected packages: ninja, cmake
+2026-10-21T16:47:35.2185408Z Successfully installed cmake-4.4.4 ninja-1.13.2
+2026-10-21T16:47:35.2931157Z 
+2026-10-21T16:47:35.2931982Z [notice] A new release of pip is available: 24.0 -> 26.2.2
+2026-10-21T16:47:35.2932530Z [notice] To update, run: python -m pip install --upgrade pip
+2026-10-21T16:47:35.3616137Z ##[group]Run cmake --preset tsan
+2026-10-21T16:47:35.3616426Z [36;1mcmake --preset tsan[0m
+2026-10-21T16:47:35.3677781Z shell: /usr/bin/bash -e {0}
+2026-10-21T16:47:35.3678003Z env:
+2026-10-21T16:47:35.3678227Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:47:35.3678577Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-21T16:47:35.3678921Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:47:35.3679238Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:47:35.3679534Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:47:35.3679833Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-21T16:47:35.3680285Z ##[endgroup]
+2026-10-21T16:47:36.5714821Z -- The CXX compiler identification is GNU 13.3.0
+2026-10-21T16:47:36.5789521Z -- Detecting CXX compiler ABI info
+2026-10-21T16:47:36.6653238Z -- Detecting CXX compiler ABI info - done
+2026-10-21T16:47:36.6769627Z -- Check for working CXX compiler: /usr/bin/c++ - skipped
+2026-10-21T16:47:36.6774049Z -- Detecting CXX compile features
+2026-10-21T16:47:36.6781848Z -- Detecting CXX compile features - done
+2026-10-21T16:47:36.7874969Z -- Found Python3: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 (found version "3.11.17") found components: Interpreter
+2026-10-21T16:47:37.7851971Z -- The C compiler identification is GNU 13.3.0
+2026-10-21T16:47:37.7917721Z -- Detecting C compiler ABI info
+2026-10-21T16:47:37.8329866Z -- Detecting C compiler ABI info - done
+2026-10-21T16:47:37.8443304Z -- Check for working C compiler: /usr/bin/cc - skipped
+2026-10-21T16:47:37.8447117Z -- Detecting C compile features
+2026-10-21T16:47:37.8470743Z -- Detecting C compile features - done
+2026-10-21T16:47:37.8562775Z -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+2026-10-21T16:47:37.9133333Z -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+2026-10-21T16:47:37.9142999Z -- Found Threads: TRUE
+2026-10-21T16:47:37.9171150Z -- Configuring done (2.5s)
+2026-10-21T16:47:37.9427614Z -- Generating done (0.0s)
+2026-10-21T16:47:37.9432380Z -- Build files have been written to: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:47:37.9509964Z ##[group]Run cmake --build --preset tsan
+2026-10-21T16:47:37.9510520Z [36;1mcmake --build --preset tsan[0m
+2026-10-21T16:47:37.9565987Z shell: /usr/bin/bash -e {0}
+2026-10-21T16:47:37.9566189Z env:
+2026-10-21T16:47:37.9566412Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:47:37.9566795Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-21T16:47:37.9567128Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:47:37.9567426Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:47:37.9567718Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:47:37.9568014Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-21T16:47:37.9568274Z ##[endgroup]
+2026-10-21T16:47:39.8211379Z [1/69] Building CXX object CMakeFiles/quorumkv_common.dir/src/sim/support.cpp.o
+2026-10-21T16:47:40.0341540Z [2/69] Building CXX object CMakeFiles/quorumkv_common.dir/src/rpc/codec.cpp.o
+2026-10-21T16:47:40.0511966Z [3/69] Building CXX object CMakeFiles/quorumkv_common.dir/src/raft/log.cpp.o
+2026-10-21T16:47:40.8145511Z [4/69] Building CXX object CMakeFiles/quorumkv_common.dir/src/raft/file_storage.cpp.o
+2026-10-21T16:47:41.3721231Z [5/69] Building CXX object CMakeFiles/quorumkv_common.dir/src/sim/replication_safety.cpp.o
+2026-10-21T16:47:41.4131114Z [6/69] Building CXX object CMakeFiles/quorumkv_common.dir/src/kv/store.cpp.o
+2026-10-21T16:47:41.7501831Z [7/69] Building CXX object CMakeFiles/quorumkv_common.dir/src/sim/kv_history.cpp.o
+2026-10-21T16:47:42.1657509Z [8/69] Building CXX object CMakeFiles/quorumkv_common.dir/src/platform/posix/file.cpp.o
+2026-10-21T16:47:42.9061196Z [9/69] Building CXX object CMakeFiles/quorumkv_common.dir/src/sim/cluster.cpp.o
+2026-10-21T16:47:43.1731197Z [10/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/main.cpp.o
+2026-10-21T16:47:44.2437082Z [11/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/toolchain_test.cpp.o
+2026-10-21T16:47:45.0381204Z [12/69] Building CXX object CMakeFiles/quorumkv.dir/src/raft/node.cpp.o
+2026-10-21T16:47:46.4881513Z [13/69] Building CXX object CMakeFiles/quorumkv_common.dir/src/sim/kv_workload.cpp.o
+2026-10-21T16:47:46.5621049Z [14/69] Generating mutants/count_stale_votes/node.cpp
+2026-10-21T16:47:46.6351080Z [15/69] Generating mutants/reply_before_persist/node.cpp
+2026-10-21T16:47:46.7271307Z [16/69] Generating mutants/self_vote_after_send/node.cpp
+2026-10-21T16:47:46.8021084Z [17/69] Generating mutants/commit_old_term/node.cpp
+2026-10-21T16:47:46.9001151Z [18/69] Generating mutants/append_reply_before_persist/node.cpp
+2026-10-21T16:47:46.9791329Z [19/69] Generating mutants/double_vote/node.cpp
+2026-10-21T16:47:47.0507437Z [20/69] Generating mutants/two_of_five/node.cpp
+2026-10-21T16:47:47.0781338Z [21/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/interfaces_test.cpp.o
+2026-10-21T16:47:50.0305031Z [22/69] Building CXX object CMakeFiles/quorumkv_mutant_core_count_stale_votes.dir/mutants/count_stale_votes/node.cpp.o
+2026-10-21T16:47:50.1851479Z [23/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/codec_fuzz_test.cpp.o
+2026-10-21T16:47:50.4321701Z [24/69] Building CXX object CMakeFiles/quorumkv_mutant_core_reply_before_persist.dir/mutants/reply_before_persist/node.cpp.o
+2026-10-21T16:47:50.7462326Z [25/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/codec_test.cpp.o
+2026-10-21T16:47:51.5021397Z [26/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/election_test.cpp.o
+2026-10-21T16:47:52.3731350Z [27/69] Building CXX object CMakeFiles/quorumkv_mutant_core_commit_old_term.dir/mutants/commit_old_term/node.cpp.o
+2026-10-21T16:47:52.8508326Z [28/69] Building CXX object CMakeFiles/quorumkv_mutant_core_self_vote_after_send.dir/mutants/self_vote_after_send/node.cpp.o
+2026-10-21T16:47:53.5851262Z [29/69] Building CXX object CMakeFiles/quorumkv_mutant_core_double_vote.dir/mutants/double_vote/node.cpp.o
+2026-10-21T16:47:54.1624972Z [30/69] Building CXX object CMakeFiles/quorumkv_mutant_core_two_of_five.dir/mutants/two_of_five/node.cpp.o
+2026-10-21T16:47:54.2171639Z [31/69] Building CXX object CMakeFiles/quorumkv_mutant_core_append_reply_before_persist.dir/mutants/append_reply_before_persist/node.cpp.o
+2026-10-21T16:47:55.8681210Z [32/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/log_test.cpp.o
+2026-10-21T16:47:57.2812242Z [33/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/replication_safety_test.cpp.o
+2026-10-21T16:47:57.9401375Z [34/69] Building CXX object _deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
+2026-10-21T16:47:58.3901115Z [35/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/figure8_test.cpp.o
+2026-10-21T16:47:58.6971068Z [36/69] Linking CXX static library libquorumkv.a
+2026-10-21T16:47:58.9511285Z [37/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/replication_fuzz_test.cpp.o
+2026-10-21T16:47:58.9781125Z [38/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/replication_test.cpp.o
+2026-10-21T16:48:01.2521438Z [39/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/election_fuzz_test.cpp.o
+2026-10-21T16:48:02.5891187Z [40/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/file_storage_test.cpp.o
+2026-10-21T16:48:02.7179957Z [41/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/sim_support_test.cpp.o
+2026-10-21T16:48:02.8643459Z [42/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/sim_cluster_test.cpp.o
+2026-10-21T16:48:03.1271156Z [43/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/kv_store_test.cpp.o
+2026-10-21T16:48:04.7851340Z [44/69] Building CXX object CMakeFiles/quorumkv_mutation_tests.dir/tests/main.cpp.o
+2026-10-21T16:48:05.3676456Z [45/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/kv_history_test.cpp.o
+2026-10-21T16:48:05.4588453Z [46/69] Building CXX object CMakeFiles/quorumkv_mutation_tests.dir/tests/election_fuzz_test.cpp.o
+2026-10-21T16:48:05.7871451Z [47/69] Linking CXX static library libquorumkv_mutant_core_count_stale_votes.a
+2026-10-21T16:48:05.8403863Z [48/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/read_index_test.cpp.o
+2026-10-21T16:48:06.1343184Z [49/69] Linking CXX static library libquorumkv_mutant_core_reply_before_persist.a
+2026-10-21T16:48:06.1752200Z [50/69] Linking CXX static library libquorumkv_mutant_core_self_vote_after_send.a
+2026-10-21T16:48:06.4481193Z [51/69] Linking CXX static library libquorumkv_mutant_core_commit_old_term.a
+2026-10-21T16:48:06.6711304Z [52/69] Linking CXX static library libquorumkv_mutant_core_append_reply_before_persist.a
+2026-10-21T16:48:06.7881295Z [53/69] Linking CXX static library libquorumkv_mutant_core_double_vote.a
+2026-10-21T16:48:06.8961321Z [54/69] Building CXX object CMakeFiles/quorumkv_tests.dir/tests/kv_fuzz_test.cpp.o
+2026-10-21T16:48:06.9201267Z [55/69] Linking CXX static library libquorumkv_mutant_core_two_of_five.a
+2026-10-21T16:48:07.0351056Z [56/69] Linking CXX static library lib/libgtest.a
+2026-10-21T16:48:07.2631487Z [57/69] Building CXX object CMakeFiles/quorumkv_mutation_tests.dir/tests/replication_fuzz_test.cpp.o
+2026-10-21T16:48:07.5691235Z [58/69] Linking CXX executable quorumkv_tests
+2026-10-21T16:48:08.2711509Z [59/69] Building CXX object _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o
+2026-10-21T16:48:08.3676853Z [60/69] Linking CXX static library lib/libgtest_main.a
+2026-10-21T16:48:08.5917608Z [61/69] Building CXX object CMakeFiles/quorumkv_mutation_tests.dir/tests/election_test.cpp.o
+2026-10-21T16:48:08.8349613Z [62/69] Building CXX object CMakeFiles/quorumkv_mutation_tests.dir/tests/figure8_test.cpp.o
+2026-10-21T16:48:09.0231115Z [63/69] Linking CXX executable quorumkv_mutant_append_reply_before_persist
+2026-10-21T16:48:09.0598986Z [64/69] Linking CXX executable quorumkv_mutant_count_stale_votes
+2026-10-21T16:48:09.0961297Z [65/69] Linking CXX executable quorumkv_mutant_self_vote_after_send
+2026-10-21T16:48:09.1171466Z [66/69] Linking CXX executable quorumkv_mutant_commit_old_term
+2026-10-21T16:48:09.1379575Z [67/69] Linking CXX executable quorumkv_mutant_double_vote
+2026-10-21T16:48:09.1491744Z [68/69] Linking CXX executable quorumkv_mutant_reply_before_persist
+2026-10-21T16:48:09.1942999Z [69/69] Linking CXX executable quorumkv_mutant_two_of_five
+2026-10-21T16:48:09.1983626Z ##[group]Run ctest --preset tsan --verbose
+2026-10-21T16:48:09.1983906Z [36;1mctest --preset tsan --verbose[0m
+2026-10-21T16:48:09.2040737Z shell: /usr/bin/bash -e {0}
+2026-10-21T16:48:09.2040948Z env:
+2026-10-21T16:48:09.2041170Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:48:09.2041516Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-21T16:48:09.2041852Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:48:09.2042144Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:48:09.2042433Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:48:09.2042729Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-21T16:48:09.2042999Z ##[endgroup]
+2026-10-21T16:48:09.2703278Z UpdateCTestConfiguration  from :/home/runner/work/quorumkv/quorumkv/DartConfiguration.tcl
+2026-10-21T16:48:09.2704283Z Test project /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:09.2704719Z Constructing a list of tests
+2026-10-21T16:48:09.4746421Z Done constructing a list of tests
+2026-10-21T16:48:09.4747900Z Updating test list for fixtures
+2026-10-21T16:48:09.4748232Z Added 0 tests to meet fixture requirements
+2026-10-21T16:48:09.4749605Z Checking test dependency graph...
+2026-10-21T16:48:09.4750222Z Checking test dependency graph end
+2026-10-21T16:48:09.4750934Z test 1
+2026-10-21T16:48:09.4751317Z       Start  1: Toolchain.SupportsCpp20AndPortablePaths
+2026-10-21T16:48:09.4751670Z 
+2026-10-21T16:48:09.4752951Z 1: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Toolchain.SupportsCpp20AndPortablePaths" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:09.4754484Z 1: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:09.4754891Z 1: Test timeout computed to be: 90
+2026-10-21T16:48:09.5089985Z 1: Note: Google Test filter = Toolchain.SupportsCpp20AndPortablePaths
+2026-10-21T16:48:09.5091022Z 1: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:09.5091468Z 1: [----------] Global test environment set-up.
+2026-10-21T16:48:09.5091840Z 1: [----------] 1 test from Toolchain
+2026-10-21T16:48:09.5092239Z 1: [ RUN      ] Toolchain.SupportsCpp20AndPortablePaths
+2026-10-21T16:48:09.5094499Z 1: [       OK ] Toolchain.SupportsCpp20AndPortablePaths (0 ms)
+2026-10-21T16:48:09.5095312Z 1: [----------] 1 test from Toolchain (0 ms total)
+2026-10-21T16:48:09.5095698Z 1: 
+2026-10-21T16:48:09.5096095Z 1: [----------] Global test environment tear-down
+2026-10-21T16:48:09.5096514Z 1: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:09.5097294Z 1: [  PASSED  ] 1 test.
+2026-10-21T16:48:09.5648305Z  1/94 Test  #1: Toolchain.SupportsCpp20AndPortablePaths .............................................   Passed    0.09 sec
+2026-10-21T16:48:09.5650877Z test 2
+2026-10-21T16:48:09.5651275Z       Start  2: Interfaces.TransportCanOwnMessagesWithoutBorrowingCallerMemory
+2026-10-21T16:48:09.5651548Z 
+2026-10-21T16:48:09.5652380Z 2: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Interfaces.TransportCanOwnMessagesWithoutBorrowingCallerMemory" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:09.5653406Z 2: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:09.5653729Z 2: Test timeout computed to be: 90
+2026-10-21T16:48:09.5987516Z 2: Note: Google Test filter = Interfaces.TransportCanOwnMessagesWithoutBorrowingCallerMemory
+2026-10-21T16:48:09.5988387Z 2: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:09.5989120Z 2: [----------] Global test environment set-up.
+2026-10-21T16:48:09.5989714Z 2: [----------] 1 test from Interfaces
+2026-10-21T16:48:09.5990844Z 2: [ RUN      ] Interfaces.TransportCanOwnMessagesWithoutBorrowingCallerMemory
+2026-10-21T16:48:09.5991751Z 2: [       OK ] Interfaces.TransportCanOwnMessagesWithoutBorrowingCallerMemory (0 ms)
+2026-10-21T16:48:09.5992494Z 2: [----------] 1 test from Interfaces (0 ms total)
+2026-10-21T16:48:09.5992974Z 2: 
+2026-10-21T16:48:09.5993366Z 2: [----------] Global test environment tear-down
+2026-10-21T16:48:09.5993900Z 2: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:09.5994406Z 2: [  PASSED  ] 1 test.
+2026-10-21T16:48:09.6541072Z  2/94 Test  #2: Interfaces.TransportCanOwnMessagesWithoutBorrowingCallerMemory ......................   Passed    0.09 sec
+2026-10-21T16:48:09.6542884Z test 3
+2026-10-21T16:48:09.6543250Z       Start  3: Types.MissingVoteAndConflictTermDifferFromZero
+2026-10-21T16:48:09.6543474Z 
+2026-10-21T16:48:09.6544262Z 3: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Types.MissingVoteAndConflictTermDifferFromZero" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:09.6545222Z 3: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:09.6545550Z 3: Test timeout computed to be: 90
+2026-10-21T16:48:09.6878127Z 3: Note: Google Test filter = Types.MissingVoteAndConflictTermDifferFromZero
+2026-10-21T16:48:09.6878970Z 3: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:09.6879573Z 3: [----------] Global test environment set-up.
+2026-10-21T16:48:09.6880199Z 3: [----------] 1 test from Types
+2026-10-21T16:48:09.6880750Z 3: [ RUN      ] Types.MissingVoteAndConflictTermDifferFromZero
+2026-10-21T16:48:09.6881485Z 3: [       OK ] Types.MissingVoteAndConflictTermDifferFromZero (0 ms)
+2026-10-21T16:48:09.6882095Z 3: [----------] 1 test from Types (0 ms total)
+2026-10-21T16:48:09.6882555Z 3: 
+2026-10-21T16:48:09.6902890Z 3: [----------] Global test environment tear-down
+2026-10-21T16:48:09.6903385Z 3: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:09.6903739Z 3: [  PASSED  ] 1 test.
+2026-10-21T16:48:09.7432064Z  3/94 Test  #3: Types.MissingVoteAndConflictTermDifferFromZero ......................................   Passed    0.09 sec
+2026-10-21T16:48:09.7433550Z test 4
+2026-10-21T16:48:09.7433900Z       Start  4: Types.SnapshotAndLogRetainBinaryDataByValue
+2026-10-21T16:48:09.7434119Z 
+2026-10-21T16:48:09.7434884Z 4: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Types.SnapshotAndLogRetainBinaryDataByValue" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:09.7436107Z 4: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:09.7436431Z 4: Test timeout computed to be: 90
+2026-10-21T16:48:09.7763596Z 4: Note: Google Test filter = Types.SnapshotAndLogRetainBinaryDataByValue
+2026-10-21T16:48:09.7764381Z 4: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:09.7765050Z 4: [----------] Global test environment set-up.
+2026-10-21T16:48:09.7765632Z 4: [----------] 1 test from Types
+2026-10-21T16:48:09.7766163Z 4: [ RUN      ] Types.SnapshotAndLogRetainBinaryDataByValue
+2026-10-21T16:48:09.7766830Z 4: [       OK ] Types.SnapshotAndLogRetainBinaryDataByValue (0 ms)
+2026-10-21T16:48:09.7767492Z 4: [----------] 1 test from Types (0 ms total)
+2026-10-21T16:48:09.7767955Z 4: 
+2026-10-21T16:48:09.7768349Z 4: [----------] Global test environment tear-down
+2026-10-21T16:48:09.7768865Z 4: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:09.7769327Z 4: [  PASSED  ] 1 test.
+2026-10-21T16:48:09.8317279Z  4/94 Test  #4: Types.SnapshotAndLogRetainBinaryDataByValue .........................................   Passed    0.09 sec
+2026-10-21T16:48:09.8318395Z test 5
+2026-10-21T16:48:09.8318757Z       Start  5: Codec.VoteMatchesIndependentBigEndianGoldenFrame
+2026-10-21T16:48:09.8319109Z 
+2026-10-21T16:48:09.8320543Z 5: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Codec.VoteMatchesIndependentBigEndianGoldenFrame" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:09.8321610Z 5: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:09.8321910Z 5: Test timeout computed to be: 90
+2026-10-21T16:48:09.8706891Z 5: Note: Google Test filter = Codec.VoteMatchesIndependentBigEndianGoldenFrame
+2026-10-21T16:48:09.8707630Z 5: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:09.8708305Z 5: [----------] Global test environment set-up.
+2026-10-21T16:48:09.8708857Z 5: [----------] 1 test from Codec
+2026-10-21T16:48:09.8709434Z 5: [ RUN      ] Codec.VoteMatchesIndependentBigEndianGoldenFrame
+2026-10-21T16:48:09.8710354Z 5: [       OK ] Codec.VoteMatchesIndependentBigEndianGoldenFrame (0 ms)
+2026-10-21T16:48:09.8711114Z 5: [----------] 1 test from Codec (0 ms total)
+2026-10-21T16:48:09.8711618Z 5: 
+2026-10-21T16:48:09.8712025Z 5: [----------] Global test environment tear-down
+2026-10-21T16:48:09.8712616Z 5: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:09.8713189Z 5: [  PASSED  ] 1 test.
+2026-10-21T16:48:09.9257227Z  5/94 Test  #5: Codec.VoteMatchesIndependentBigEndianGoldenFrame ....................................   Passed    0.09 sec
+2026-10-21T16:48:09.9258831Z test 6
+2026-10-21T16:48:09.9259212Z       Start  6: Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix
+2026-10-21T16:48:09.9259590Z 
+2026-10-21T16:48:09.9260669Z 6: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:09.9261773Z 6: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:09.9262078Z 6: Test timeout computed to be: 90
+2026-10-21T16:48:09.9587626Z 6: Note: Google Test filter = Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix
+2026-10-21T16:48:09.9588431Z 6: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:09.9589070Z 6: [----------] Global test environment set-up.
+2026-10-21T16:48:09.9589655Z 6: [----------] 1 test from Codec
+2026-10-21T16:48:09.9590385Z 6: [ RUN      ] Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix
+2026-10-21T16:48:09.9634969Z 6: [       OK ] Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix (4 ms)
+2026-10-21T16:48:09.9635701Z 6: [----------] 1 test from Codec (4 ms total)
+2026-10-21T16:48:09.9636579Z 6: 
+2026-10-21T16:48:09.9637011Z 6: [----------] Global test environment tear-down
+2026-10-21T16:48:09.9637567Z 6: [==========] 1 test from 1 test suite ran. (5 ms total)
+2026-10-21T16:48:09.9638088Z 6: [  PASSED  ] 1 test.
+2026-10-21T16:48:10.0189376Z  6/94 Test  #6: Codec.AllKindsRoundTripAndRejectEveryTruncatedPrefix ................................   Passed    0.09 sec
+2026-10-21T16:48:10.0190607Z test 7
+2026-10-21T16:48:10.0190919Z       Start  7: Codec.RejectsUnknownVersionAndTag
+2026-10-21T16:48:10.0191200Z 
+2026-10-21T16:48:10.0192204Z 7: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Codec.RejectsUnknownVersionAndTag" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:10.0193171Z 7: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:10.0193500Z 7: Test timeout computed to be: 90
+2026-10-21T16:48:10.0520398Z 7: Note: Google Test filter = Codec.RejectsUnknownVersionAndTag
+2026-10-21T16:48:10.0521134Z 7: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:10.0521794Z 7: [----------] Global test environment set-up.
+2026-10-21T16:48:10.0522711Z 7: [----------] 1 test from Codec
+2026-10-21T16:48:10.0523320Z 7: [ RUN      ] Codec.RejectsUnknownVersionAndTag
+2026-10-21T16:48:10.0523968Z 7: [       OK ] Codec.RejectsUnknownVersionAndTag (0 ms)
+2026-10-21T16:48:10.0524574Z 7: [----------] 1 test from Codec (0 ms total)
+2026-10-21T16:48:10.0525171Z 7: 
+2026-10-21T16:48:10.0532391Z 7: [----------] Global test environment tear-down
+2026-10-21T16:48:10.0533014Z 7: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:10.0533414Z 7: [  PASSED  ] 1 test.
+2026-10-21T16:48:10.1086031Z  7/94 Test  #7: Codec.RejectsUnknownVersionAndTag ...................................................   Passed    0.09 sec
+2026-10-21T16:48:10.1087764Z test 8
+2026-10-21T16:48:10.1088100Z       Start  8: Codec.RejectsNoncanonicalBooleansAndEntryKinds
+2026-10-21T16:48:10.1088350Z 
+2026-10-21T16:48:10.1089118Z 8: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Codec.RejectsNoncanonicalBooleansAndEntryKinds" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:10.1090308Z 8: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:10.1090633Z 8: Test timeout computed to be: 90
+2026-10-21T16:48:10.1424607Z 8: Note: Google Test filter = Codec.RejectsNoncanonicalBooleansAndEntryKinds
+2026-10-21T16:48:10.1425447Z 8: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:10.1426199Z 8: [----------] Global test environment set-up.
+2026-10-21T16:48:10.1426629Z 8: [----------] 1 test from Codec
+2026-10-21T16:48:10.1427062Z 8: [ RUN      ] Codec.RejectsNoncanonicalBooleansAndEntryKinds
+2026-10-21T16:48:10.1428604Z 8: [       OK ] Codec.RejectsNoncanonicalBooleansAndEntryKinds (0 ms)
+2026-10-21T16:48:10.1429416Z 8: [----------] 1 test from Codec (0 ms total)
+2026-10-21T16:48:10.1429765Z 8: 
+2026-10-21T16:48:10.1430154Z 8: [----------] Global test environment tear-down
+2026-10-21T16:48:10.1430573Z 8: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:10.1430947Z 8: [  PASSED  ] 1 test.
+2026-10-21T16:48:10.1982025Z  8/94 Test  #8: Codec.RejectsNoncanonicalBooleansAndEntryKinds ......................................   Passed    0.09 sec
+2026-10-21T16:48:10.1983783Z test 9
+2026-10-21T16:48:10.1984156Z       Start  9: Codec.PreservesEmptyFieldsAndFullWidthIntegers
+2026-10-21T16:48:10.1984392Z 
+2026-10-21T16:48:10.1985163Z 9: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Codec.PreservesEmptyFieldsAndFullWidthIntegers" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:10.1986509Z 9: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:10.1986836Z 9: Test timeout computed to be: 90
+2026-10-21T16:48:10.2320249Z 9: Note: Google Test filter = Codec.PreservesEmptyFieldsAndFullWidthIntegers
+2026-10-21T16:48:10.2321073Z 9: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:10.2321853Z 9: [----------] Global test environment set-up.
+2026-10-21T16:48:10.2322250Z 9: [----------] 1 test from Codec
+2026-10-21T16:48:10.2322785Z 9: [ RUN      ] Codec.PreservesEmptyFieldsAndFullWidthIntegers
+2026-10-21T16:48:10.2323365Z 9: [       OK ] Codec.PreservesEmptyFieldsAndFullWidthIntegers (0 ms)
+2026-10-21T16:48:10.2323688Z 9: [----------] 1 test from Codec (0 ms total)
+2026-10-21T16:48:10.2323908Z 9: 
+2026-10-21T16:48:10.2324182Z 9: [----------] Global test environment tear-down
+2026-10-21T16:48:10.2324456Z 9: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:10.2324701Z 9: [  PASSED  ] 1 test.
+2026-10-21T16:48:10.2875300Z  9/94 Test  #9: Codec.PreservesEmptyFieldsAndFullWidthIntegers ......................................   Passed    0.09 sec
+2026-10-21T16:48:10.2877034Z test 10
+2026-10-21T16:48:10.2877369Z       Start 10: Codec.BoundsBlobAllocationBeforeReading
+2026-10-21T16:48:10.2877653Z 
+2026-10-21T16:48:10.2879142Z 10: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Codec.BoundsBlobAllocationBeforeReading" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:10.2880996Z 10: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:10.2881455Z 10: Test timeout computed to be: 90
+2026-10-21T16:48:10.3208941Z 10: Note: Google Test filter = Codec.BoundsBlobAllocationBeforeReading
+2026-10-21T16:48:10.3209521Z 10: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:10.3209950Z 10: [----------] Global test environment set-up.
+2026-10-21T16:48:10.3210492Z 10: [----------] 1 test from Codec
+2026-10-21T16:48:10.3210884Z 10: [ RUN      ] Codec.BoundsBlobAllocationBeforeReading
+2026-10-21T16:48:10.3302336Z 10: [       OK ] Codec.BoundsBlobAllocationBeforeReading (9 ms)
+2026-10-21T16:48:10.3303066Z 10: [----------] 1 test from Codec (9 ms total)
+2026-10-21T16:48:10.3303616Z 10: 
+2026-10-21T16:48:10.3303943Z 10: [----------] Global test environment tear-down
+2026-10-21T16:48:10.3304369Z 10: [==========] 1 test from 1 test suite ran. (9 ms total)
+2026-10-21T16:48:10.3304750Z 10: [  PASSED  ] 1 test.
+2026-10-21T16:48:10.3859763Z 10/94 Test #10: Codec.BoundsBlobAllocationBeforeReading .............................................   Passed    0.10 sec
+2026-10-21T16:48:10.3861628Z test 11
+2026-10-21T16:48:10.3862365Z       Start 11: Codec.BoundsEntryAllocationBeforeReading
+2026-10-21T16:48:10.3862790Z 
+2026-10-21T16:48:10.3864186Z 11: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Codec.BoundsEntryAllocationBeforeReading" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:10.3865636Z 11: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:10.3865960Z 11: Test timeout computed to be: 90
+2026-10-21T16:48:10.4198187Z 11: Note: Google Test filter = Codec.BoundsEntryAllocationBeforeReading
+2026-10-21T16:48:10.4198730Z 11: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:10.4199133Z 11: [----------] Global test environment set-up.
+2026-10-21T16:48:10.4199502Z 11: [----------] 1 test from Codec
+2026-10-21T16:48:10.4199884Z 11: [ RUN      ] Codec.BoundsEntryAllocationBeforeReading
+2026-10-21T16:48:10.4256095Z 11: [       OK ] Codec.BoundsEntryAllocationBeforeReading (5 ms)
+2026-10-21T16:48:10.4257179Z 11: [----------] 1 test from Codec (5 ms total)
+2026-10-21T16:48:10.4257559Z 11: 
+2026-10-21T16:48:10.4257847Z 11: [----------] Global test environment tear-down
+2026-10-21T16:48:10.4258647Z 11: [==========] 1 test from 1 test suite ran. (6 ms total)
+2026-10-21T16:48:10.4259039Z 11: [  PASSED  ] 1 test.
+2026-10-21T16:48:10.4809854Z 11/94 Test #11: Codec.BoundsEntryAllocationBeforeReading ............................................   Passed    0.09 sec
+2026-10-21T16:48:10.4811277Z test 12
+2026-10-21T16:48:10.4811598Z       Start 12: Codec.EnforcesWholeFrameBudget
+2026-10-21T16:48:10.4811814Z 
+2026-10-21T16:48:10.4812525Z 12: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Codec.EnforcesWholeFrameBudget" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:10.4813460Z 12: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:10.4813755Z 12: Test timeout computed to be: 90
+2026-10-21T16:48:10.5152377Z 12: Note: Google Test filter = Codec.EnforcesWholeFrameBudget
+2026-10-21T16:48:10.5153222Z 12: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:10.5153880Z 12: [----------] Global test environment set-up.
+2026-10-21T16:48:10.5154356Z 12: [----------] 1 test from Codec
+2026-10-21T16:48:10.5154728Z 12: [ RUN      ] Codec.EnforcesWholeFrameBudget
+2026-10-21T16:48:10.5924009Z 12: [       OK ] Codec.EnforcesWholeFrameBudget (77 ms)
+2026-10-21T16:48:10.5924545Z 12: [----------] 1 test from Codec (77 ms total)
+2026-10-21T16:48:10.5924894Z 12: 
+2026-10-21T16:48:10.5925164Z 12: [----------] Global test environment tear-down
+2026-10-21T16:48:10.5925578Z 12: [==========] 1 test from 1 test suite ran. (77 ms total)
+2026-10-21T16:48:10.5925957Z 12: [  PASSED  ] 1 test.
+2026-10-21T16:48:10.6477369Z 12/94 Test #12: Codec.EnforcesWholeFrameBudget ......................................................   Passed    0.17 sec
+2026-10-21T16:48:10.6478380Z test 13
+2026-10-21T16:48:10.6478694Z       Start 13: SeedOptions.DefaultsAndSingleSeedReplay
+2026-10-21T16:48:10.6479004Z 
+2026-10-21T16:48:10.6480139Z 13: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SeedOptions.DefaultsAndSingleSeedReplay" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:10.6481079Z 13: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:10.6481406Z 13: Test timeout computed to be: 90
+2026-10-21T16:48:10.6805960Z 13: Note: Google Test filter = SeedOptions.DefaultsAndSingleSeedReplay
+2026-10-21T16:48:10.6806724Z 13: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:10.6807318Z 13: [----------] Global test environment set-up.
+2026-10-21T16:48:10.6807843Z 13: [----------] 1 test from SeedOptions
+2026-10-21T16:48:10.6808389Z 13: [ RUN      ] SeedOptions.DefaultsAndSingleSeedReplay
+2026-10-21T16:48:10.6809017Z 13: [       OK ] SeedOptions.DefaultsAndSingleSeedReplay (0 ms)
+2026-10-21T16:48:10.6809622Z 13: [----------] 1 test from SeedOptions (0 ms total)
+2026-10-21T16:48:10.6810343Z 13: 
+2026-10-21T16:48:10.6810740Z 13: [----------] Global test environment tear-down
+2026-10-21T16:48:10.6811295Z 13: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:10.6811809Z 13: [  PASSED  ] 1 test.
+2026-10-21T16:48:10.7361580Z 13/94 Test #13: SeedOptions.DefaultsAndSingleSeedReplay .............................................   Passed    0.09 sec
+2026-10-21T16:48:10.7362469Z test 14
+2026-10-21T16:48:10.7362805Z       Start 14: SeedOptions.RejectsInvalidAndWrappingRanges
+2026-10-21T16:48:10.7363143Z 
+2026-10-21T16:48:10.7364127Z 14: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SeedOptions.RejectsInvalidAndWrappingRanges" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:10.7365131Z 14: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:10.7365965Z 14: Test timeout computed to be: 90
+2026-10-21T16:48:10.7692900Z 14: Note: Google Test filter = SeedOptions.RejectsInvalidAndWrappingRanges
+2026-10-21T16:48:10.7693828Z 14: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:10.7694458Z 14: [----------] Global test environment set-up.
+2026-10-21T16:48:10.7694865Z 14: [----------] 1 test from SeedOptions
+2026-10-21T16:48:10.7695356Z 14: [ RUN      ] SeedOptions.RejectsInvalidAndWrappingRanges
+2026-10-21T16:48:10.7697846Z 14: [       OK ] SeedOptions.RejectsInvalidAndWrappingRanges (0 ms)
+2026-10-21T16:48:10.7698521Z 14: [----------] 1 test from SeedOptions (0 ms total)
+2026-10-21T16:48:10.7699009Z 14: 
+2026-10-21T16:48:10.7699409Z 14: [----------] Global test environment tear-down
+2026-10-21T16:48:10.7699961Z 14: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:10.7700596Z 14: [  PASSED  ] 1 test.
+2026-10-21T16:48:10.8251745Z 14/94 Test #14: SeedOptions.RejectsInvalidAndWrappingRanges .........................................   Passed    0.09 sec
+2026-10-21T16:48:10.8253203Z test 15
+2026-10-21T16:48:10.8253531Z       Start 15: SeedOptions.GeneratorHasStableKnownSequence
+2026-10-21T16:48:10.8253860Z 
+2026-10-21T16:48:10.8255282Z 15: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SeedOptions.GeneratorHasStableKnownSequence" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:10.8256331Z 15: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:10.8256628Z 15: Test timeout computed to be: 90
+2026-10-21T16:48:10.8584806Z 15: Note: Google Test filter = SeedOptions.GeneratorHasStableKnownSequence
+2026-10-21T16:48:10.8585587Z 15: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:10.8586193Z 15: [----------] Global test environment set-up.
+2026-10-21T16:48:10.8586713Z 15: [----------] 1 test from SeedOptions
+2026-10-21T16:48:10.8587313Z 15: [ RUN      ] SeedOptions.GeneratorHasStableKnownSequence
+2026-10-21T16:48:10.8587985Z 15: [       OK ] SeedOptions.GeneratorHasStableKnownSequence (0 ms)
+2026-10-21T16:48:10.8588601Z 15: [----------] 1 test from SeedOptions (0 ms total)
+2026-10-21T16:48:10.8589100Z 15: 
+2026-10-21T16:48:10.8589499Z 15: [----------] Global test environment tear-down
+2026-10-21T16:48:10.8590213Z 15: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:10.8590710Z 15: [  PASSED  ] 1 test.
+2026-10-21T16:48:10.9138828Z 15/94 Test #15: SeedOptions.GeneratorHasStableKnownSequence .........................................   Passed    0.09 sec
+2026-10-21T16:48:10.9139951Z test 16
+2026-10-21T16:48:10.9140493Z       Start 16: CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe
+2026-10-21T16:48:10.9140902Z 
+2026-10-21T16:48:10.9141941Z 16: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:10.9143028Z 16: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:10.9143350Z 16: Test timeout computed to be: 10830
+2026-10-21T16:48:10.9481724Z 16: Note: Google Test filter = CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe
+2026-10-21T16:48:10.9482430Z 16: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:10.9483105Z 16: [----------] Global test environment set-up.
+2026-10-21T16:48:10.9483481Z 16: [----------] 1 test from CodecFuzz
+2026-10-21T16:48:10.9484030Z 16: [ RUN      ] CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe
+2026-10-21T16:48:13.0583517Z 16: [fuzz] first_seed=0 seeds=10000 round_trips=60000 probe_accepted=52898 probe_rejected=27102 corpus_digest=ddc03ddedd0aabdf
+2026-10-21T16:48:13.0584131Z 16: [       OK ] CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe (2110 ms)
+2026-10-21T16:48:13.0584929Z 16: [----------] 1 test from CodecFuzz (2110 ms total)
+2026-10-21T16:48:13.0585167Z 16: 
+2026-10-21T16:48:13.0585347Z 16: [----------] Global test environment tear-down
+2026-10-21T16:48:13.0585630Z 16: [==========] 1 test from 1 test suite ran. (2110 ms total)
+2026-10-21T16:48:13.0585884Z 16: [  PASSED  ] 1 test.
+2026-10-21T16:48:13.1135359Z 16/94 Test #16: CodecFuzz.RoundTripsMatchReferenceAndMalformedFramesAreSafe .........................   Passed    2.20 sec
+2026-10-21T16:48:13.1137605Z test 17
+2026-10-21T16:48:13.1138072Z       Start 17: ElectionTest.TimeoutPersistsSelfVoteBeforeSendingAndRetriesInNewTerm
+2026-10-21T16:48:13.1138555Z 
+2026-10-21T16:48:13.1139871Z 17: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionTest.TimeoutPersistsSelfVoteBeforeSendingAndRetriesInNewTerm" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:13.1141516Z 17: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:13.1141819Z 17: Test timeout computed to be: 90
+2026-10-21T16:48:13.1470124Z 17: Note: Google Test filter = ElectionTest.TimeoutPersistsSelfVoteBeforeSendingAndRetriesInNewTerm
+2026-10-21T16:48:13.1471140Z 17: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:13.1471931Z 17: [----------] Global test environment set-up.
+2026-10-21T16:48:13.1472530Z 17: [----------] 1 test from ElectionTest
+2026-10-21T16:48:13.1473297Z 17: [ RUN      ] ElectionTest.TimeoutPersistsSelfVoteBeforeSendingAndRetriesInNewTerm
+2026-10-21T16:48:13.1474425Z 17: [       OK ] ElectionTest.TimeoutPersistsSelfVoteBeforeSendingAndRetriesInNewTerm (0 ms)
+2026-10-21T16:48:13.1475297Z 17: [----------] 1 test from ElectionTest (0 ms total)
+2026-10-21T16:48:13.1475907Z 17: 
+2026-10-21T16:48:13.1476419Z 17: [----------] Global test environment tear-down
+2026-10-21T16:48:13.1477113Z 17: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:13.1477721Z 17: [  PASSED  ] 1 test.
+2026-10-21T16:48:13.2024735Z 17/94 Test #17: ElectionTest.TimeoutPersistsSelfVoteBeforeSendingAndRetriesInNewTerm ................   Passed    0.09 sec
+2026-10-21T16:48:13.2025986Z test 18
+2026-10-21T16:48:13.2026418Z       Start 18: ElectionTest.OnlyDistinctCurrentTermMemberVotesFormMajority
+2026-10-21T16:48:13.2029029Z 
+2026-10-21T16:48:13.2030241Z 18: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionTest.OnlyDistinctCurrentTermMemberVotesFormMajority" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:13.2031311Z 18: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:13.2031619Z 18: Test timeout computed to be: 90
+2026-10-21T16:48:13.2349213Z 18: Note: Google Test filter = ElectionTest.OnlyDistinctCurrentTermMemberVotesFormMajority
+2026-10-21T16:48:13.2350453Z 18: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:13.2351245Z 18: [----------] Global test environment set-up.
+2026-10-21T16:48:13.2351827Z 18: [----------] 1 test from ElectionTest
+2026-10-21T16:48:13.2352523Z 18: [ RUN      ] ElectionTest.OnlyDistinctCurrentTermMemberVotesFormMajority
+2026-10-21T16:48:13.2353413Z 18: [       OK ] ElectionTest.OnlyDistinctCurrentTermMemberVotesFormMajority (0 ms)
+2026-10-21T16:48:13.2354160Z 18: [----------] 1 test from ElectionTest (0 ms total)
+2026-10-21T16:48:13.2354677Z 18: 
+2026-10-21T16:48:13.2355107Z 18: [----------] Global test environment tear-down
+2026-10-21T16:48:13.2355673Z 18: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:13.2356200Z 18: [  PASSED  ] 1 test.
+2026-10-21T16:48:13.2906758Z 18/94 Test #18: ElectionTest.OnlyDistinctCurrentTermMemberVotesFormMajority .........................   Passed    0.09 sec
+2026-10-21T16:48:13.2907777Z test 19
+2026-10-21T16:48:13.2908516Z       Start 19: ElectionTest.VoteSurvivesRestartAndHigherTermClearsItBeforeReply
+2026-10-21T16:48:13.2908958Z 
+2026-10-21T16:48:13.2910424Z 19: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionTest.VoteSurvivesRestartAndHigherTermClearsItBeforeReply" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:13.2911933Z 19: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:13.2912232Z 19: Test timeout computed to be: 90
+2026-10-21T16:48:13.3243058Z 19: Note: Google Test filter = ElectionTest.VoteSurvivesRestartAndHigherTermClearsItBeforeReply
+2026-10-21T16:48:13.3243894Z 19: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:13.3244622Z 19: [----------] Global test environment set-up.
+2026-10-21T16:48:13.3245065Z 19: [----------] 1 test from ElectionTest
+2026-10-21T16:48:13.3245636Z 19: [ RUN      ] ElectionTest.VoteSurvivesRestartAndHigherTermClearsItBeforeReply
+2026-10-21T16:48:13.3246403Z 19: [       OK ] ElectionTest.VoteSurvivesRestartAndHigherTermClearsItBeforeReply (0 ms)
+2026-10-21T16:48:13.3247378Z 19: [----------] 1 test from ElectionTest (0 ms total)
+2026-10-21T16:48:13.3247731Z 19: 
+2026-10-21T16:48:13.3247995Z 19: [----------] Global test environment tear-down
+2026-10-21T16:48:13.3251677Z 19: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:13.3252228Z 19: [  PASSED  ] 1 test.
+2026-10-21T16:48:13.3806389Z 19/94 Test #19: ElectionTest.VoteSurvivesRestartAndHigherTermClearsItBeforeReply ....................   Passed    0.09 sec
+2026-10-21T16:48:13.3807361Z test 20
+2026-10-21T16:48:13.3807820Z       Start 20: ElectionTest.LogFreshnessUsesTermThenIndexIncludingSnapshotTail
+2026-10-21T16:48:13.3808192Z 
+2026-10-21T16:48:13.3809013Z 20: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionTest.LogFreshnessUsesTermThenIndexIncludingSnapshotTail" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:13.3810996Z 20: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:13.3811426Z 20: Test timeout computed to be: 90
+2026-10-21T16:48:13.4143183Z 20: Note: Google Test filter = ElectionTest.LogFreshnessUsesTermThenIndexIncludingSnapshotTail
+2026-10-21T16:48:13.4144172Z 20: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:13.4144789Z 20: [----------] Global test environment set-up.
+2026-10-21T16:48:13.4145222Z 20: [----------] 1 test from ElectionTest
+2026-10-21T16:48:13.4145767Z 20: [ RUN      ] ElectionTest.LogFreshnessUsesTermThenIndexIncludingSnapshotTail
+2026-10-21T16:48:13.4146529Z 20: [       OK ] ElectionTest.LogFreshnessUsesTermThenIndexIncludingSnapshotTail (0 ms)
+2026-10-21T16:48:13.4147098Z 20: [----------] 1 test from ElectionTest (0 ms total)
+2026-10-21T16:48:13.4147476Z 20: 
+2026-10-21T16:48:13.4147740Z 20: [----------] Global test environment tear-down
+2026-10-21T16:48:13.4148141Z 20: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:13.4148508Z 20: [  PASSED  ] 1 test.
+2026-10-21T16:48:13.4194834Z 20/94 Test #20: ElectionTest.LogFreshnessUsesTermThenIndexIncludingSnapshotTail .....................   Passed    0.04 sec
+2026-10-21T16:48:13.4196682Z test 21
+2026-10-21T16:48:13.4197158Z       Start 21: ElectionTest.DeniedVoteAndStaleHeartbeatDoNotDelayElection
+2026-10-21T16:48:13.4197490Z 
+2026-10-21T16:48:13.4198303Z 21: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionTest.DeniedVoteAndStaleHeartbeatDoNotDelayElection" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:13.4199362Z 21: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:13.4199944Z 21: Test timeout computed to be: 90
+2026-10-21T16:48:13.4527756Z 21: Note: Google Test filter = ElectionTest.DeniedVoteAndStaleHeartbeatDoNotDelayElection
+2026-10-21T16:48:13.4528550Z 21: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:13.4529117Z 21: [----------] Global test environment set-up.
+2026-10-21T16:48:13.4529624Z 21: [----------] 1 test from ElectionTest
+2026-10-21T16:48:13.4530308Z 21: [ RUN      ] ElectionTest.DeniedVoteAndStaleHeartbeatDoNotDelayElection
+2026-10-21T16:48:13.4531139Z 21: [       OK ] ElectionTest.DeniedVoteAndStaleHeartbeatDoNotDelayElection (0 ms)
+2026-10-21T16:48:13.4545799Z 21: [----------] 1 test from ElectionTest (0 ms total)
+2026-10-21T16:48:13.4546315Z 21: 
+2026-10-21T16:48:13.4546612Z 21: [----------] Global test environment tear-down
+2026-10-21T16:48:13.4546940Z 21: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:13.4547192Z 21: [  PASSED  ] 1 test.
+2026-10-21T16:48:13.5099024Z 21/94 Test #21: ElectionTest.DeniedVoteAndStaleHeartbeatDoNotDelayElection ..........................   Passed    0.09 sec
+2026-10-21T16:48:13.5100281Z test 22
+2026-10-21T16:48:13.5101041Z       Start 22: ElectionTest.GrantedVoteAndCurrentHeartbeatResetElectionTimer
+2026-10-21T16:48:13.5101479Z 
+2026-10-21T16:48:13.5103041Z 22: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionTest.GrantedVoteAndCurrentHeartbeatResetElectionTimer" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:13.5104393Z 22: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:13.5104693Z 22: Test timeout computed to be: 90
+2026-10-21T16:48:13.5435420Z 22: Note: Google Test filter = ElectionTest.GrantedVoteAndCurrentHeartbeatResetElectionTimer
+2026-10-21T16:48:13.5436175Z 22: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:13.5436670Z 22: [----------] Global test environment set-up.
+2026-10-21T16:48:13.5437137Z 22: [----------] 1 test from ElectionTest
+2026-10-21T16:48:13.5437701Z 22: [ RUN      ] ElectionTest.GrantedVoteAndCurrentHeartbeatResetElectionTimer
+2026-10-21T16:48:13.5438493Z 22: [       OK ] ElectionTest.GrantedVoteAndCurrentHeartbeatResetElectionTimer (0 ms)
+2026-10-21T16:48:13.5439139Z 22: [----------] 1 test from ElectionTest (0 ms total)
+2026-10-21T16:48:13.5439535Z 22: 
+2026-10-21T16:48:13.5439811Z 22: [----------] Global test environment tear-down
+2026-10-21T16:48:13.5440336Z 22: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:13.5989447Z 22: [  PASSED  ] 1 test.
+2026-10-21T16:48:13.5990458Z 22/94 Test #22: ElectionTest.GrantedVoteAndCurrentHeartbeatResetElectionTimer .......................   Passed    0.09 sec
+2026-10-21T16:48:13.5991663Z test 23
+2026-10-21T16:48:13.5992105Z       Start 23: ElectionTest.SameTermHeartbeatStepsCandidateDownWithoutClearingVote
+2026-10-21T16:48:13.5992563Z 
+2026-10-21T16:48:13.5993921Z 23: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionTest.SameTermHeartbeatStepsCandidateDownWithoutClearingVote" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:13.5996270Z 23: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:13.5996580Z 23: Test timeout computed to be: 90
+2026-10-21T16:48:13.6332211Z 23: Note: Google Test filter = ElectionTest.SameTermHeartbeatStepsCandidateDownWithoutClearingVote
+2026-10-21T16:48:13.6339256Z 23: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:13.6339788Z 23: [----------] Global test environment set-up.
+2026-10-21T16:48:13.6340329Z 23: [----------] 1 test from ElectionTest
+2026-10-21T16:48:13.6340901Z 23: [ RUN      ] ElectionTest.SameTermHeartbeatStepsCandidateDownWithoutClearingVote
+2026-10-21T16:48:13.6341728Z 23: [       OK ] ElectionTest.SameTermHeartbeatStepsCandidateDownWithoutClearingVote (0 ms)
+2026-10-21T16:48:13.6342714Z 23: [----------] 1 test from ElectionTest (0 ms total)
+2026-10-21T16:48:13.6343035Z 23: 
+2026-10-21T16:48:13.6343312Z 23: [----------] Global test environment tear-down
+2026-10-21T16:48:13.6343646Z 23: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:13.6343897Z 23: [  PASSED  ] 1 test.
+2026-10-21T16:48:13.6879441Z 23/94 Test #23: ElectionTest.SameTermHeartbeatStepsCandidateDownWithoutClearingVote .................   Passed    0.09 sec
+2026-10-21T16:48:13.6880915Z test 24
+2026-10-21T16:48:13.6881393Z       Start 24: ElectionTest.HigherTermResponseStepsLeaderDownButDoesNotResetTimer
+2026-10-21T16:48:13.6883992Z 
+2026-10-21T16:48:13.6885039Z 24: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionTest.HigherTermResponseStepsLeaderDownButDoesNotResetTimer" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:13.6886139Z 24: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:13.6886446Z 24: Test timeout computed to be: 90
+2026-10-21T16:48:13.7214710Z 24: Note: Google Test filter = ElectionTest.HigherTermResponseStepsLeaderDownButDoesNotResetTimer
+2026-10-21T16:48:13.7215584Z 24: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:13.7216121Z 24: [----------] Global test environment set-up.
+2026-10-21T16:48:13.7216564Z 24: [----------] 1 test from ElectionTest
+2026-10-21T16:48:13.7217148Z 24: [ RUN      ] ElectionTest.HigherTermResponseStepsLeaderDownButDoesNotResetTimer
+2026-10-21T16:48:13.7218016Z 24: [       OK ] ElectionTest.HigherTermResponseStepsLeaderDownButDoesNotResetTimer (0 ms)
+2026-10-21T16:48:13.7218725Z 24: [----------] 1 test from ElectionTest (0 ms total)
+2026-10-21T16:48:13.7219132Z 24: 
+2026-10-21T16:48:13.7219415Z 24: [----------] Global test environment tear-down
+2026-10-21T16:48:13.7220886Z 24: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:13.7221275Z 24: [  PASSED  ] 1 test.
+2026-10-21T16:48:13.7775709Z 24/94 Test #24: ElectionTest.HigherTermResponseStepsLeaderDownButDoesNotResetTimer ..................   Passed    0.09 sec
+2026-10-21T16:48:13.7777433Z test 25
+2026-10-21T16:48:13.7778015Z       Start 25: ElectionTest.StorageFailureSendsNothingAndLatchesStop
+2026-10-21T16:48:13.7778409Z 
+2026-10-21T16:48:13.7779639Z 25: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionTest.StorageFailureSendsNothingAndLatchesStop" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:13.7781374Z 25: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:13.7781674Z 25: Test timeout computed to be: 90
+2026-10-21T16:48:13.8115619Z 25: Note: Google Test filter = ElectionTest.StorageFailureSendsNothingAndLatchesStop
+2026-10-21T16:48:13.8116459Z 25: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:13.8117019Z 25: [----------] Global test environment set-up.
+2026-10-21T16:48:13.8117419Z 25: [----------] 1 test from ElectionTest
+2026-10-21T16:48:13.8117928Z 25: [ RUN      ] ElectionTest.StorageFailureSendsNothingAndLatchesStop
+2026-10-21T16:48:13.8121948Z 25: [       OK ] ElectionTest.StorageFailureSendsNothingAndLatchesStop (0 ms)
+2026-10-21T16:48:13.8122633Z 25: [----------] 1 test from ElectionTest (0 ms total)
+2026-10-21T16:48:13.8123051Z 25: 
+2026-10-21T16:48:13.8123324Z 25: [----------] Global test environment tear-down
+2026-10-21T16:48:13.8123764Z 25: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:13.8124216Z 25: [  PASSED  ] 1 test.
+2026-10-21T16:48:13.8675190Z 25/94 Test #25: ElectionTest.StorageFailureSendsNothingAndLatchesStop ...............................   Passed    0.09 sec
+2026-10-21T16:48:13.8676819Z test 26
+2026-10-21T16:48:13.8677372Z       Start 26: ElectionTest.FailedSelfVoteCannotSendElectionTraffic
+2026-10-21T16:48:13.8677615Z 
+2026-10-21T16:48:13.8678406Z 26: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionTest.FailedSelfVoteCannotSendElectionTraffic" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:13.8679433Z 26: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:13.8679761Z 26: Test timeout computed to be: 90
+2026-10-21T16:48:13.9008611Z 26: Note: Google Test filter = ElectionTest.FailedSelfVoteCannotSendElectionTraffic
+2026-10-21T16:48:13.9009426Z 26: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:13.9009971Z 26: [----------] Global test environment set-up.
+2026-10-21T16:48:13.9010678Z 26: [----------] 1 test from ElectionTest
+2026-10-21T16:48:13.9011355Z 26: [ RUN      ] ElectionTest.FailedSelfVoteCannotSendElectionTraffic
+2026-10-21T16:48:13.9012301Z 26: [       OK ] ElectionTest.FailedSelfVoteCannotSendElectionTraffic (0 ms)
+2026-10-21T16:48:13.9013042Z 26: [----------] 1 test from ElectionTest (0 ms total)
+2026-10-21T16:48:13.9013547Z 26: 
+2026-10-21T16:48:13.9014326Z 26: [----------] Global test environment tear-down
+2026-10-21T16:48:13.9015103Z 26: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:13.9015807Z 26: [  PASSED  ] 1 test.
+2026-10-21T16:48:13.9561993Z 26/94 Test #26: ElectionTest.FailedSelfVoteCannotSendElectionTraffic ................................   Passed    0.09 sec
+2026-10-21T16:48:13.9563382Z test 27
+2026-10-21T16:48:13.9563763Z       Start 27: ElectionTest.SingleMemberElectsItselfAndTermCannotWrap
+2026-10-21T16:48:13.9564136Z 
+2026-10-21T16:48:13.9565498Z 27: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionTest.SingleMemberElectsItselfAndTermCannotWrap" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:13.9567115Z 27: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:13.9567419Z 27: Test timeout computed to be: 90
+2026-10-21T16:48:13.9899075Z 27: Note: Google Test filter = ElectionTest.SingleMemberElectsItselfAndTermCannotWrap
+2026-10-21T16:48:13.9900364Z 27: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:13.9900970Z 27: [----------] Global test environment set-up.
+2026-10-21T16:48:13.9901561Z 27: [----------] 1 test from ElectionTest
+2026-10-21T16:48:13.9902178Z 27: [ RUN      ] ElectionTest.SingleMemberElectsItselfAndTermCannotWrap
+2026-10-21T16:48:13.9902964Z 27: [       OK ] ElectionTest.SingleMemberElectsItselfAndTermCannotWrap (0 ms)
+2026-10-21T16:48:13.9903659Z 27: [----------] 1 test from ElectionTest (0 ms total)
+2026-10-21T16:48:13.9904144Z 27: 
+2026-10-21T16:48:13.9904561Z 27: [----------] Global test environment tear-down
+2026-10-21T16:48:13.9905241Z 27: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:13.9905822Z 27: [  PASSED  ] 1 test.
+2026-10-21T16:48:14.0454192Z 27/94 Test #27: ElectionTest.SingleMemberElectsItselfAndTermCannotWrap ..............................   Passed    0.09 sec
+2026-10-21T16:48:14.0455566Z test 28
+2026-10-21T16:48:14.0455937Z       Start 28: ElectionTest.RejectsInvalidMembershipAndTiming
+2026-10-21T16:48:14.0456158Z 
+2026-10-21T16:48:14.0456934Z 28: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionTest.RejectsInvalidMembershipAndTiming" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:14.0457921Z 28: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:14.0458241Z 28: Test timeout computed to be: 90
+2026-10-21T16:48:14.0794634Z 28: Note: Google Test filter = ElectionTest.RejectsInvalidMembershipAndTiming
+2026-10-21T16:48:14.0795851Z 28: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:14.0796598Z 28: [----------] Global test environment set-up.
+2026-10-21T16:48:14.0797006Z 28: [----------] 1 test from ElectionTest
+2026-10-21T16:48:14.0797496Z 28: [ RUN      ] ElectionTest.RejectsInvalidMembershipAndTiming
+2026-10-21T16:48:14.0812700Z 28: [       OK ] ElectionTest.RejectsInvalidMembershipAndTiming (0 ms)
+2026-10-21T16:48:14.0813282Z 28: [----------] 1 test from ElectionTest (0 ms total)
+2026-10-21T16:48:14.0813614Z 28: 
+2026-10-21T16:48:14.0813883Z 28: [----------] Global test environment tear-down
+2026-10-21T16:48:14.0814281Z 28: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:14.0814618Z 28: [  PASSED  ] 1 test.
+2026-10-21T16:48:14.0864264Z 28/94 Test #28: ElectionTest.RejectsInvalidMembershipAndTiming ......................................   Passed    0.04 sec
+2026-10-21T16:48:14.0866170Z test 29
+2026-10-21T16:48:14.0866525Z       Start 29: RaftLog.TermsAndSlicesRespectTheCompactedBoundary
+2026-10-21T16:48:14.0866779Z 
+2026-10-21T16:48:14.0867747Z 29: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=RaftLog.TermsAndSlicesRespectTheCompactedBoundary" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:14.0868757Z 29: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:14.0869087Z 29: Test timeout computed to be: 90
+2026-10-21T16:48:14.1210439Z 29: Note: Google Test filter = RaftLog.TermsAndSlicesRespectTheCompactedBoundary
+2026-10-21T16:48:14.1212412Z 29: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:14.1212945Z 29: [----------] Global test environment set-up.
+2026-10-21T16:48:14.1214760Z 29: [----------] 1 test from RaftLog
+2026-10-21T16:48:14.1215085Z 29: [ RUN      ] RaftLog.TermsAndSlicesRespectTheCompactedBoundary
+2026-10-21T16:48:14.1215480Z 29: [       OK ] RaftLog.TermsAndSlicesRespectTheCompactedBoundary (0 ms)
+2026-10-21T16:48:14.1215849Z 29: [----------] 1 test from RaftLog (0 ms total)
+2026-10-21T16:48:14.1216070Z 29: 
+2026-10-21T16:48:14.1216255Z 29: [----------] Global test environment tear-down
+2026-10-21T16:48:14.1216521Z 29: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:14.1216760Z 29: [  PASSED  ] 1 test.
+2026-10-21T16:48:14.1767354Z 29/94 Test #29: RaftLog.TermsAndSlicesRespectTheCompactedBoundary ...................................   Passed    0.09 sec
+2026-10-21T16:48:14.1769259Z test 30
+2026-10-21T16:48:14.1769634Z       Start 30: RaftLog.RejectsGapsTermRegressionAndIndexOverflow
+2026-10-21T16:48:14.1769861Z 
+2026-10-21T16:48:14.1770879Z 30: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=RaftLog.RejectsGapsTermRegressionAndIndexOverflow" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:14.1771872Z 30: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:14.1772197Z 30: Test timeout computed to be: 90
+2026-10-21T16:48:14.2111729Z 30: Note: Google Test filter = RaftLog.RejectsGapsTermRegressionAndIndexOverflow
+2026-10-21T16:48:14.2112796Z 30: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:14.2113644Z 30: [----------] Global test environment set-up.
+2026-10-21T16:48:14.2114628Z 30: [----------] 1 test from RaftLog
+2026-10-21T16:48:14.2115333Z 30: [ RUN      ] RaftLog.RejectsGapsTermRegressionAndIndexOverflow
+2026-10-21T16:48:14.2116092Z 30: [       OK ] RaftLog.RejectsGapsTermRegressionAndIndexOverflow (0 ms)
+2026-10-21T16:48:14.2116764Z 30: [----------] 1 test from RaftLog (0 ms total)
+2026-10-21T16:48:14.2117323Z 30: 
+2026-10-21T16:48:14.2117733Z 30: [----------] Global test environment tear-down
+2026-10-21T16:48:14.2118295Z 30: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:14.2119045Z 30: [  PASSED  ] 1 test.
+2026-10-21T16:48:14.2665844Z 30/94 Test #30: RaftLog.RejectsGapsTermRegressionAndIndexOverflow ...................................   Passed    0.09 sec
+2026-10-21T16:48:14.2667333Z test 31
+2026-10-21T16:48:14.2667824Z       Start 31: RaftLog.BatchReplacesOnlyTheRequestedSuffixAndLeavesInputUntouched
+2026-10-21T16:48:14.2668278Z 
+2026-10-21T16:48:14.2669194Z 31: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=RaftLog.BatchReplacesOnlyTheRequestedSuffixAndLeavesInputUntouched" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:14.2670445Z 31: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:14.2670744Z 31: Test timeout computed to be: 90
+2026-10-21T16:48:14.2997241Z 31: Note: Google Test filter = RaftLog.BatchReplacesOnlyTheRequestedSuffixAndLeavesInputUntouched
+2026-10-21T16:48:14.2997990Z 31: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:14.2998437Z 31: [----------] Global test environment set-up.
+2026-10-21T16:48:14.2998808Z 31: [----------] 1 test from RaftLog
+2026-10-21T16:48:14.2999762Z 31: [ RUN      ] RaftLog.BatchReplacesOnlyTheRequestedSuffixAndLeavesInputUntouched
+2026-10-21T16:48:14.3000712Z 31: [       OK ] RaftLog.BatchReplacesOnlyTheRequestedSuffixAndLeavesInputUntouched (0 ms)
+2026-10-21T16:48:14.3001326Z 31: [----------] 1 test from RaftLog (0 ms total)
+2026-10-21T16:48:14.3001662Z 31: 
+2026-10-21T16:48:14.3001923Z 31: [----------] Global test environment tear-down
+2026-10-21T16:48:14.3002337Z 31: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:14.3002703Z 31: [  PASSED  ] 1 test.
+2026-10-21T16:48:14.3550845Z 31/94 Test #31: RaftLog.BatchReplacesOnlyTheRequestedSuffixAndLeavesInputUntouched ..................   Passed    0.09 sec
+2026-10-21T16:48:14.3552465Z test 32
+2026-10-21T16:48:14.3552831Z       Start 32: ReplicationTest.LeaderPersistsNoOpAndCommitsOnlyAcknowledgedEntries
+2026-10-21T16:48:14.3553157Z 
+2026-10-21T16:48:14.3554000Z 32: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReplicationTest.LeaderPersistsNoOpAndCommitsOnlyAcknowledgedEntries" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:14.3555093Z 32: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:14.3555419Z 32: Test timeout computed to be: 90
+2026-10-21T16:48:14.3894665Z 32: Note: Google Test filter = ReplicationTest.LeaderPersistsNoOpAndCommitsOnlyAcknowledgedEntries
+2026-10-21T16:48:14.3895628Z 32: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:14.3896316Z 32: [----------] Global test environment set-up.
+2026-10-21T16:48:14.3896919Z 32: [----------] 1 test from ReplicationTest
+2026-10-21T16:48:14.3897645Z 32: [ RUN      ] ReplicationTest.LeaderPersistsNoOpAndCommitsOnlyAcknowledgedEntries
+2026-10-21T16:48:14.3898637Z 32: [       OK ] ReplicationTest.LeaderPersistsNoOpAndCommitsOnlyAcknowledgedEntries (0 ms)
+2026-10-21T16:48:14.3899429Z 32: [----------] 1 test from ReplicationTest (0 ms total)
+2026-10-21T16:48:14.3899918Z 32: 
+2026-10-21T16:48:14.3900455Z 32: [----------] Global test environment tear-down
+2026-10-21T16:48:14.3900984Z 32: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:14.3901477Z 32: [  PASSED  ] 1 test.
+2026-10-21T16:48:14.4448677Z 32/94 Test #32: ReplicationTest.LeaderPersistsNoOpAndCommitsOnlyAcknowledgedEntries .................   Passed    0.09 sec
+2026-10-21T16:48:14.4450636Z test 33
+2026-10-21T16:48:14.4451118Z       Start 33: ReplicationTest.FollowerPersistsBeforeAckAndDoesNotTruncateOnDuplicateOrHeartbeat
+2026-10-21T16:48:14.4451480Z 
+2026-10-21T16:48:14.4452381Z 33: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReplicationTest.FollowerPersistsBeforeAckAndDoesNotTruncateOnDuplicateOrHeartbeat" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:14.4453785Z 33: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:14.4454102Z 33: Test timeout computed to be: 90
+2026-10-21T16:48:14.4807318Z 33: Note: Google Test filter = ReplicationTest.FollowerPersistsBeforeAckAndDoesNotTruncateOnDuplicateOrHeartbeat
+2026-10-21T16:48:14.4808385Z 33: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:14.4808906Z 33: [----------] Global test environment set-up.
+2026-10-21T16:48:14.4809292Z 33: [----------] 1 test from ReplicationTest
+2026-10-21T16:48:14.4809886Z 33: [ RUN      ] ReplicationTest.FollowerPersistsBeforeAckAndDoesNotTruncateOnDuplicateOrHeartbeat
+2026-10-21T16:48:14.4810681Z 33: [       OK ] ReplicationTest.FollowerPersistsBeforeAckAndDoesNotTruncateOnDuplicateOrHeartbeat (0 ms)
+2026-10-21T16:48:14.4811156Z 33: [----------] 1 test from ReplicationTest (0 ms total)
+2026-10-21T16:48:14.4811430Z 33: 
+2026-10-21T16:48:14.4811618Z 33: [----------] Global test environment tear-down
+2026-10-21T16:48:14.4811878Z 33: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:14.4812399Z 33: [  PASSED  ] 1 test.
+2026-10-21T16:48:14.5354210Z 33/94 Test #33: ReplicationTest.FollowerPersistsBeforeAckAndDoesNotTruncateOnDuplicateOrHeartbeat ...   Passed    0.09 sec
+2026-10-21T16:48:14.5355995Z test 34
+2026-10-21T16:48:14.5356480Z       Start 34: ReplicationTest.ConflictingSuffixIsReplacedAndMissingPrefixReportsHints
+2026-10-21T16:48:14.5356947Z 
+2026-10-21T16:48:14.5358233Z 34: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReplicationTest.ConflictingSuffixIsReplacedAndMissingPrefixReportsHints" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:14.5360219Z 34: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:14.5360644Z 34: Test timeout computed to be: 90
+2026-10-21T16:48:14.5690702Z 34: Note: Google Test filter = ReplicationTest.ConflictingSuffixIsReplacedAndMissingPrefixReportsHints
+2026-10-21T16:48:14.5691769Z 34: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:14.5692426Z 34: [----------] Global test environment set-up.
+2026-10-21T16:48:14.5693006Z 34: [----------] 1 test from ReplicationTest
+2026-10-21T16:48:14.5693816Z 34: [ RUN      ] ReplicationTest.ConflictingSuffixIsReplacedAndMissingPrefixReportsHints
+2026-10-21T16:48:14.5694932Z 34: [       OK ] ReplicationTest.ConflictingSuffixIsReplacedAndMissingPrefixReportsHints (0 ms)
+2026-10-21T16:48:14.5695759Z 34: [----------] 1 test from ReplicationTest (0 ms total)
+2026-10-21T16:48:14.5696264Z 34: 
+2026-10-21T16:48:14.5696661Z 34: [----------] Global test environment tear-down
+2026-10-21T16:48:14.5697209Z 34: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:14.5697809Z 34: [  PASSED  ] 1 test.
+2026-10-21T16:48:14.6247349Z 34/94 Test #34: ReplicationTest.ConflictingSuffixIsReplacedAndMissingPrefixReportsHints .............   Passed    0.09 sec
+2026-10-21T16:48:14.6248464Z test 35
+2026-10-21T16:48:14.6248969Z       Start 35: ReplicationTest.FailedAppendCannotAcknowledgeOrExposeAnUndurableLog
+2026-10-21T16:48:14.6249441Z 
+2026-10-21T16:48:14.6250520Z 35: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReplicationTest.FailedAppendCannotAcknowledgeOrExposeAnUndurableLog" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:14.6251637Z 35: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:14.6251938Z 35: Test timeout computed to be: 90
+2026-10-21T16:48:14.6581765Z 35: Note: Google Test filter = ReplicationTest.FailedAppendCannotAcknowledgeOrExposeAnUndurableLog
+2026-10-21T16:48:14.6583185Z 35: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:14.6583973Z 35: [----------] Global test environment set-up.
+2026-10-21T16:48:14.6590384Z 35: [----------] 1 test from ReplicationTest
+2026-10-21T16:48:14.6591074Z 35: [ RUN      ] ReplicationTest.FailedAppendCannotAcknowledgeOrExposeAnUndurableLog
+2026-10-21T16:48:14.6591846Z 35: [       OK ] ReplicationTest.FailedAppendCannotAcknowledgeOrExposeAnUndurableLog (0 ms)
+2026-10-21T16:48:14.6592434Z 35: [----------] 1 test from ReplicationTest (0 ms total)
+2026-10-21T16:48:14.6592754Z 35: 
+2026-10-21T16:48:14.6592994Z 35: [----------] Global test environment tear-down
+2026-10-21T16:48:14.6593370Z 35: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:14.6593717Z 35: [  PASSED  ] 1 test.
+2026-10-21T16:48:14.6637768Z 35/94 Test #35: ReplicationTest.FailedAppendCannotAcknowledgeOrExposeAnUndurableLog .................   Passed    0.04 sec
+2026-10-21T16:48:14.6639583Z test 36
+2026-10-21T16:48:14.6640182Z       Start 36: ReplicationTest.SingleMemberCommitsItsNoOpAndProposalImmediately
+2026-10-21T16:48:14.6640487Z 
+2026-10-21T16:48:14.6641527Z 36: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReplicationTest.SingleMemberCommitsItsNoOpAndProposalImmediately" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:14.6642626Z 36: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:14.6642935Z 36: Test timeout computed to be: 90
+2026-10-21T16:48:14.6969932Z 36: Note: Google Test filter = ReplicationTest.SingleMemberCommitsItsNoOpAndProposalImmediately
+2026-10-21T16:48:14.6971021Z 36: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:14.6971678Z 36: [----------] Global test environment set-up.
+2026-10-21T16:48:14.6972104Z 36: [----------] 1 test from ReplicationTest
+2026-10-21T16:48:14.6972711Z 36: [ RUN      ] ReplicationTest.SingleMemberCommitsItsNoOpAndProposalImmediately
+2026-10-21T16:48:14.6973499Z 36: [       OK ] ReplicationTest.SingleMemberCommitsItsNoOpAndProposalImmediately (0 ms)
+2026-10-21T16:48:14.6974130Z 36: [----------] 1 test from ReplicationTest (0 ms total)
+2026-10-21T16:48:14.6974504Z 36: 
+2026-10-21T16:48:14.6974771Z 36: [----------] Global test environment tear-down
+2026-10-21T16:48:14.6975167Z 36: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:14.6975507Z 36: [  PASSED  ] 1 test.
+2026-10-21T16:48:14.7523894Z 36/94 Test #36: ReplicationTest.SingleMemberCommitsItsNoOpAndProposalImmediately ....................   Passed    0.09 sec
+2026-10-21T16:48:14.7525783Z test 37
+2026-10-21T16:48:14.7526229Z       Start 37: ReplicationTest.MajorityOfOldTermEntriesCannotAdvanceCommit
+2026-10-21T16:48:14.7526642Z 
+2026-10-21T16:48:14.7527908Z 37: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReplicationTest.MajorityOfOldTermEntriesCannotAdvanceCommit" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:14.7529479Z 37: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:14.7529785Z 37: Test timeout computed to be: 90
+2026-10-21T16:48:14.7864400Z 37: Note: Google Test filter = ReplicationTest.MajorityOfOldTermEntriesCannotAdvanceCommit
+2026-10-21T16:48:14.7865121Z 37: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:14.7865522Z 37: [----------] Global test environment set-up.
+2026-10-21T16:48:14.7865904Z 37: [----------] 1 test from ReplicationTest
+2026-10-21T16:48:14.7866411Z 37: [ RUN      ] ReplicationTest.MajorityOfOldTermEntriesCannotAdvanceCommit
+2026-10-21T16:48:14.7867108Z 37: [       OK ] ReplicationTest.MajorityOfOldTermEntriesCannotAdvanceCommit (0 ms)
+2026-10-21T16:48:14.7867693Z 37: [----------] 1 test from ReplicationTest (0 ms total)
+2026-10-21T16:48:14.7868373Z 37: 
+2026-10-21T16:48:14.7868641Z 37: [----------] Global test environment tear-down
+2026-10-21T16:48:14.7869009Z 37: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:14.7869357Z 37: [  PASSED  ] 1 test.
+2026-10-21T16:48:14.8416027Z 37/94 Test #37: ReplicationTest.MajorityOfOldTermEntriesCannotAdvanceCommit .........................   Passed    0.09 sec
+2026-10-21T16:48:14.8417287Z test 38
+2026-10-21T16:48:14.8417824Z       Start 38: ReplicationTest.ConflictTermSkipsWholeTermAndStaleRejectionCannotUndoProgress
+2026-10-21T16:48:14.8418351Z 
+2026-10-21T16:48:14.8419731Z 38: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReplicationTest.ConflictTermSkipsWholeTermAndStaleRejectionCannotUndoProgress" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:14.8421470Z 38: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:14.8421785Z 38: Test timeout computed to be: 90
+2026-10-21T16:48:14.8746486Z 38: Note: Google Test filter = ReplicationTest.ConflictTermSkipsWholeTermAndStaleRejectionCannotUndoProgress
+2026-10-21T16:48:14.8747268Z 38: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:14.8747929Z 38: [----------] Global test environment set-up.
+2026-10-21T16:48:14.8748323Z 38: [----------] 1 test from ReplicationTest
+2026-10-21T16:48:14.8748970Z 38: [ RUN      ] ReplicationTest.ConflictTermSkipsWholeTermAndStaleRejectionCannotUndoProgress
+2026-10-21T16:48:14.8752543Z 38: [       OK ] ReplicationTest.ConflictTermSkipsWholeTermAndStaleRejectionCannotUndoProgress (0 ms)
+2026-10-21T16:48:14.8753251Z 38: [----------] 1 test from ReplicationTest (0 ms total)
+2026-10-21T16:48:14.8753580Z 38: 
+2026-10-21T16:48:14.8753836Z 38: [----------] Global test environment tear-down
+2026-10-21T16:48:14.8754232Z 38: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:14.8754604Z 38: [  PASSED  ] 1 test.
+2026-10-21T16:48:14.9304577Z 38/94 Test #38: ReplicationTest.ConflictTermSkipsWholeTermAndStaleRejectionCannotUndoProgress .......   Passed    0.09 sec
+2026-10-21T16:48:14.9306503Z test 39
+2026-10-21T16:48:14.9307020Z       Start 39: ReplicationTest.FailedLeaderAppendNeverSendsAndAfterSyncCrashRetainsEntry
+2026-10-21T16:48:14.9307368Z 
+2026-10-21T16:48:14.9308249Z 39: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReplicationTest.FailedLeaderAppendNeverSendsAndAfterSyncCrashRetainsEntry" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:14.9309408Z 39: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:14.9309963Z 39: Test timeout computed to be: 90
+2026-10-21T16:48:14.9646024Z 39: Note: Google Test filter = ReplicationTest.FailedLeaderAppendNeverSendsAndAfterSyncCrashRetainsEntry
+2026-10-21T16:48:14.9647009Z 39: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:14.9647410Z 39: [----------] Global test environment set-up.
+2026-10-21T16:48:14.9647848Z 39: [----------] 1 test from ReplicationTest
+2026-10-21T16:48:14.9648449Z 39: [ RUN      ] ReplicationTest.FailedLeaderAppendNeverSendsAndAfterSyncCrashRetainsEntry
+2026-10-21T16:48:14.9649642Z 39: [       OK ] ReplicationTest.FailedLeaderAppendNeverSendsAndAfterSyncCrashRetainsEntry (0 ms)
+2026-10-21T16:48:14.9650812Z 39: [----------] 1 test from ReplicationTest (0 ms total)
+2026-10-21T16:48:14.9651364Z 39: 
+2026-10-21T16:48:14.9651801Z 39: [----------] Global test environment tear-down
+2026-10-21T16:48:14.9652399Z 39: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:14.9652878Z 39: [  PASSED  ] 1 test.
+2026-10-21T16:48:15.0202889Z 39/94 Test #39: ReplicationTest.FailedLeaderAppendNeverSendsAndAfterSyncCrashRetainsEntry ...........   Passed    0.09 sec
+2026-10-21T16:48:15.0203888Z test 40
+2026-10-21T16:48:15.0204810Z       Start 40: ReplicationTest.SendsNextBatchBeforeAcknowledgementAndAcceptsReorderedReplies
+2026-10-21T16:48:15.0205332Z 
+2026-10-21T16:48:15.0206721Z 40: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReplicationTest.SendsNextBatchBeforeAcknowledgementAndAcceptsReorderedReplies" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:15.0208187Z 40: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:15.0208486Z 40: Test timeout computed to be: 90
+2026-10-21T16:48:15.0537222Z 40: Note: Google Test filter = ReplicationTest.SendsNextBatchBeforeAcknowledgementAndAcceptsReorderedReplies
+2026-10-21T16:48:15.0538227Z 40: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:15.0538818Z 40: [----------] Global test environment set-up.
+2026-10-21T16:48:15.0539374Z 40: [----------] 1 test from ReplicationTest
+2026-10-21T16:48:15.0540361Z 40: [ RUN      ] ReplicationTest.SendsNextBatchBeforeAcknowledgementAndAcceptsReorderedReplies
+2026-10-21T16:48:15.0542162Z 40: [       OK ] ReplicationTest.SendsNextBatchBeforeAcknowledgementAndAcceptsReorderedReplies (0 ms)
+2026-10-21T16:48:15.0543644Z 40: [----------] 1 test from ReplicationTest (0 ms total)
+2026-10-21T16:48:15.0544280Z 40: 
+2026-10-21T16:48:15.0544593Z 40: [----------] Global test environment tear-down
+2026-10-21T16:48:15.0545231Z 40: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:15.0545876Z 40: [  PASSED  ] 1 test.
+2026-10-21T16:48:15.1095743Z 40/94 Test #40: ReplicationTest.SendsNextBatchBeforeAcknowledgementAndAcceptsReorderedReplies .......   Passed    0.09 sec
+2026-10-21T16:48:15.1097243Z test 41
+2026-10-21T16:48:15.1097793Z       Start 41: ReplicationSafety.MatchingIdentityRequiresExactEntryAndEntirePrefixAcrossHistory
+2026-10-21T16:48:15.1098339Z 
+2026-10-21T16:48:15.1099749Z 41: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReplicationSafety.MatchingIdentityRequiresExactEntryAndEntirePrefixAcrossHistory" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:15.1101528Z 41: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:15.1101851Z 41: Test timeout computed to be: 90
+2026-10-21T16:48:15.1430626Z 41: Note: Google Test filter = ReplicationSafety.MatchingIdentityRequiresExactEntryAndEntirePrefixAcrossHistory
+2026-10-21T16:48:15.1431727Z 41: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:15.1432176Z 41: [----------] Global test environment set-up.
+2026-10-21T16:48:15.1432597Z 41: [----------] 1 test from ReplicationSafety
+2026-10-21T16:48:15.1433293Z 41: [ RUN      ] ReplicationSafety.MatchingIdentityRequiresExactEntryAndEntirePrefixAcrossHistory
+2026-10-21T16:48:15.1434332Z 41: [       OK ] ReplicationSafety.MatchingIdentityRequiresExactEntryAndEntirePrefixAcrossHistory (0 ms)
+2026-10-21T16:48:15.1435142Z 41: [----------] 1 test from ReplicationSafety (0 ms total)
+2026-10-21T16:48:15.1435522Z 41: 
+2026-10-21T16:48:15.1435796Z 41: [----------] Global test environment tear-down
+2026-10-21T16:48:15.1436228Z 41: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:15.1436607Z 41: [  PASSED  ] 1 test.
+2026-10-21T16:48:15.1985238Z 41/94 Test #41: ReplicationSafety.MatchingIdentityRequiresExactEntryAndEntirePrefixAcrossHistory ....   Passed    0.09 sec
+2026-10-21T16:48:15.1986268Z test 42
+2026-10-21T16:48:15.1986754Z       Start 42: ReplicationSafety.CommitsSurviveRestartAndNewLeadersMustContainThem
+2026-10-21T16:48:15.1987216Z 
+2026-10-21T16:48:15.1988189Z 42: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReplicationSafety.CommitsSurviveRestartAndNewLeadersMustContainThem" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:15.1989505Z 42: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:15.1989807Z 42: Test timeout computed to be: 90
+2026-10-21T16:48:15.2326312Z 42: Note: Google Test filter = ReplicationSafety.CommitsSurviveRestartAndNewLeadersMustContainThem
+2026-10-21T16:48:15.2327014Z 42: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:15.2327437Z 42: [----------] Global test environment set-up.
+2026-10-21T16:48:15.2328401Z 42: [----------] 1 test from ReplicationSafety
+2026-10-21T16:48:15.2328983Z 42: [ RUN      ] ReplicationSafety.CommitsSurviveRestartAndNewLeadersMustContainThem
+2026-10-21T16:48:15.2329811Z 42: [       OK ] ReplicationSafety.CommitsSurviveRestartAndNewLeadersMustContainThem (0 ms)
+2026-10-21T16:48:15.2330570Z 42: [----------] 1 test from ReplicationSafety (0 ms total)
+2026-10-21T16:48:15.2330947Z 42: 
+2026-10-21T16:48:15.2331212Z 42: [----------] Global test environment tear-down
+2026-10-21T16:48:15.2331637Z 42: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:48:15.2332014Z 42: [  PASSED  ] 1 test.
+2026-10-21T16:48:15.2882863Z 42/94 Test #42: ReplicationSafety.CommitsSurviveRestartAndNewLeadersMustContainThem .................   Passed    0.09 sec
+2026-10-21T16:48:15.2884196Z test 43
+2026-10-21T16:48:15.2884614Z       Start 43: Figure8.OldTermMajorityRemainsUncommittedAndCanBeOverwritten
+2026-10-21T16:48:15.2885029Z 
+2026-10-21T16:48:15.2886289Z 43: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Figure8.OldTermMajorityRemainsUncommittedAndCanBeOverwritten" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:15.2887879Z 43: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:15.2888181Z 43: Test timeout computed to be: 90
+2026-10-21T16:48:15.3233601Z 43: Note: Google Test filter = Figure8.OldTermMajorityRemainsUncommittedAndCanBeOverwritten
+2026-10-21T16:48:15.3234323Z 43: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:15.3234742Z 43: [----------] Global test environment set-up.
+2026-10-21T16:48:15.3235126Z 43: [----------] 1 test from Figure8
+2026-10-21T16:48:15.3235798Z 43: [ RUN      ] Figure8.OldTermMajorityRemainsUncommittedAndCanBeOverwritten
+2026-10-21T16:48:15.3245269Z 43: [       OK ] Figure8.OldTermMajorityRemainsUncommittedAndCanBeOverwritten (2 ms)
+2026-10-21T16:48:15.3246437Z 43: [----------] 1 test from Figure8 (2 ms total)
+2026-10-21T16:48:15.3246795Z 43: 
+2026-10-21T16:48:15.3247070Z 43: [----------] Global test environment tear-down
+2026-10-21T16:48:15.3247472Z 43: [==========] 1 test from 1 test suite ran. (2 ms total)
+2026-10-21T16:48:15.3247844Z 43: [  PASSED  ] 1 test.
+2026-10-21T16:48:15.3801936Z 43/94 Test #43: Figure8.OldTermMajorityRemainsUncommittedAndCanBeOverwritten ........................   Passed    0.09 sec
+2026-10-21T16:48:15.3803267Z test 44
+2026-10-21T16:48:15.3803759Z       Start 44: Figure8.CurrentTermMajorityCommitsPrefixAndPreventsStaleLeaderElection
+2026-10-21T16:48:15.3804226Z 
+2026-10-21T16:48:15.3805084Z 44: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=Figure8.CurrentTermMajorityCommitsPrefixAndPreventsStaleLeaderElection" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:15.3806175Z 44: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:15.3806532Z 44: Test timeout computed to be: 90
+2026-10-21T16:48:15.4139419Z 44: Note: Google Test filter = Figure8.CurrentTermMajorityCommitsPrefixAndPreventsStaleLeaderElection
+2026-10-21T16:48:15.4140307Z 44: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:15.4140728Z 44: [----------] Global test environment set-up.
+2026-10-21T16:48:15.4141280Z 44: [----------] 1 test from Figure8
+2026-10-21T16:48:15.4142152Z 44: [ RUN      ] Figure8.CurrentTermMajorityCommitsPrefixAndPreventsStaleLeaderElection
+2026-10-21T16:48:15.4155384Z 44: [       OK ] Figure8.CurrentTermMajorityCommitsPrefixAndPreventsStaleLeaderElection (1 ms)
+2026-10-21T16:48:15.4156149Z 44: [----------] 1 test from Figure8 (1 ms total)
+2026-10-21T16:48:15.4156577Z 44: 
+2026-10-21T16:48:15.4156874Z 44: [----------] Global test environment tear-down
+2026-10-21T16:48:15.4157299Z 44: [==========] 1 test from 1 test suite ran. (1 ms total)
+2026-10-21T16:48:15.4157746Z 44: [  PASSED  ] 1 test.
+2026-10-21T16:48:15.4709358Z 44/94 Test #44: Figure8.CurrentTermMajorityCommitsPrefixAndPreventsStaleLeaderElection ..............   Passed    0.09 sec
+2026-10-21T16:48:15.4710863Z test 45
+2026-10-21T16:48:15.4711553Z       Start 45: SimReplication.CommittedPrefixSurvivesAllNodeRestartAndReplaysExactly
+2026-10-21T16:48:15.4711887Z 
+2026-10-21T16:48:15.4712739Z 45: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimReplication.CommittedPrefixSurvivesAllNodeRestartAndReplaysExactly" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:15.4714050Z 45: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:15.4714484Z 45: Test timeout computed to be: 90
+2026-10-21T16:48:15.5042577Z 45: Note: Google Test filter = SimReplication.CommittedPrefixSurvivesAllNodeRestartAndReplaysExactly
+2026-10-21T16:48:15.5043757Z 45: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:15.5044172Z 45: [----------] Global test environment set-up.
+2026-10-21T16:48:15.5044562Z 45: [----------] 1 test from SimReplication
+2026-10-21T16:48:15.5045135Z 45: [ RUN      ] SimReplication.CommittedPrefixSurvivesAllNodeRestartAndReplaysExactly
+2026-10-21T16:48:15.5138062Z 45: [       OK ] SimReplication.CommittedPrefixSurvivesAllNodeRestartAndReplaysExactly (9 ms)
+2026-10-21T16:48:15.5139012Z 45: [----------] 1 test from SimReplication (9 ms total)
+2026-10-21T16:48:15.5139577Z 45: 
+2026-10-21T16:48:15.5140183Z 45: [----------] Global test environment tear-down
+2026-10-21T16:48:15.5140628Z 45: [==========] 1 test from 1 test suite ran. (9 ms total)
+2026-10-21T16:48:15.5141022Z 45: [  PASSED  ] 1 test.
+2026-10-21T16:48:15.5692728Z 45/94 Test #45: SimReplication.CommittedPrefixSurvivesAllNodeRestartAndReplaysExactly ...............   Passed    0.10 sec
+2026-10-21T16:48:15.5693705Z test 46
+2026-10-21T16:48:15.5694184Z       Start 46: SimReplication.FollowerAckCrashThenLeaderCrashRetainsCommittedCommand
+2026-10-21T16:48:15.5694671Z 
+2026-10-21T16:48:15.5695748Z 46: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimReplication.FollowerAckCrashThenLeaderCrashRetainsCommittedCommand" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:15.5696939Z 46: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:15.5697237Z 46: Test timeout computed to be: 90
+2026-10-21T16:48:15.6025274Z 46: Note: Google Test filter = SimReplication.FollowerAckCrashThenLeaderCrashRetainsCommittedCommand
+2026-10-21T16:48:15.6026167Z 46: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:15.6026639Z 46: [----------] Global test environment set-up.
+2026-10-21T16:48:15.6027103Z 46: [----------] 1 test from SimReplication
+2026-10-21T16:48:15.6027746Z 46: [ RUN      ] SimReplication.FollowerAckCrashThenLeaderCrashRetainsCommittedCommand
+2026-10-21T16:48:15.6042683Z 46: [       OK ] SimReplication.FollowerAckCrashThenLeaderCrashRetainsCommittedCommand (0 ms)
+2026-10-21T16:48:15.6043532Z 46: [----------] 1 test from SimReplication (0 ms total)
+2026-10-21T16:48:15.6044017Z 46: 
+2026-10-21T16:48:15.6044332Z 46: [----------] Global test environment tear-down
+2026-10-21T16:48:15.6044851Z 46: [==========] 1 test from 1 test suite ran. (1 ms total)
+2026-10-21T16:48:15.6045527Z 46: [  PASSED  ] 1 test.
+2026-10-21T16:48:15.6596329Z 46/94 Test #46: SimReplication.FollowerAckCrashThenLeaderCrashRetainsCommittedCommand ...............   Passed    0.09 sec
+2026-10-21T16:48:15.6597361Z test 47
+2026-10-21T16:48:15.6597841Z       Start 47: SimReplication.LongCommittedPrefixSurvivesReorderedPipelineAndLeaderReplacement
+2026-10-21T16:48:15.6599138Z 
+2026-10-21T16:48:15.6600396Z 47: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimReplication.LongCommittedPrefixSurvivesReorderedPipelineAndLeaderReplacement" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:15.6601543Z 47: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:15.6601852Z 47: Test timeout computed to be: 90
+2026-10-21T16:48:15.6932289Z 47: Note: Google Test filter = SimReplication.LongCommittedPrefixSurvivesReorderedPipelineAndLeaderReplacement
+2026-10-21T16:48:15.6933406Z 47: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:15.6934387Z 47: [----------] Global test environment set-up.
+2026-10-21T16:48:15.6934829Z 47: [----------] 1 test from SimReplication
+2026-10-21T16:48:15.6935787Z 47: [ RUN      ] SimReplication.LongCommittedPrefixSurvivesReorderedPipelineAndLeaderReplacement
+2026-10-21T16:48:15.8327704Z 47: [       OK ] SimReplication.LongCommittedPrefixSurvivesReorderedPipelineAndLeaderReplacement (139 ms)
+2026-10-21T16:48:15.8328491Z 47: [----------] 1 test from SimReplication (139 ms total)
+2026-10-21T16:48:15.8328866Z 47: 
+2026-10-21T16:48:15.8329132Z 47: [----------] Global test environment tear-down
+2026-10-21T16:48:15.8329543Z 47: [==========] 1 test from 1 test suite ran. (139 ms total)
+2026-10-21T16:48:15.8329908Z 47: [  PASSED  ] 1 test.
+2026-10-21T16:48:15.8879920Z 47/94 Test #47: SimReplication.LongCommittedPrefixSurvivesReorderedPipelineAndLeaderReplacement .....   Passed    0.23 sec
+2026-10-21T16:48:15.8881343Z test 48
+2026-10-21T16:48:15.8888220Z       Start 48: ReplicationFuzz.CommittedHistorySurvivesSeededFaults
+2026-10-21T16:48:15.8888487Z 
+2026-10-21T16:48:15.8889312Z 48: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReplicationFuzz.CommittedHistorySurvivesSeededFaults" "--gtest_also_run_disabled_tests"
+2026-10-21T16:48:15.8890584Z 48: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:48:15.8890899Z 48: Test timeout computed to be: 10830
+2026-10-21T16:48:15.9213819Z 48: Note: Google Test filter = ReplicationFuzz.CommittedHistorySurvivesSeededFaults
+2026-10-21T16:48:15.9214463Z 48: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:48:15.9214881Z 48: [----------] Global test environment set-up.
+2026-10-21T16:48:15.9215272Z 48: [----------] 1 test from ReplicationFuzz
+2026-10-21T16:48:15.9215799Z 48: [ RUN      ] ReplicationFuzz.CommittedHistorySurvivesSeededFaults
+2026-10-21T16:49:22.6664860Z 48: [replication] first_seed=0 seeds=10000 steps=20070722 safety_checks=20070722 log_checks=84881878 application_checks=84881878 proposals=34236 committed_commands=29418 figure8_runs=1250 ack_crash_runs=1250 crashes=378010 sync_failures=163317 candidate_crashes=45459 append_reply_crashes=13393 long_delay_packets=118402 partitions=60000 dropped=639103 duplicated=214470 max_recovery_ticks=81 digest=b53df2db42c093f2
+2026-10-21T16:49:22.6666170Z 48: [       OK ] ReplicationFuzz.CommittedHistorySurvivesSeededFaults (66744 ms)
+2026-10-21T16:49:22.6666542Z 48: [----------] 1 test from ReplicationFuzz (66744 ms total)
+2026-10-21T16:49:22.6666793Z 48: 
+2026-10-21T16:49:22.6666971Z 48: [----------] Global test environment tear-down
+2026-10-21T16:49:22.6667232Z 48: [==========] 1 test from 1 test suite ran. (66745 ms total)
+2026-10-21T16:49:22.6667474Z 48: [  PASSED  ] 1 test.
+2026-10-21T16:49:22.7217804Z 48/94 Test #48: ReplicationFuzz.CommittedHistorySurvivesSeededFaults ................................   Passed   66.83 sec
+2026-10-21T16:49:22.7219314Z test 49
+2026-10-21T16:49:22.7219733Z       Start 49: FileStorageTest.ReopenRetainsAtomicHardStateAndSuffixReplacement
+2026-10-21T16:49:22.7220400Z 
+2026-10-21T16:49:22.7221773Z 49: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=FileStorageTest.ReopenRetainsAtomicHardStateAndSuffixReplacement" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:22.7223340Z 49: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:22.7224018Z 49: Test timeout computed to be: 90
+2026-10-21T16:49:22.7557875Z 49: Note: Google Test filter = FileStorageTest.ReopenRetainsAtomicHardStateAndSuffixReplacement
+2026-10-21T16:49:22.7558832Z 49: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:22.7559486Z 49: [----------] Global test environment set-up.
+2026-10-21T16:49:22.7560269Z 49: [----------] 1 test from FileStorageTest
+2026-10-21T16:49:22.7560678Z 49: [ RUN      ] FileStorageTest.ReopenRetainsAtomicHardStateAndSuffixReplacement
+2026-10-21T16:49:22.7583688Z 49: [       OK ] FileStorageTest.ReopenRetainsAtomicHardStateAndSuffixReplacement (2 ms)
+2026-10-21T16:49:22.7585052Z 49: [----------] 1 test from FileStorageTest (2 ms total)
+2026-10-21T16:49:22.7585641Z 49: 
+2026-10-21T16:49:22.7586102Z 49: [----------] Global test environment tear-down
+2026-10-21T16:49:22.7586553Z 49: [==========] 1 test from 1 test suite ran. (2 ms total)
+2026-10-21T16:49:22.7586930Z 49: [  PASSED  ] 1 test.
+2026-10-21T16:49:22.8139452Z 49/94 Test #49: FileStorageTest.ReopenRetainsAtomicHardStateAndSuffixReplacement ....................   Passed    0.09 sec
+2026-10-21T16:49:22.8140830Z test 50
+2026-10-21T16:49:22.8141287Z       Start 50: FileStorageTest.InterruptedPublicationRecoversOldOrCompleteNewImage
+2026-10-21T16:49:22.8141796Z 
+2026-10-21T16:49:22.8142879Z 50: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=FileStorageTest.InterruptedPublicationRecoversOldOrCompleteNewImage" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:22.8144004Z 50: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:22.8144307Z 50: Test timeout computed to be: 90
+2026-10-21T16:49:22.8483747Z 50: Note: Google Test filter = FileStorageTest.InterruptedPublicationRecoversOldOrCompleteNewImage
+2026-10-21T16:49:22.8484499Z 50: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:22.8484772Z 50: [----------] Global test environment set-up.
+2026-10-21T16:49:22.8485028Z 50: [----------] 1 test from FileStorageTest
+2026-10-21T16:49:22.8485390Z 50: [ RUN      ] FileStorageTest.InterruptedPublicationRecoversOldOrCompleteNewImage
+2026-10-21T16:49:22.8511018Z 50: [       OK ] FileStorageTest.InterruptedPublicationRecoversOldOrCompleteNewImage (3 ms)
+2026-10-21T16:49:22.8511471Z 50: [----------] 1 test from FileStorageTest (3 ms total)
+2026-10-21T16:49:22.8511716Z 50: 
+2026-10-21T16:49:22.8511907Z 50: [----------] Global test environment tear-down
+2026-10-21T16:49:22.8512337Z 50: [==========] 1 test from 1 test suite ran. (3 ms total)
+2026-10-21T16:49:22.8512782Z 50: [  PASSED  ] 1 test.
+2026-10-21T16:49:22.9065734Z 50/94 Test #50: FileStorageTest.InterruptedPublicationRecoversOldOrCompleteNewImage .................   Passed    0.09 sec
+2026-10-21T16:49:22.9066829Z test 51
+2026-10-21T16:49:22.9067255Z       Start 51: FileStorageTest.RejectsTruncationAndEverySingleByteCorruption
+2026-10-21T16:49:22.9067687Z 
+2026-10-21T16:49:22.9068730Z 51: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=FileStorageTest.RejectsTruncationAndEverySingleByteCorruption" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:22.9070259Z 51: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:22.9070562Z 51: Test timeout computed to be: 90
+2026-10-21T16:49:22.9404056Z 51: Note: Google Test filter = FileStorageTest.RejectsTruncationAndEverySingleByteCorruption
+2026-10-21T16:49:22.9404599Z 51: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:22.9404867Z 51: [----------] Global test environment set-up.
+2026-10-21T16:49:22.9405226Z 51: [----------] 1 test from FileStorageTest
+2026-10-21T16:49:22.9405550Z 51: [ RUN      ] FileStorageTest.RejectsTruncationAndEverySingleByteCorruption
+2026-10-21T16:49:23.0014360Z 51: [       OK ] FileStorageTest.RejectsTruncationAndEverySingleByteCorruption (61 ms)
+2026-10-21T16:49:23.0014886Z 51: [----------] 1 test from FileStorageTest (61 ms total)
+2026-10-21T16:49:23.0015127Z 51: 
+2026-10-21T16:49:23.0015309Z 51: [----------] Global test environment tear-down
+2026-10-21T16:49:23.0015606Z 51: [==========] 1 test from 1 test suite ran. (61 ms total)
+2026-10-21T16:49:23.0015847Z 51: [  PASSED  ] 1 test.
+2026-10-21T16:49:23.0569284Z 51/94 Test #51: FileStorageTest.RejectsTruncationAndEverySingleByteCorruption .......................   Passed    0.15 sec
+2026-10-21T16:49:23.0570332Z test 52
+2026-10-21T16:49:23.0570801Z       Start 52: FileStorageTest.DifferentialBatchesMatchMemoryStorageAcrossReopens
+2026-10-21T16:49:23.0571237Z 
+2026-10-21T16:49:23.0572556Z 52: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=FileStorageTest.DifferentialBatchesMatchMemoryStorageAcrossReopens" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:23.0574193Z 52: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:23.0574505Z 52: Test timeout computed to be: 90
+2026-10-21T16:49:23.0900661Z 52: Note: Google Test filter = FileStorageTest.DifferentialBatchesMatchMemoryStorageAcrossReopens
+2026-10-21T16:49:23.0901423Z 52: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:23.0901835Z 52: [----------] Global test environment set-up.
+2026-10-21T16:49:23.0902257Z 52: [----------] 1 test from FileStorageTest
+2026-10-21T16:49:23.0902830Z 52: [ RUN      ] FileStorageTest.DifferentialBatchesMatchMemoryStorageAcrossReopens
+2026-10-21T16:49:23.1327332Z 52: [       OK ] FileStorageTest.DifferentialBatchesMatchMemoryStorageAcrossReopens (42 ms)
+2026-10-21T16:49:23.1327928Z 52: [----------] 1 test from FileStorageTest (42 ms total)
+2026-10-21T16:49:23.1328302Z 52: 
+2026-10-21T16:49:23.1328646Z 52: [----------] Global test environment tear-down
+2026-10-21T16:49:23.1329149Z 52: [==========] 1 test from 1 test suite ran. (43 ms total)
+2026-10-21T16:49:23.1329509Z 52: [  PASSED  ] 1 test.
+2026-10-21T16:49:23.1881192Z 52/94 Test #52: FileStorageTest.DifferentialBatchesMatchMemoryStorageAcrossReopens ..................   Passed    0.13 sec
+2026-10-21T16:49:23.1882718Z test 53
+2026-10-21T16:49:23.1883194Z       Start 53: SimSupport.GeneratorMatchesKnownSequenceAndClockAdvancesOnlyExplicitly
+2026-10-21T16:49:23.1883683Z 
+2026-10-21T16:49:23.1884592Z 53: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimSupport.GeneratorMatchesKnownSequenceAndClockAdvancesOnlyExplicitly" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:23.1885867Z 53: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:23.1886168Z 53: Test timeout computed to be: 90
+2026-10-21T16:49:23.2214342Z 53: Note: Google Test filter = SimSupport.GeneratorMatchesKnownSequenceAndClockAdvancesOnlyExplicitly
+2026-10-21T16:49:23.2215299Z 53: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:23.2215898Z 53: [----------] Global test environment set-up.
+2026-10-21T16:49:23.2216770Z 53: [----------] 1 test from SimSupport
+2026-10-21T16:49:23.2217485Z 53: [ RUN      ] SimSupport.GeneratorMatchesKnownSequenceAndClockAdvancesOnlyExplicitly
+2026-10-21T16:49:23.2218514Z 53: [       OK ] SimSupport.GeneratorMatchesKnownSequenceAndClockAdvancesOnlyExplicitly (0 ms)
+2026-10-21T16:49:23.2219323Z 53: [----------] 1 test from SimSupport (0 ms total)
+2026-10-21T16:49:23.2219923Z 53: 
+2026-10-21T16:49:23.2220420Z 53: [----------] Global test environment tear-down
+2026-10-21T16:49:23.2221086Z 53: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:49:23.2221705Z 53: [  PASSED  ] 1 test.
+2026-10-21T16:49:23.2774758Z 53/94 Test #53: SimSupport.GeneratorMatchesKnownSequenceAndClockAdvancesOnlyExplicitly ..............   Passed    0.09 sec
+2026-10-21T16:49:23.2775768Z test 54
+2026-10-21T16:49:23.2776235Z       Start 54: SimSupport.CrashBeforeSyncDiscardsPendingVoteButAfterSyncRetainsIt
+2026-10-21T16:49:23.2776688Z 
+2026-10-21T16:49:23.2777866Z 54: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimSupport.CrashBeforeSyncDiscardsPendingVoteButAfterSyncRetainsIt" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:23.2778978Z 54: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:23.2779276Z 54: Test timeout computed to be: 90
+2026-10-21T16:49:23.3106002Z 54: Note: Google Test filter = SimSupport.CrashBeforeSyncDiscardsPendingVoteButAfterSyncRetainsIt
+2026-10-21T16:49:23.3106945Z 54: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:23.3107653Z 54: [----------] Global test environment set-up.
+2026-10-21T16:49:23.3108242Z 54: [----------] 1 test from SimSupport
+2026-10-21T16:49:23.3108937Z 54: [ RUN      ] SimSupport.CrashBeforeSyncDiscardsPendingVoteButAfterSyncRetainsIt
+2026-10-21T16:49:23.3112044Z 54: [       OK ] SimSupport.CrashBeforeSyncDiscardsPendingVoteButAfterSyncRetainsIt (0 ms)
+2026-10-21T16:49:23.3112726Z 54: [----------] 1 test from SimSupport (0 ms total)
+2026-10-21T16:49:23.3113088Z 54: 
+2026-10-21T16:49:23.3113358Z 54: [----------] Global test environment tear-down
+2026-10-21T16:49:23.3113781Z 54: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:49:23.3114158Z 54: [  PASSED  ] 1 test.
+2026-10-21T16:49:23.3665909Z 54/94 Test #54: SimSupport.CrashBeforeSyncDiscardsPendingVoteButAfterSyncRetainsIt ..................   Passed    0.09 sec
+2026-10-21T16:49:23.3666901Z test 55
+2026-10-21T16:49:23.3667313Z       Start 55: SimSupport.LoadedStateIsACopyAndUnsupportedWritesAreRejected
+2026-10-21T16:49:23.3667717Z 
+2026-10-21T16:49:23.3669012Z 55: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimSupport.LoadedStateIsACopyAndUnsupportedWritesAreRejected" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:23.3670836Z 55: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:23.3671156Z 55: Test timeout computed to be: 90
+2026-10-21T16:49:23.4014287Z 55: Note: Google Test filter = SimSupport.LoadedStateIsACopyAndUnsupportedWritesAreRejected
+2026-10-21T16:49:23.4015001Z 55: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:23.4021914Z 55: [----------] Global test environment set-up.
+2026-10-21T16:49:23.4022606Z 55: [----------] 1 test from SimSupport
+2026-10-21T16:49:23.4023256Z 55: [ RUN      ] SimSupport.LoadedStateIsACopyAndUnsupportedWritesAreRejected
+2026-10-21T16:49:23.4024227Z 55: [       OK ] SimSupport.LoadedStateIsACopyAndUnsupportedWritesAreRejected (0 ms)
+2026-10-21T16:49:23.4024812Z 55: [----------] 1 test from SimSupport (0 ms total)
+2026-10-21T16:49:23.4025271Z 55: 
+2026-10-21T16:49:23.4025532Z 55: [----------] Global test environment tear-down
+2026-10-21T16:49:23.4026046Z 55: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:49:23.4026782Z 55: [  PASSED  ] 1 test.
+2026-10-21T16:49:23.4576188Z 55/94 Test #55: SimSupport.LoadedStateIsACopyAndUnsupportedWritesAreRejected ........................   Passed    0.09 sec
+2026-10-21T16:49:23.4577006Z test 56
+2026-10-21T16:49:23.4577471Z       Start 56: SimSupport.LogTruncationAppendAndVotePublishAsOneDurableBatch
+2026-10-21T16:49:23.4577891Z 
+2026-10-21T16:49:23.4579235Z 56: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimSupport.LogTruncationAppendAndVotePublishAsOneDurableBatch" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:23.4581166Z 56: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:23.4581634Z 56: Test timeout computed to be: 90
+2026-10-21T16:49:23.4937306Z 56: Note: Google Test filter = SimSupport.LogTruncationAppendAndVotePublishAsOneDurableBatch
+2026-10-21T16:49:23.4938478Z 56: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:23.4939152Z 56: [----------] Global test environment set-up.
+2026-10-21T16:49:23.4939545Z 56: [----------] 1 test from SimSupport
+2026-10-21T16:49:23.4940388Z 56: [ RUN      ] SimSupport.LogTruncationAppendAndVotePublishAsOneDurableBatch
+2026-10-21T16:49:23.4940994Z 56: [       OK ] SimSupport.LogTruncationAppendAndVotePublishAsOneDurableBatch (0 ms)
+2026-10-21T16:49:23.4941518Z 56: [----------] 1 test from SimSupport (0 ms total)
+2026-10-21T16:49:23.4941855Z 56: 
+2026-10-21T16:49:23.4942144Z 56: [----------] Global test environment tear-down
+2026-10-21T16:49:23.4942514Z 56: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:49:23.4942861Z 56: [  PASSED  ] 1 test.
+2026-10-21T16:49:23.5492904Z 56/94 Test #56: SimSupport.LogTruncationAppendAndVotePublishAsOneDurableBatch .......................   Passed    0.09 sec
+2026-10-21T16:49:23.5493962Z test 57
+2026-10-21T16:49:23.5494360Z       Start 57: SimSupport.OracleRejectsNonSimultaneousLeadersAndLostVotes
+2026-10-21T16:49:23.5494767Z 
+2026-10-21T16:49:23.5496060Z 57: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimSupport.OracleRejectsNonSimultaneousLeadersAndLostVotes" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:23.5497784Z 57: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:23.5498085Z 57: Test timeout computed to be: 90
+2026-10-21T16:49:23.5819764Z 57: Note: Google Test filter = SimSupport.OracleRejectsNonSimultaneousLeadersAndLostVotes
+2026-10-21T16:49:23.5820993Z 57: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:23.5821756Z 57: [----------] Global test environment set-up.
+2026-10-21T16:49:23.5822384Z 57: [----------] 1 test from SimSupport
+2026-10-21T16:49:23.5822908Z 57: [ RUN      ] SimSupport.OracleRejectsNonSimultaneousLeadersAndLostVotes
+2026-10-21T16:49:23.5823665Z 57: [       OK ] SimSupport.OracleRejectsNonSimultaneousLeadersAndLostVotes (0 ms)
+2026-10-21T16:49:23.5824242Z 57: [----------] 1 test from SimSupport (0 ms total)
+2026-10-21T16:49:23.5824593Z 57: 
+2026-10-21T16:49:23.5824867Z 57: [----------] Global test environment tear-down
+2026-10-21T16:49:23.5825272Z 57: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:49:23.5825640Z 57: [  PASSED  ] 1 test.
+2026-10-21T16:49:23.6375333Z 57/94 Test #57: SimSupport.OracleRejectsNonSimultaneousLeadersAndLostVotes ..........................   Passed    0.09 sec
+2026-10-21T16:49:23.6376566Z test 58
+2026-10-21T16:49:23.6376950Z       Start 58: SimCluster.ColdStartCrashAndRestartKeepDurableVotes
+2026-10-21T16:49:23.6379741Z 
+2026-10-21T16:49:23.6380963Z 58: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimCluster.ColdStartCrashAndRestartKeepDurableVotes" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:23.6382244Z 58: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:23.6382552Z 58: Test timeout computed to be: 90
+2026-10-21T16:49:23.6712693Z 58: Note: Google Test filter = SimCluster.ColdStartCrashAndRestartKeepDurableVotes
+2026-10-21T16:49:23.6713348Z 58: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:23.6713920Z 58: [----------] Global test environment set-up.
+2026-10-21T16:49:23.6714373Z 58: [----------] 1 test from SimCluster
+2026-10-21T16:49:23.6714902Z 58: [ RUN      ] SimCluster.ColdStartCrashAndRestartKeepDurableVotes
+2026-10-21T16:49:23.6731425Z 58: [       OK ] SimCluster.ColdStartCrashAndRestartKeepDurableVotes (2 ms)
+2026-10-21T16:49:23.6732159Z 58: [----------] 1 test from SimCluster (2 ms total)
+2026-10-21T16:49:23.6732797Z 58: 
+2026-10-21T16:49:23.6733109Z 58: [----------] Global test environment tear-down
+2026-10-21T16:49:23.6740799Z 58: [==========] 1 test from 1 test suite ran. (3 ms total)
+2026-10-21T16:49:23.6741220Z 58: [  PASSED  ] 1 test.
+2026-10-21T16:49:23.7285872Z 58/94 Test #58: SimCluster.ColdStartCrashAndRestartKeepDurableVotes .................................   Passed    0.09 sec
+2026-10-21T16:49:23.7287621Z test 59
+2026-10-21T16:49:23.7288082Z       Start 59: SimCluster.CompletePartitionCannotElectAndHealingRestoresLiveness
+2026-10-21T16:49:23.7288532Z 
+2026-10-21T16:49:23.7289434Z 59: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimCluster.CompletePartitionCannotElectAndHealingRestoresLiveness" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:23.7290909Z 59: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:23.7291362Z 59: Test timeout computed to be: 90
+2026-10-21T16:49:23.7628303Z 59: Note: Google Test filter = SimCluster.CompletePartitionCannotElectAndHealingRestoresLiveness
+2026-10-21T16:49:23.7629182Z 59: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:23.7629841Z 59: [----------] Global test environment set-up.
+2026-10-21T16:49:23.7630408Z 59: [----------] 1 test from SimCluster
+2026-10-21T16:49:23.7631076Z 59: [ RUN      ] SimCluster.CompletePartitionCannotElectAndHealingRestoresLiveness
+2026-10-21T16:49:23.7639013Z 59: [       OK ] SimCluster.CompletePartitionCannotElectAndHealingRestoresLiveness (1 ms)
+2026-10-21T16:49:23.7640795Z 59: [----------] 1 test from SimCluster (1 ms total)
+2026-10-21T16:49:23.7641470Z 59: 
+2026-10-21T16:49:23.7641960Z 59: [----------] Global test environment tear-down
+2026-10-21T16:49:23.7642552Z 59: [==========] 1 test from 1 test suite ran. (1 ms total)
+2026-10-21T16:49:23.7642937Z 59: [  PASSED  ] 1 test.
+2026-10-21T16:49:23.8196122Z 59/94 Test #59: SimCluster.CompletePartitionCannotElectAndHealingRestoresLiveness ...................   Passed    0.09 sec
+2026-10-21T16:49:23.8197569Z test 60
+2026-10-21T16:49:23.8198032Z       Start 60: SimCluster.IsolatedLeaderAndMajorityLeaderHaveDifferentTermsAndHeal
+2026-10-21T16:49:23.8198468Z 
+2026-10-21T16:49:23.8199814Z 60: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimCluster.IsolatedLeaderAndMajorityLeaderHaveDifferentTermsAndHeal" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:23.8201573Z 60: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:23.8201871Z 60: Test timeout computed to be: 90
+2026-10-21T16:49:23.8534635Z 60: Note: Google Test filter = SimCluster.IsolatedLeaderAndMajorityLeaderHaveDifferentTermsAndHeal
+2026-10-21T16:49:23.8535604Z 60: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:23.8536234Z 60: [----------] Global test environment set-up.
+2026-10-21T16:49:23.8536730Z 60: [----------] 1 test from SimCluster
+2026-10-21T16:49:23.8537589Z 60: [ RUN      ] SimCluster.IsolatedLeaderAndMajorityLeaderHaveDifferentTermsAndHeal
+2026-10-21T16:49:23.8639074Z 60: [       OK ] SimCluster.IsolatedLeaderAndMajorityLeaderHaveDifferentTermsAndHeal (10 ms)
+2026-10-21T16:49:23.8639972Z 60: [----------] 1 test from SimCluster (10 ms total)
+2026-10-21T16:49:23.8640520Z 60: 
+2026-10-21T16:49:23.8640794Z 60: [----------] Global test environment tear-down
+2026-10-21T16:49:23.8641269Z 60: [==========] 1 test from 1 test suite ran. (10 ms total)
+2026-10-21T16:49:23.8641697Z 60: [  PASSED  ] 1 test.
+2026-10-21T16:49:23.9193280Z 60/94 Test #60: SimCluster.IsolatedLeaderAndMajorityLeaderHaveDifferentTermsAndHeal .................   Passed    0.10 sec
+2026-10-21T16:49:23.9194483Z test 61
+2026-10-21T16:49:23.9194867Z       Start 61: SimCluster.TraceIncludesEveryStepAndReplaysByteForByte
+2026-10-21T16:49:23.9195240Z 
+2026-10-21T16:49:23.9196480Z 61: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimCluster.TraceIncludesEveryStepAndReplaysByteForByte" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:23.9198375Z 61: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:23.9198680Z 61: Test timeout computed to be: 90
+2026-10-21T16:49:23.9530374Z 61: Note: Google Test filter = SimCluster.TraceIncludesEveryStepAndReplaysByteForByte
+2026-10-21T16:49:23.9531282Z 61: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:23.9531886Z 61: [----------] Global test environment set-up.
+2026-10-21T16:49:23.9532392Z 61: [----------] 1 test from SimCluster
+2026-10-21T16:49:23.9533018Z 61: [ RUN      ] SimCluster.TraceIncludesEveryStepAndReplaysByteForByte
+2026-10-21T16:49:23.9619760Z 61: [       OK ] SimCluster.TraceIncludesEveryStepAndReplaysByteForByte (8 ms)
+2026-10-21T16:49:23.9620686Z 61: [----------] 1 test from SimCluster (9 ms total)
+2026-10-21T16:49:23.9622039Z 61: 
+2026-10-21T16:49:23.9622534Z 61: [----------] Global test environment tear-down
+2026-10-21T16:49:23.9622856Z 61: [==========] 1 test from 1 test suite ran. (9 ms total)
+2026-10-21T16:49:23.9623119Z 61: [  PASSED  ] 1 test.
+2026-10-21T16:49:24.0173184Z 61/94 Test #61: SimCluster.TraceIncludesEveryStepAndReplaysByteForByte ..............................   Passed    0.10 sec
+2026-10-21T16:49:24.0174740Z test 62
+2026-10-21T16:49:24.0175144Z       Start 62: SimCluster.FailedSyncStopsNodeAndRestartUsesOnlyDurableState
+2026-10-21T16:49:24.0175411Z 
+2026-10-21T16:49:24.0176225Z 62: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimCluster.FailedSyncStopsNodeAndRestartUsesOnlyDurableState" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:24.0177274Z 62: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:24.0177638Z 62: Test timeout computed to be: 90
+2026-10-21T16:49:24.0506525Z 62: Note: Google Test filter = SimCluster.FailedSyncStopsNodeAndRestartUsesOnlyDurableState
+2026-10-21T16:49:24.0507330Z 62: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:24.0507838Z 62: [----------] Global test environment set-up.
+2026-10-21T16:49:24.0508265Z 62: [----------] 1 test from SimCluster
+2026-10-21T16:49:24.0508951Z 62: [ RUN      ] SimCluster.FailedSyncStopsNodeAndRestartUsesOnlyDurableState
+2026-10-21T16:49:24.0517123Z 62: [       OK ] SimCluster.FailedSyncStopsNodeAndRestartUsesOnlyDurableState (1 ms)
+2026-10-21T16:49:24.0518168Z 62: [----------] 1 test from SimCluster (1 ms total)
+2026-10-21T16:49:24.0518701Z 62: 
+2026-10-21T16:49:24.0519018Z 62: [----------] Global test environment tear-down
+2026-10-21T16:49:24.0531688Z 62: [==========] 1 test from 1 test suite ran. (1 ms total)
+2026-10-21T16:49:24.0532098Z 62: [  PASSED  ] 1 test.
+2026-10-21T16:49:24.1084572Z 62/94 Test #62: SimCluster.FailedSyncStopsNodeAndRestartUsesOnlyDurableState ........................   Passed    0.09 sec
+2026-10-21T16:49:24.1086003Z test 63
+2026-10-21T16:49:24.1086321Z       Start 63: SimCluster.RejectsInvalidScenarioInputs
+2026-10-21T16:49:24.1086562Z 
+2026-10-21T16:49:24.1087309Z 63: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimCluster.RejectsInvalidScenarioInputs" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:24.1088412Z 63: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:24.1088716Z 63: Test timeout computed to be: 90
+2026-10-21T16:49:24.1420813Z 63: Note: Google Test filter = SimCluster.RejectsInvalidScenarioInputs
+2026-10-21T16:49:24.1421783Z 63: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:24.1422205Z 63: [----------] Global test environment set-up.
+2026-10-21T16:49:24.1422584Z 63: [----------] 1 test from SimCluster
+2026-10-21T16:49:24.1423053Z 63: [ RUN      ] SimCluster.RejectsInvalidScenarioInputs
+2026-10-21T16:49:24.1431603Z 63: [       OK ] SimCluster.RejectsInvalidScenarioInputs (0 ms)
+2026-10-21T16:49:24.1432746Z 63: [----------] 1 test from SimCluster (0 ms total)
+2026-10-21T16:49:24.1433549Z 63: 
+2026-10-21T16:49:24.1433832Z 63: [----------] Global test environment tear-down
+2026-10-21T16:49:24.1434387Z 63: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:49:24.1434780Z 63: [  PASSED  ] 1 test.
+2026-10-21T16:49:24.1985565Z 63/94 Test #63: SimCluster.RejectsInvalidScenarioInputs .............................................   Passed    0.09 sec
+2026-10-21T16:49:24.1987112Z test 64
+2026-10-21T16:49:24.1987861Z       Start 64: SimCluster.PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply
+2026-10-21T16:49:24.1988376Z 
+2026-10-21T16:49:24.1989705Z 64: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=SimCluster.PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:24.1991441Z 64: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:24.1991757Z 64: Test timeout computed to be: 90
+2026-10-21T16:49:24.2323744Z 64: Note: Google Test filter = SimCluster.PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply
+2026-10-21T16:49:24.2324507Z 64: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:24.2324919Z 64: [----------] Global test environment set-up.
+2026-10-21T16:49:24.2325299Z 64: [----------] 1 test from SimCluster
+2026-10-21T16:49:24.2326007Z 64: [ RUN      ] SimCluster.PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply
+2026-10-21T16:49:24.2338049Z 64: [       OK ] SimCluster.PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply (2 ms)
+2026-10-21T16:49:24.2338733Z 64: [----------] 1 test from SimCluster (2 ms total)
+2026-10-21T16:49:24.2339194Z 64: 
+2026-10-21T16:49:24.2339499Z 64: [----------] Global test environment tear-down
+2026-10-21T16:49:24.2339884Z 64: [==========] 1 test from 1 test suite ran. (2 ms total)
+2026-10-21T16:49:24.2340543Z 64: [  PASSED  ] 1 test.
+2026-10-21T16:49:24.2892069Z 64/94 Test #64: SimCluster.PowerLossImmediatelyAfterGrantKeepsDurableVoteAndQueuedReply .............   Passed    0.09 sec
+2026-10-21T16:49:24.2893084Z test 65
+2026-10-21T16:49:24.2893492Z       Start 65: ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules
+2026-10-21T16:49:24.2893868Z 
+2026-10-21T16:49:24.2895134Z 65: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules" "--gtest_also_run_disabled_tests"
+2026-10-21T16:49:24.2896788Z 65: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:49:24.2897319Z 65: Test timeout computed to be: 10830
+2026-10-21T16:49:24.3225232Z 65: Note: Google Test filter = ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules
+2026-10-21T16:49:24.3226168Z 65: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:49:24.3226958Z 65: [----------] Global test environment set-up.
+2026-10-21T16:49:24.3227532Z 65: [----------] 1 test from ElectionFuzz
+2026-10-21T16:49:24.3228164Z 65: [ RUN      ] ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules
+2026-10-21T16:50:31.6104558Z 65: [sim] first_seed=0 seeds=10000 p50_cold_ticks=20 p99_cold_ticks=50 p50_reelection_ticks=24 p99_reelection_ticks=97 election_bound=300 max_cold_ticks=89 max_reelection_ticks=187 max_recovery_ticks=91 steps=19677168 safety_checks=19677168 delivered=2968750 dropped=706136 duplicated=228428 partitions=60000 crashes=219479 restarts=258663 sync_failures=155143 vote_grant_crashes=14336 long_delay_packets=161992 stale_vote_deliveries=5912 digest=f8710b2d905e8cff
+2026-10-21T16:50:31.6107125Z 65: [       OK ] ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules (67287 ms)
+2026-10-21T16:50:31.6107882Z 65: [----------] 1 test from ElectionFuzz (67287 ms total)
+2026-10-21T16:50:31.6108383Z 65: 
+2026-10-21T16:50:31.6108995Z 65: [----------] Global test environment tear-down
+2026-10-21T16:50:31.6109307Z 65: [==========] 1 test from 1 test suite ran. (67287 ms total)
+2026-10-21T16:50:31.6109567Z 65: [  PASSED  ] 1 test.
+2026-10-21T16:50:31.6656413Z 65/94 Test #65: ElectionFuzz.SafetyAndRecoveryAcrossSeededFaultSchedules ............................   Passed   67.38 sec
+2026-10-21T16:50:31.6658544Z test 66
+2026-10-21T16:50:31.6658929Z       Start 66: KvCodec.EveryRequestAndResponseRoundTripsWithBinaryData
+2026-10-21T16:50:31.6659303Z 
+2026-10-21T16:50:31.6660695Z 66: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvCodec.EveryRequestAndResponseRoundTripsWithBinaryData" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:31.6662327Z 66: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:31.6662627Z 66: Test timeout computed to be: 90
+2026-10-21T16:50:31.6993632Z 66: Note: Google Test filter = KvCodec.EveryRequestAndResponseRoundTripsWithBinaryData
+2026-10-21T16:50:31.6994497Z 66: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:31.6995052Z 66: [----------] Global test environment set-up.
+2026-10-21T16:50:31.6995544Z 66: [----------] 1 test from KvCodec
+2026-10-21T16:50:31.6996141Z 66: [ RUN      ] KvCodec.EveryRequestAndResponseRoundTripsWithBinaryData
+2026-10-21T16:50:31.7002061Z 66: [       OK ] KvCodec.EveryRequestAndResponseRoundTripsWithBinaryData (0 ms)
+2026-10-21T16:50:31.7003043Z 66: [----------] 1 test from KvCodec (0 ms total)
+2026-10-21T16:50:31.7003625Z 66: 
+2026-10-21T16:50:31.7004056Z 66: [----------] Global test environment tear-down
+2026-10-21T16:50:31.7004795Z 66: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:31.7005371Z 66: [  PASSED  ] 1 test.
+2026-10-21T16:50:31.7554979Z 66/94 Test #66: KvCodec.EveryRequestAndResponseRoundTripsWithBinaryData .............................   Passed    0.09 sec
+2026-10-21T16:50:31.7556561Z test 67
+2026-10-21T16:50:31.7556955Z       Start 67: KvCodec.RejectsTruncationTrailingBytesUnknownTagsAndNoncanonicalFields
+2026-10-21T16:50:31.7559665Z 
+2026-10-21T16:50:31.7561254Z 67: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvCodec.RejectsTruncationTrailingBytesUnknownTagsAndNoncanonicalFields" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:31.7562925Z 67: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:31.7563397Z 67: Test timeout computed to be: 90
+2026-10-21T16:50:31.7886399Z 67: Note: Google Test filter = KvCodec.RejectsTruncationTrailingBytesUnknownTagsAndNoncanonicalFields
+2026-10-21T16:50:31.7887512Z 67: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:31.7887937Z 67: [----------] Global test environment set-up.
+2026-10-21T16:50:31.7888318Z 67: [----------] 1 test from KvCodec
+2026-10-21T16:50:31.7888881Z 67: [ RUN      ] KvCodec.RejectsTruncationTrailingBytesUnknownTagsAndNoncanonicalFields
+2026-10-21T16:50:31.8080145Z 67: [       OK ] KvCodec.RejectsTruncationTrailingBytesUnknownTagsAndNoncanonicalFields (19 ms)
+2026-10-21T16:50:31.8080665Z 67: [----------] 1 test from KvCodec (19 ms total)
+2026-10-21T16:50:31.8080897Z 67: 
+2026-10-21T16:50:31.8081084Z 67: [----------] Global test environment tear-down
+2026-10-21T16:50:31.8081349Z 67: [==========] 1 test from 1 test suite ran. (19 ms total)
+2026-10-21T16:50:31.8081590Z 67: [  PASSED  ] 1 test.
+2026-10-21T16:50:31.8632906Z 67/94 Test #67: KvCodec.RejectsTruncationTrailingBytesUnknownTagsAndNoncanonicalFields ..............   Passed    0.11 sec
+2026-10-21T16:50:31.8634620Z test 68
+2026-10-21T16:50:31.8635147Z       Start 68: KvStore.OperationsFollowDocumentedSemantics
+2026-10-21T16:50:31.8635474Z 
+2026-10-21T16:50:31.8636934Z 68: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvStore.OperationsFollowDocumentedSemantics" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:31.8639090Z 68: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:31.8639570Z 68: Test timeout computed to be: 90
+2026-10-21T16:50:31.8972873Z 68: Note: Google Test filter = KvStore.OperationsFollowDocumentedSemantics
+2026-10-21T16:50:31.8973760Z 68: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:31.8974373Z 68: [----------] Global test environment set-up.
+2026-10-21T16:50:31.8974912Z 68: [----------] 1 test from KvStore
+2026-10-21T16:50:31.8975509Z 68: [ RUN      ] KvStore.OperationsFollowDocumentedSemantics
+2026-10-21T16:50:31.8976201Z 68: [       OK ] KvStore.OperationsFollowDocumentedSemantics (0 ms)
+2026-10-21T16:50:31.8976835Z 68: [----------] 1 test from KvStore (0 ms total)
+2026-10-21T16:50:31.8977351Z 68: 
+2026-10-21T16:50:31.8977809Z 68: [----------] Global test environment tear-down
+2026-10-21T16:50:31.8978467Z 68: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:31.8978915Z 68: [  PASSED  ] 1 test.
+2026-10-21T16:50:31.9524700Z 68/94 Test #68: KvStore.OperationsFollowDocumentedSemantics .........................................   Passed    0.09 sec
+2026-10-21T16:50:31.9526554Z test 69
+2026-10-21T16:50:31.9527134Z       Start 69: KvStore.RetriedSequenceAppliesOnceAndReturnsTheOriginalResult
+2026-10-21T16:50:31.9527568Z 
+2026-10-21T16:50:31.9528841Z 69: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvStore.RetriedSequenceAppliesOnceAndReturnsTheOriginalResult" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:31.9530671Z 69: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:31.9530986Z 69: Test timeout computed to be: 90
+2026-10-21T16:50:31.9851774Z 69: Note: Google Test filter = KvStore.RetriedSequenceAppliesOnceAndReturnsTheOriginalResult
+2026-10-21T16:50:31.9852807Z 69: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:31.9853574Z 69: [----------] Global test environment set-up.
+2026-10-21T16:50:31.9854151Z 69: [----------] 1 test from KvStore
+2026-10-21T16:50:31.9854813Z 69: [ RUN      ] KvStore.RetriedSequenceAppliesOnceAndReturnsTheOriginalResult
+2026-10-21T16:50:31.9855746Z 69: [       OK ] KvStore.RetriedSequenceAppliesOnceAndReturnsTheOriginalResult (0 ms)
+2026-10-21T16:50:31.9856479Z 69: [----------] 1 test from KvStore (0 ms total)
+2026-10-21T16:50:31.9856980Z 69: 
+2026-10-21T16:50:31.9857390Z 69: [----------] Global test environment tear-down
+2026-10-21T16:50:31.9858240Z 69: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:31.9858766Z 69: [  PASSED  ] 1 test.
+2026-10-21T16:50:32.0407488Z 69/94 Test #69: KvStore.RetriedSequenceAppliesOnceAndReturnsTheOriginalResult .......................   Passed    0.09 sec
+2026-10-21T16:50:32.0409003Z test 70
+2026-10-21T16:50:32.0409421Z       Start 70: KvStore.MalformedCommandsHaveNoEffectButAreStillDeterministic
+2026-10-21T16:50:32.0409818Z 
+2026-10-21T16:50:32.0411262Z 70: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvStore.MalformedCommandsHaveNoEffectButAreStillDeterministic" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:32.0412913Z 70: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:32.0413207Z 70: Test timeout computed to be: 90
+2026-10-21T16:50:32.0761282Z 70: Note: Google Test filter = KvStore.MalformedCommandsHaveNoEffectButAreStillDeterministic
+2026-10-21T16:50:32.0761962Z 70: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:32.0762357Z 70: [----------] Global test environment set-up.
+2026-10-21T16:50:32.0763000Z 70: [----------] 1 test from KvStore
+2026-10-21T16:50:32.0763493Z 70: [ RUN      ] KvStore.MalformedCommandsHaveNoEffectButAreStillDeterministic
+2026-10-21T16:50:32.0764201Z 70: [       OK ] KvStore.MalformedCommandsHaveNoEffectButAreStillDeterministic (0 ms)
+2026-10-21T16:50:32.0764760Z 70: [----------] 1 test from KvStore (0 ms total)
+2026-10-21T16:50:32.0765083Z 70: 
+2026-10-21T16:50:32.0765323Z 70: [----------] Global test environment tear-down
+2026-10-21T16:50:32.0765679Z 70: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:32.0766024Z 70: [  PASSED  ] 1 test.
+2026-10-21T16:50:32.1309074Z 70/94 Test #70: KvStore.MalformedCommandsHaveNoEffectButAreStillDeterministic .......................   Passed    0.09 sec
+2026-10-21T16:50:32.1310339Z test 71
+2026-10-21T16:50:32.1311009Z       Start 71: KvStore.SnapshotRestoresDataSessionsAndDigestExactly
+2026-10-21T16:50:32.1311564Z 
+2026-10-21T16:50:32.1312917Z 71: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvStore.SnapshotRestoresDataSessionsAndDigestExactly" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:32.1314832Z 71: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:32.1315396Z 71: Test timeout computed to be: 90
+2026-10-21T16:50:32.1693743Z 71: Note: Google Test filter = KvStore.SnapshotRestoresDataSessionsAndDigestExactly
+2026-10-21T16:50:32.1694574Z 71: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:32.1695188Z 71: [----------] Global test environment set-up.
+2026-10-21T16:50:32.1695729Z 71: [----------] 1 test from KvStore
+2026-10-21T16:50:32.1696343Z 71: [ RUN      ] KvStore.SnapshotRestoresDataSessionsAndDigestExactly
+2026-10-21T16:50:32.1740985Z 71: [       OK ] KvStore.SnapshotRestoresDataSessionsAndDigestExactly (0 ms)
+2026-10-21T16:50:32.1741983Z 71: [----------] 1 test from KvStore (0 ms total)
+2026-10-21T16:50:32.1742546Z 71: 
+2026-10-21T16:50:32.1742965Z 71: [----------] Global test environment tear-down
+2026-10-21T16:50:32.1743483Z 71: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:32.1743962Z 71: [  PASSED  ] 1 test.
+2026-10-21T16:50:32.1770807Z 71/94 Test #71: KvStore.SnapshotRestoresDataSessionsAndDigestExactly ................................   Passed    0.05 sec
+2026-10-21T16:50:32.1775821Z test 72
+2026-10-21T16:50:32.1776263Z       Start 72: KvStore.InvalidSnapshotLeavesStateUntouched
+2026-10-21T16:50:32.1776687Z 
+2026-10-21T16:50:32.1778370Z 72: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvStore.InvalidSnapshotLeavesStateUntouched" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:32.1780558Z 72: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:32.1781501Z 72: Test timeout computed to be: 90
+2026-10-21T16:50:32.2131374Z 72: Note: Google Test filter = KvStore.InvalidSnapshotLeavesStateUntouched
+2026-10-21T16:50:32.2140634Z 72: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:32.2148197Z 72: [----------] Global test environment set-up.
+2026-10-21T16:50:32.2148704Z 72: [----------] 1 test from KvStore
+2026-10-21T16:50:32.2149121Z 72: [ RUN      ] KvStore.InvalidSnapshotLeavesStateUntouched
+2026-10-21T16:50:32.2158749Z 72: [       OK ] KvStore.InvalidSnapshotLeavesStateUntouched (0 ms)
+2026-10-21T16:50:32.2159181Z 72: [----------] 1 test from KvStore (0 ms total)
+2026-10-21T16:50:32.2159468Z 72: 
+2026-10-21T16:50:32.2159700Z 72: [----------] Global test environment tear-down
+2026-10-21T16:50:32.2160216Z 72: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:32.2160536Z 72: [  PASSED  ] 1 test.
+2026-10-21T16:50:32.2686859Z 72/94 Test #72: KvStore.InvalidSnapshotLeavesStateUntouched .........................................   Passed    0.09 sec
+2026-10-21T16:50:32.2688731Z test 73
+2026-10-21T16:50:32.2689057Z       Start 73: KvStore.ReplicasApplyingTheSameCommandsAgree
+2026-10-21T16:50:32.2689268Z 
+2026-10-21T16:50:32.2690190Z 73: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvStore.ReplicasApplyingTheSameCommandsAgree" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:32.2691193Z 73: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:32.2691494Z 73: Test timeout computed to be: 90
+2026-10-21T16:50:32.3037823Z 73: Note: Google Test filter = KvStore.ReplicasApplyingTheSameCommandsAgree
+2026-10-21T16:50:32.3038347Z 73: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:32.3038719Z 73: [----------] Global test environment set-up.
+2026-10-21T16:50:32.3039096Z 73: [----------] 1 test from KvStore
+2026-10-21T16:50:32.3039447Z 73: [ RUN      ] KvStore.ReplicasApplyingTheSameCommandsAgree
+2026-10-21T16:50:32.3039789Z 73: [       OK ] KvStore.ReplicasApplyingTheSameCommandsAgree (0 ms)
+2026-10-21T16:50:32.3040288Z 73: [----------] 1 test from KvStore (0 ms total)
+2026-10-21T16:50:32.3040511Z 73: 
+2026-10-21T16:50:32.3040689Z 73: [----------] Global test environment tear-down
+2026-10-21T16:50:32.3040946Z 73: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:32.3041184Z 73: [  PASSED  ] 1 test.
+2026-10-21T16:50:32.3589233Z 73/94 Test #73: KvStore.ReplicasApplyingTheSameCommandsAgree ........................................   Passed    0.09 sec
+2026-10-21T16:50:32.3590941Z test 74
+2026-10-21T16:50:32.3591402Z       Start 74: ReadIndexTest.FollowerAppliesOnlyCommittedEntriesOnceInLogOrder
+2026-10-21T16:50:32.3591749Z 
+2026-10-21T16:50:32.3592597Z 74: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReadIndexTest.FollowerAppliesOnlyCommittedEntriesOnceInLogOrder" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:32.3593654Z 74: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:32.3593948Z 74: Test timeout computed to be: 90
+2026-10-21T16:50:32.3926768Z 74: Note: Google Test filter = ReadIndexTest.FollowerAppliesOnlyCommittedEntriesOnceInLogOrder
+2026-10-21T16:50:32.3927778Z 74: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:32.3928453Z 74: [----------] Global test environment set-up.
+2026-10-21T16:50:32.3929112Z 74: [----------] 1 test from ReadIndexTest
+2026-10-21T16:50:32.3929895Z 74: [ RUN      ] ReadIndexTest.FollowerAppliesOnlyCommittedEntriesOnceInLogOrder
+2026-10-21T16:50:32.3932172Z 74: [       OK ] ReadIndexTest.FollowerAppliesOnlyCommittedEntriesOnceInLogOrder (0 ms)
+2026-10-21T16:50:32.3932830Z 74: [----------] 1 test from ReadIndexTest (0 ms total)
+2026-10-21T16:50:32.3933218Z 74: 
+2026-10-21T16:50:32.3933536Z 74: [----------] Global test environment tear-down
+2026-10-21T16:50:32.3933997Z 74: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:32.3934385Z 74: [  PASSED  ] 1 test.
+2026-10-21T16:50:32.4487071Z 74/94 Test #74: ReadIndexTest.FollowerAppliesOnlyCommittedEntriesOnceInLogOrder .....................   Passed    0.09 sec
+2026-10-21T16:50:32.4488293Z test 75
+2026-10-21T16:50:32.4488709Z       Start 75: ReadIndexTest.NonLeadersRejectReadsUnlessUnsafeLocalReadsAreEnabled
+2026-10-21T16:50:32.4489003Z 
+2026-10-21T16:50:32.4489839Z 75: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReadIndexTest.NonLeadersRejectReadsUnlessUnsafeLocalReadsAreEnabled" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:32.4491147Z 75: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:32.4491661Z 75: Test timeout computed to be: 90
+2026-10-21T16:50:32.4817139Z 75: Note: Google Test filter = ReadIndexTest.NonLeadersRejectReadsUnlessUnsafeLocalReadsAreEnabled
+2026-10-21T16:50:32.4817910Z 75: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:32.4818320Z 75: [----------] Global test environment set-up.
+2026-10-21T16:50:32.4818702Z 75: [----------] 1 test from ReadIndexTest
+2026-10-21T16:50:32.4819270Z 75: [ RUN      ] ReadIndexTest.NonLeadersRejectReadsUnlessUnsafeLocalReadsAreEnabled
+2026-10-21T16:50:32.4820249Z 75: [       OK ] ReadIndexTest.NonLeadersRejectReadsUnlessUnsafeLocalReadsAreEnabled (0 ms)
+2026-10-21T16:50:32.4820906Z 75: [----------] 1 test from ReadIndexTest (0 ms total)
+2026-10-21T16:50:32.4821268Z 75: 
+2026-10-21T16:50:32.4821573Z 75: [----------] Global test environment tear-down
+2026-10-21T16:50:32.4821983Z 75: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:32.4822356Z 75: [  PASSED  ] 1 test.
+2026-10-21T16:50:32.5371364Z 75/94 Test #75: ReadIndexTest.NonLeadersRejectReadsUnlessUnsafeLocalReadsAreEnabled .................   Passed    0.09 sec
+2026-10-21T16:50:32.5372855Z test 76
+2026-10-21T16:50:32.5373307Z       Start 76: ReadIndexTest.NewLeaderWaitsForItsNoOpAndAFreshMajorityHeartbeat
+2026-10-21T16:50:32.5373717Z 
+2026-10-21T16:50:32.5375032Z 76: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReadIndexTest.NewLeaderWaitsForItsNoOpAndAFreshMajorityHeartbeat" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:32.5376670Z 76: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:32.5376979Z 76: Test timeout computed to be: 90
+2026-10-21T16:50:32.5710475Z 76: Note: Google Test filter = ReadIndexTest.NewLeaderWaitsForItsNoOpAndAFreshMajorityHeartbeat
+2026-10-21T16:50:32.5711211Z 76: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:32.5712258Z 76: [----------] Global test environment set-up.
+2026-10-21T16:50:32.5712644Z 76: [----------] 1 test from ReadIndexTest
+2026-10-21T16:50:32.5713188Z 76: [ RUN      ] ReadIndexTest.NewLeaderWaitsForItsNoOpAndAFreshMajorityHeartbeat
+2026-10-21T16:50:32.5713974Z 76: [       OK ] ReadIndexTest.NewLeaderWaitsForItsNoOpAndAFreshMajorityHeartbeat (0 ms)
+2026-10-21T16:50:32.5714694Z 76: [----------] 1 test from ReadIndexTest (0 ms total)
+2026-10-21T16:50:32.5715104Z 76: 
+2026-10-21T16:50:32.5715385Z 76: [----------] Global test environment tear-down
+2026-10-21T16:50:32.5715844Z 76: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:32.5716267Z 76: [  PASSED  ] 1 test.
+2026-10-21T16:50:32.6266249Z 76/94 Test #76: ReadIndexTest.NewLeaderWaitsForItsNoOpAndAFreshMajorityHeartbeat ....................   Passed    0.09 sec
+2026-10-21T16:50:32.6267698Z test 77
+2026-10-21T16:50:32.6268067Z       Start 77: ReadIndexTest.ReadWaitsUntilItsReadIndexIsApplied
+2026-10-21T16:50:32.6268390Z 
+2026-10-21T16:50:32.6269632Z 77: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReadIndexTest.ReadWaitsUntilItsReadIndexIsApplied" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:32.6271391Z 77: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:32.6271736Z 77: Test timeout computed to be: 90
+2026-10-21T16:50:32.6611212Z 77: Note: Google Test filter = ReadIndexTest.ReadWaitsUntilItsReadIndexIsApplied
+2026-10-21T16:50:32.6611838Z 77: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:32.6612243Z 77: [----------] Global test environment set-up.
+2026-10-21T16:50:32.6612648Z 77: [----------] 1 test from ReadIndexTest
+2026-10-21T16:50:32.6613097Z 77: [ RUN      ] ReadIndexTest.ReadWaitsUntilItsReadIndexIsApplied
+2026-10-21T16:50:32.6613675Z 77: [       OK ] ReadIndexTest.ReadWaitsUntilItsReadIndexIsApplied (0 ms)
+2026-10-21T16:50:32.6614425Z 77: [----------] 1 test from ReadIndexTest (0 ms total)
+2026-10-21T16:50:32.6614776Z 77: 
+2026-10-21T16:50:32.6615031Z 77: [----------] Global test environment tear-down
+2026-10-21T16:50:32.6615423Z 77: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:32.6615780Z 77: [  PASSED  ] 1 test.
+2026-10-21T16:50:32.7166097Z 77/94 Test #77: ReadIndexTest.ReadWaitsUntilItsReadIndexIsApplied ...................................   Passed    0.09 sec
+2026-10-21T16:50:32.7167319Z test 78
+2026-10-21T16:50:32.7167639Z       Start 78: ReadIndexTest.SteppingDownFailsPendingReads
+2026-10-21T16:50:32.7167943Z 
+2026-10-21T16:50:32.7169130Z 78: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReadIndexTest.SteppingDownFailsPendingReads" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:32.7170935Z 78: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:32.7171267Z 78: Test timeout computed to be: 90
+2026-10-21T16:50:32.7508689Z 78: Note: Google Test filter = ReadIndexTest.SteppingDownFailsPendingReads
+2026-10-21T16:50:32.7509296Z 78: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:32.7509701Z 78: [----------] Global test environment set-up.
+2026-10-21T16:50:32.7510250Z 78: [----------] 1 test from ReadIndexTest
+2026-10-21T16:50:32.7510680Z 78: [ RUN      ] ReadIndexTest.SteppingDownFailsPendingReads
+2026-10-21T16:50:32.7530183Z 78: [       OK ] ReadIndexTest.SteppingDownFailsPendingReads (0 ms)
+2026-10-21T16:50:32.7530836Z 78: [----------] 1 test from ReadIndexTest (0 ms total)
+2026-10-21T16:50:32.7531261Z 78: 
+2026-10-21T16:50:32.7531522Z 78: [----------] Global test environment tear-down
+2026-10-21T16:50:32.7531818Z 78: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:32.7532071Z 78: [  PASSED  ] 1 test.
+2026-10-21T16:50:32.8065860Z 78/94 Test #78: ReadIndexTest.SteppingDownFailsPendingReads .........................................   Passed    0.09 sec
+2026-10-21T16:50:32.8067127Z test 79
+2026-10-21T16:50:32.8067574Z       Start 79: ReadIndexTest.SingleMemberServesReadsAfterCommittingItsNoOp
+2026-10-21T16:50:32.8067945Z 
+2026-10-21T16:50:32.8068764Z 79: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReadIndexTest.SingleMemberServesReadsAfterCommittingItsNoOp" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:32.8069784Z 79: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:32.8070251Z 79: Test timeout computed to be: 90
+2026-10-21T16:50:32.8407470Z 79: Note: Google Test filter = ReadIndexTest.SingleMemberServesReadsAfterCommittingItsNoOp
+2026-10-21T16:50:32.8408628Z 79: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:32.8409011Z 79: [----------] Global test environment set-up.
+2026-10-21T16:50:32.8409462Z 79: [----------] 1 test from ReadIndexTest
+2026-10-21T16:50:32.8410175Z 79: [ RUN      ] ReadIndexTest.SingleMemberServesReadsAfterCommittingItsNoOp
+2026-10-21T16:50:32.8410743Z 79: [       OK ] ReadIndexTest.SingleMemberServesReadsAfterCommittingItsNoOp (0 ms)
+2026-10-21T16:50:32.8411195Z 79: [----------] 1 test from ReadIndexTest (0 ms total)
+2026-10-21T16:50:32.8411423Z 79: 
+2026-10-21T16:50:32.8411593Z 79: [----------] Global test environment tear-down
+2026-10-21T16:50:32.8411933Z 79: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:32.8412166Z 79: [  PASSED  ] 1 test.
+2026-10-21T16:50:32.8961967Z 79/94 Test #79: ReadIndexTest.SingleMemberServesReadsAfterCommittingItsNoOp .........................   Passed    0.09 sec
+2026-10-21T16:50:32.8963129Z test 80
+2026-10-21T16:50:32.8963553Z       Start 80: ReadIndexTest.RestartReappliesCommittedPrefixIntoAFreshMachine
+2026-10-21T16:50:32.8964041Z 
+2026-10-21T16:50:32.8965641Z 80: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=ReadIndexTest.RestartReappliesCommittedPrefixIntoAFreshMachine" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:32.8967243Z 80: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:32.8967622Z 80: Test timeout computed to be: 90
+2026-10-21T16:50:32.9301767Z 80: Note: Google Test filter = ReadIndexTest.RestartReappliesCommittedPrefixIntoAFreshMachine
+2026-10-21T16:50:32.9302572Z 80: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:32.9303344Z 80: [----------] Global test environment set-up.
+2026-10-21T16:50:32.9303821Z 80: [----------] 1 test from ReadIndexTest
+2026-10-21T16:50:32.9304341Z 80: [ RUN      ] ReadIndexTest.RestartReappliesCommittedPrefixIntoAFreshMachine
+2026-10-21T16:50:32.9305073Z 80: [       OK ] ReadIndexTest.RestartReappliesCommittedPrefixIntoAFreshMachine (0 ms)
+2026-10-21T16:50:32.9305691Z 80: [----------] 1 test from ReadIndexTest (0 ms total)
+2026-10-21T16:50:32.9306035Z 80: 
+2026-10-21T16:50:32.9306288Z 80: [----------] Global test environment tear-down
+2026-10-21T16:50:32.9306661Z 80: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:32.9306897Z 80: [  PASSED  ] 1 test.
+2026-10-21T16:50:32.9856009Z 80/94 Test #80: ReadIndexTest.RestartReappliesCommittedPrefixIntoAFreshMachine ......................   Passed    0.09 sec
+2026-10-21T16:50:32.9857176Z test 81
+2026-10-21T16:50:32.9857525Z       Start 81: KvHistory.AcceptsConcurrentAndUnknownOutcomes
+2026-10-21T16:50:32.9857835Z 
+2026-10-21T16:50:32.9859033Z 81: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvHistory.AcceptsConcurrentAndUnknownOutcomes" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:32.9860776Z 81: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:32.9861238Z 81: Test timeout computed to be: 90
+2026-10-21T16:50:33.0190929Z 81: Note: Google Test filter = KvHistory.AcceptsConcurrentAndUnknownOutcomes
+2026-10-21T16:50:33.0191761Z 81: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:33.0192594Z 81: [----------] Global test environment set-up.
+2026-10-21T16:50:33.0193001Z 81: [----------] 1 test from KvHistory
+2026-10-21T16:50:33.0193431Z 81: [ RUN      ] KvHistory.AcceptsConcurrentAndUnknownOutcomes
+2026-10-21T16:50:33.0193982Z 81: [       OK ] KvHistory.AcceptsConcurrentAndUnknownOutcomes (0 ms)
+2026-10-21T16:50:33.0194460Z 81: [----------] 1 test from KvHistory (0 ms total)
+2026-10-21T16:50:33.0195162Z 81: 
+2026-10-21T16:50:33.0195427Z 81: [----------] Global test environment tear-down
+2026-10-21T16:50:33.0195827Z 81: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:33.0196190Z 81: [  PASSED  ] 1 test.
+2026-10-21T16:50:33.0744989Z 81/94 Test #81: KvHistory.AcceptsConcurrentAndUnknownOutcomes .......................................   Passed    0.09 sec
+2026-10-21T16:50:33.0746062Z test 82
+2026-10-21T16:50:33.0746362Z       Start 82: KvHistory.FlagsDuplicateApplication
+2026-10-21T16:50:33.0746639Z 
+2026-10-21T16:50:33.0747778Z 82: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvHistory.FlagsDuplicateApplication" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:33.0749260Z 82: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:33.0749731Z 82: Test timeout computed to be: 90
+2026-10-21T16:50:33.1078704Z 82: Note: Google Test filter = KvHistory.FlagsDuplicateApplication
+2026-10-21T16:50:33.1079371Z 82: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:33.1079804Z 82: [----------] Global test environment set-up.
+2026-10-21T16:50:33.1080680Z 82: [----------] 1 test from KvHistory
+2026-10-21T16:50:33.1081089Z 82: [ RUN      ] KvHistory.FlagsDuplicateApplication
+2026-10-21T16:50:33.1081606Z 82: [       OK ] KvHistory.FlagsDuplicateApplication (0 ms)
+2026-10-21T16:50:33.1082081Z 82: [----------] 1 test from KvHistory (0 ms total)
+2026-10-21T16:50:33.1082462Z 82: 
+2026-10-21T16:50:33.1082733Z 82: [----------] Global test environment tear-down
+2026-10-21T16:50:33.1083181Z 82: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:33.1083588Z 82: [  PASSED  ] 1 test.
+2026-10-21T16:50:33.1635025Z 82/94 Test #82: KvHistory.FlagsDuplicateApplication .................................................   Passed    0.09 sec
+2026-10-21T16:50:33.1636043Z test 83
+2026-10-21T16:50:33.1636376Z       Start 83: KvHistory.FlagsLostAcknowledgedWrite
+2026-10-21T16:50:33.1636649Z 
+2026-10-21T16:50:33.1637808Z 83: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvHistory.FlagsLostAcknowledgedWrite" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:33.1639404Z 83: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:33.1639845Z 83: Test timeout computed to be: 90
+2026-10-21T16:50:33.1984602Z 83: Note: Google Test filter = KvHistory.FlagsLostAcknowledgedWrite
+2026-10-21T16:50:33.1985135Z 83: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:33.1985529Z 83: [----------] Global test environment set-up.
+2026-10-21T16:50:33.1985895Z 83: [----------] 1 test from KvHistory
+2026-10-21T16:50:33.1986270Z 83: [ RUN      ] KvHistory.FlagsLostAcknowledgedWrite
+2026-10-21T16:50:33.1986716Z 83: [       OK ] KvHistory.FlagsLostAcknowledgedWrite (0 ms)
+2026-10-21T16:50:33.1987178Z 83: [----------] 1 test from KvHistory (0 ms total)
+2026-10-21T16:50:33.1987393Z 83: 
+2026-10-21T16:50:33.1987564Z 83: [----------] Global test environment tear-down
+2026-10-21T16:50:33.1987829Z 83: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:33.1988069Z 83: [  PASSED  ] 1 test.
+2026-10-21T16:50:33.2536209Z 83/94 Test #83: KvHistory.FlagsLostAcknowledgedWrite ................................................   Passed    0.09 sec
+2026-10-21T16:50:33.2537844Z test 84
+2026-10-21T16:50:33.2538095Z       Start 84: KvHistory.FlagsStaleRead
+2026-10-21T16:50:33.2538331Z 
+2026-10-21T16:50:33.2539023Z 84: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvHistory.FlagsStaleRead" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:33.2539935Z 84: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:33.2540706Z 84: Test timeout computed to be: 90
+2026-10-21T16:50:33.2881138Z 84: Note: Google Test filter = KvHistory.FlagsStaleRead
+2026-10-21T16:50:33.2881630Z 84: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:33.2881931Z 84: [----------] Global test environment set-up.
+2026-10-21T16:50:33.2882215Z 84: [----------] 1 test from KvHistory
+2026-10-21T16:50:33.2882491Z 84: [ RUN      ] KvHistory.FlagsStaleRead
+2026-10-21T16:50:33.2882728Z 84: [       OK ] KvHistory.FlagsStaleRead (0 ms)
+2026-10-21T16:50:33.2883016Z 84: [----------] 1 test from KvHistory (0 ms total)
+2026-10-21T16:50:33.2883312Z 84: 
+2026-10-21T16:50:33.2883484Z 84: [----------] Global test environment tear-down
+2026-10-21T16:50:33.2883742Z 84: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:33.2884064Z 84: [  PASSED  ] 1 test.
+2026-10-21T16:50:33.3436976Z 84/94 Test #84: KvHistory.FlagsStaleRead ............................................................   Passed    0.09 sec
+2026-10-21T16:50:33.3438266Z test 85
+2026-10-21T16:50:33.3438597Z       Start 85: KvHistory.FlagsReadOfStateThatNeverCommitted
+2026-10-21T16:50:33.3438897Z 
+2026-10-21T16:50:33.3440528Z 85: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvHistory.FlagsReadOfStateThatNeverCommitted" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:33.3442104Z 85: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:33.3442427Z 85: Test timeout computed to be: 90
+2026-10-21T16:50:33.3767164Z 85: Note: Google Test filter = KvHistory.FlagsReadOfStateThatNeverCommitted
+2026-10-21T16:50:33.3767779Z 85: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:33.3768187Z 85: [----------] Global test environment set-up.
+2026-10-21T16:50:33.3768576Z 85: [----------] 1 test from KvHistory
+2026-10-21T16:50:33.3769051Z 85: [ RUN      ] KvHistory.FlagsReadOfStateThatNeverCommitted
+2026-10-21T16:50:33.3769562Z 85: [       OK ] KvHistory.FlagsReadOfStateThatNeverCommitted (0 ms)
+2026-10-21T16:50:33.3770168Z 85: [----------] 1 test from KvHistory (0 ms total)
+2026-10-21T16:50:33.3770524Z 85: 
+2026-10-21T16:50:33.3770782Z 85: [----------] Global test environment tear-down
+2026-10-21T16:50:33.3772113Z 85: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:33.3772482Z 85: [  PASSED  ] 1 test.
+2026-10-21T16:50:33.4326187Z 85/94 Test #85: KvHistory.FlagsReadOfStateThatNeverCommitted ........................................   Passed    0.09 sec
+2026-10-21T16:50:33.4327254Z test 86
+2026-10-21T16:50:33.4327535Z       Start 86: KvHistory.FlagsReadFromTheFuture
+2026-10-21T16:50:33.4327812Z 
+2026-10-21T16:50:33.4328536Z 86: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvHistory.FlagsReadFromTheFuture" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:33.4329476Z 86: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:33.4329780Z 86: Test timeout computed to be: 90
+2026-10-21T16:50:33.4656624Z 86: Note: Google Test filter = KvHistory.FlagsReadFromTheFuture
+2026-10-21T16:50:33.4657557Z 86: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:33.4658211Z 86: [----------] Global test environment set-up.
+2026-10-21T16:50:33.4658782Z 86: [----------] 1 test from KvHistory
+2026-10-21T16:50:33.4659335Z 86: [ RUN      ] KvHistory.FlagsReadFromTheFuture
+2026-10-21T16:50:33.4659957Z 86: [       OK ] KvHistory.FlagsReadFromTheFuture (0 ms)
+2026-10-21T16:50:33.4677534Z 86: [----------] 1 test from KvHistory (0 ms total)
+2026-10-21T16:50:33.4680642Z 86: 
+2026-10-21T16:50:33.4680925Z 86: [----------] Global test environment tear-down
+2026-10-21T16:50:33.4681335Z 86: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:33.4681994Z 86: [  PASSED  ] 1 test.
+2026-10-21T16:50:33.4731694Z 86/94 Test #86: KvHistory.FlagsReadFromTheFuture ....................................................   Passed    0.04 sec
+2026-10-21T16:50:33.4733809Z test 87
+2026-10-21T16:50:33.4734142Z       Start 87: KvHistory.FlagsRealTimeOrderInversion
+2026-10-21T16:50:33.4734418Z 
+2026-10-21T16:50:33.4735568Z 87: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvHistory.FlagsRealTimeOrderInversion" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:33.4737067Z 87: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:33.4737510Z 87: Test timeout computed to be: 90
+2026-10-21T16:50:33.5079408Z 87: Note: Google Test filter = KvHistory.FlagsRealTimeOrderInversion
+2026-10-21T16:50:33.5080193Z 87: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:33.5080862Z 87: [----------] Global test environment set-up.
+2026-10-21T16:50:33.5081372Z 87: [----------] 1 test from KvHistory
+2026-10-21T16:50:33.5081902Z 87: [ RUN      ] KvHistory.FlagsRealTimeOrderInversion
+2026-10-21T16:50:33.5082664Z 87: [       OK ] KvHistory.FlagsRealTimeOrderInversion (0 ms)
+2026-10-21T16:50:33.5083164Z 87: [----------] 1 test from KvHistory (0 ms total)
+2026-10-21T16:50:33.5083499Z 87: 
+2026-10-21T16:50:33.5083851Z 87: [----------] Global test environment tear-down
+2026-10-21T16:50:33.5084213Z 87: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:33.5084633Z 87: [  PASSED  ] 1 test.
+2026-10-21T16:50:33.5635535Z 87/94 Test #87: KvHistory.FlagsRealTimeOrderInversion ...............................................   Passed    0.09 sec
+2026-10-21T16:50:33.5636946Z test 88
+2026-10-21T16:50:33.5637253Z       Start 88: KvHistory.FlagsFabricatedAndMalformedValues
+2026-10-21T16:50:33.5637545Z 
+2026-10-21T16:50:33.5638610Z 88: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvHistory.FlagsFabricatedAndMalformedValues" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:33.5640407Z 88: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:33.5640854Z 88: Test timeout computed to be: 90
+2026-10-21T16:50:33.5968142Z 88: Note: Google Test filter = KvHistory.FlagsFabricatedAndMalformedValues
+2026-10-21T16:50:33.5968835Z 88: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:33.5969248Z 88: [----------] Global test environment set-up.
+2026-10-21T16:50:33.5969626Z 88: [----------] 1 test from KvHistory
+2026-10-21T16:50:33.5970190Z 88: [ RUN      ] KvHistory.FlagsFabricatedAndMalformedValues
+2026-10-21T16:50:33.5970722Z 88: [       OK ] KvHistory.FlagsFabricatedAndMalformedValues (0 ms)
+2026-10-21T16:50:33.5971529Z 88: [----------] 1 test from KvHistory (0 ms total)
+2026-10-21T16:50:33.5971919Z 88: 
+2026-10-21T16:50:33.5972258Z 88: [----------] Global test environment tear-down
+2026-10-21T16:50:33.5972665Z 88: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:33.5973036Z 88: [  PASSED  ] 1 test.
+2026-10-21T16:50:33.6524275Z 88/94 Test #88: KvHistory.FlagsFabricatedAndMalformedValues .........................................   Passed    0.09 sec
+2026-10-21T16:50:33.6525441Z test 89
+2026-10-21T16:50:33.6525829Z       Start 89: KvHistory.FlagsStaleAndUnexplainedRegisterReads
+2026-10-21T16:50:33.6526050Z 
+2026-10-21T16:50:33.6526815Z 89: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvHistory.FlagsStaleAndUnexplainedRegisterReads" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:33.6527795Z 89: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:33.6528337Z 89: Test timeout computed to be: 90
+2026-10-21T16:50:33.6860752Z 89: Note: Google Test filter = KvHistory.FlagsStaleAndUnexplainedRegisterReads
+2026-10-21T16:50:33.6861629Z 89: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:33.6862449Z 89: [----------] Global test environment set-up.
+2026-10-21T16:50:33.6862874Z 89: [----------] 1 test from KvHistory
+2026-10-21T16:50:33.6863305Z 89: [ RUN      ] KvHistory.FlagsStaleAndUnexplainedRegisterReads
+2026-10-21T16:50:33.6867737Z 89: [       OK ] KvHistory.FlagsStaleAndUnexplainedRegisterReads (0 ms)
+2026-10-21T16:50:33.6868333Z 89: [----------] 1 test from KvHistory (0 ms total)
+2026-10-21T16:50:33.6868729Z 89: 
+2026-10-21T16:50:33.6868998Z 89: [----------] Global test environment tear-down
+2026-10-21T16:50:33.6869446Z 89: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:33.6869863Z 89: [  PASSED  ] 1 test.
+2026-10-21T16:50:33.6921047Z 89/94 Test #89: KvHistory.FlagsStaleAndUnexplainedRegisterReads .....................................   Passed    0.04 sec
+2026-10-21T16:50:33.6922924Z test 90
+2026-10-21T16:50:33.6923336Z       Start 90: KvHistory.RejectsInconsistentWorkloads
+2026-10-21T16:50:33.6923641Z 
+2026-10-21T16:50:33.6925035Z 90: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvHistory.RejectsInconsistentWorkloads" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:33.6926733Z 90: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:33.6927030Z 90: Test timeout computed to be: 90
+2026-10-21T16:50:33.7249579Z 90: Note: Google Test filter = KvHistory.RejectsInconsistentWorkloads
+2026-10-21T16:50:33.7250473Z 90: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:33.7251053Z 90: [----------] Global test environment set-up.
+2026-10-21T16:50:33.7251614Z 90: [----------] 1 test from KvHistory
+2026-10-21T16:50:33.7252176Z 90: [ RUN      ] KvHistory.RejectsInconsistentWorkloads
+2026-10-21T16:50:33.7252806Z 90: [       OK ] KvHistory.RejectsInconsistentWorkloads (0 ms)
+2026-10-21T16:50:33.7253376Z 90: [----------] 1 test from KvHistory (0 ms total)
+2026-10-21T16:50:33.7253855Z 90: 
+2026-10-21T16:50:33.7254254Z 90: [----------] Global test environment tear-down
+2026-10-21T16:50:33.7254787Z 90: [==========] 1 test from 1 test suite ran. (0 ms total)
+2026-10-21T16:50:33.7255283Z 90: [  PASSED  ] 1 test.
+2026-10-21T16:50:33.7806133Z 90/94 Test #90: KvHistory.RejectsInconsistentWorkloads ..............................................   Passed    0.09 sec
+2026-10-21T16:50:33.7807383Z test 91
+2026-10-21T16:50:33.7807746Z       Start 91: KvFuzz.ExactlyOnceAndFreshReadsAcrossSeededFaults
+2026-10-21T16:50:33.7808100Z 
+2026-10-21T16:50:33.7809326Z 91: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvFuzz.ExactlyOnceAndFreshReadsAcrossSeededFaults" "--gtest_also_run_disabled_tests"
+2026-10-21T16:50:33.7811025Z 91: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:50:33.7811540Z 91: Test timeout computed to be: 10830
+2026-10-21T16:50:33.8141426Z 91: Note: Google Test filter = KvFuzz.ExactlyOnceAndFreshReadsAcrossSeededFaults
+2026-10-21T16:50:33.8142054Z 91: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:50:33.8142591Z 91: [----------] Global test environment set-up.
+2026-10-21T16:50:33.8142986Z 91: [----------] 1 test from KvFuzz
+2026-10-21T16:50:33.8143477Z 91: [ RUN      ] KvFuzz.ExactlyOnceAndFreshReadsAcrossSeededFaults
+2026-10-21T16:54:09.2116755Z 91: [kv] first_seed=0 seeds=10000 operations=181933 acknowledged=181933 retries=66659 timeouts=65537 not_leader=10813612 logged_reads=16402 reads_served=68409 reads_failed=1024 applied_commands=1078882 crashes=261566 partitions=80000 steps=31344275 safety_checks=31344275 max_quiesce_ticks=96 digest=86494a94e5234116
+2026-10-21T16:54:09.2118222Z 91: [       OK ] KvFuzz.ExactlyOnceAndFreshReadsAcrossSeededFaults (215397 ms)
+2026-10-21T16:54:09.2118569Z 91: [----------] 1 test from KvFuzz (215397 ms total)
+2026-10-21T16:54:09.2118798Z 91: 
+2026-10-21T16:54:09.2118989Z 91: [----------] Global test environment tear-down
+2026-10-21T16:54:09.2119254Z 91: [==========] 1 test from 1 test suite ran. (215397 ms total)
+2026-10-21T16:54:09.2119500Z 91: [  PASSED  ] 1 test.
+2026-10-21T16:54:09.2668769Z 91/94 Test #91: KvFuzz.ExactlyOnceAndFreshReadsAcrossSeededFaults ...................................   Passed  215.49 sec
+2026-10-21T16:54:09.2670130Z test 92
+2026-10-21T16:54:09.2670405Z       Start 92: KvFuzz.SeedReplaysIdentically
+2026-10-21T16:54:09.2670665Z 
+2026-10-21T16:54:09.2671703Z 92: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvFuzz.SeedReplaysIdentically" "--gtest_also_run_disabled_tests"
+2026-10-21T16:54:09.2672618Z 92: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:54:09.2672942Z 92: Test timeout computed to be: 10830
+2026-10-21T16:54:09.2997374Z 92: Note: Google Test filter = KvFuzz.SeedReplaysIdentically
+2026-10-21T16:54:09.2998154Z 92: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:54:09.2998890Z 92: [----------] Global test environment set-up.
+2026-10-21T16:54:09.2999296Z 92: [----------] 1 test from KvFuzz
+2026-10-21T16:54:09.2999659Z 92: [ RUN      ] KvFuzz.SeedReplaysIdentically
+2026-10-21T16:54:09.3242927Z 92: [       OK ] KvFuzz.SeedReplaysIdentically (24 ms)
+2026-10-21T16:54:09.3243551Z 92: [----------] 1 test from KvFuzz (24 ms total)
+2026-10-21T16:54:09.3244036Z 92: 
+2026-10-21T16:54:09.3244304Z 92: [----------] Global test environment tear-down
+2026-10-21T16:54:09.3244708Z 92: [==========] 1 test from 1 test suite ran. (24 ms total)
+2026-10-21T16:54:09.3245046Z 92: [  PASSED  ] 1 test.
+2026-10-21T16:54:09.3798794Z 92/94 Test #92: KvFuzz.SeedReplaysIdentically .......................................................   Passed    0.11 sec
+2026-10-21T16:54:09.3799964Z test 93
+2026-10-21T16:54:09.3800426Z       Start 93: KvFuzz.CheckerFlagsUnsafeLocalReads
+2026-10-21T16:54:09.3803277Z 
+2026-10-21T16:54:09.3804223Z 93: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvFuzz.CheckerFlagsUnsafeLocalReads" "--gtest_also_run_disabled_tests"
+2026-10-21T16:54:09.3805196Z 93: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:54:09.3805497Z 93: Test timeout computed to be: 10830
+2026-10-21T16:54:09.4138486Z 93: Note: Google Test filter = KvFuzz.CheckerFlagsUnsafeLocalReads
+2026-10-21T16:54:09.4138846Z 93: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:54:09.4139118Z 93: [----------] Global test environment set-up.
+2026-10-21T16:54:09.4139390Z 93: [----------] 1 test from KvFuzz
+2026-10-21T16:54:09.4139635Z 93: [ RUN      ] KvFuzz.CheckerFlagsUnsafeLocalReads
+2026-10-21T16:54:09.8053732Z 93: [kv-negative] mode=unsafe_reads first_seed=14 error=Stale read: client 1 get(a0) invoke=79 complete=80 returned "c4s1;c5s1;c4s3;c2s4;c1s4;" misses client 4 append(a0, c4s5;) invoke=65 complete=70, which completed before the read was invoked
+2026-10-21T16:54:09.8054914Z 93: [       OK ] KvFuzz.CheckerFlagsUnsafeLocalReads (391 ms)
+2026-10-21T16:54:09.8055306Z 93: [----------] 1 test from KvFuzz (391 ms total)
+2026-10-21T16:54:09.8055651Z 93: 
+2026-10-21T16:54:09.8055920Z 93: [----------] Global test environment tear-down
+2026-10-21T16:54:09.8056210Z 93: [==========] 1 test from 1 test suite ran. (391 ms total)
+2026-10-21T16:54:09.8056453Z 93: [  PASSED  ] 1 test.
+2026-10-21T16:54:09.8605651Z 93/94 Test #93: KvFuzz.CheckerFlagsUnsafeLocalReads .................................................   Passed    0.48 sec
+2026-10-21T16:54:09.8606978Z test 94
+2026-10-21T16:54:09.8607286Z       Start 94: KvFuzz.CheckerFlagsMissingSessionDedupe
+2026-10-21T16:54:09.8607587Z 
+2026-10-21T16:54:09.8608817Z 94: Test command: /opt/hostedtoolcache/Python/3.11.17/x64/bin/python3.11 "/home/runner/work/quorumkv/quorumkv/scripts/test_watchdog.py" "/home/runner/work/quorumkv/quorumkv/build/tsan/quorumkv_tests" "--gtest_filter=KvFuzz.CheckerFlagsMissingSessionDedupe" "--gtest_also_run_disabled_tests"
+2026-10-21T16:54:09.8610564Z 94: Working Directory: /home/runner/work/quorumkv/quorumkv/build/tsan
+2026-10-21T16:54:09.8610962Z 94: Test timeout computed to be: 10830
+2026-10-21T16:54:09.8943775Z 94: Note: Google Test filter = KvFuzz.CheckerFlagsMissingSessionDedupe
+2026-10-21T16:54:09.8944561Z 94: [==========] Running 1 test from 1 test suite.
+2026-10-21T16:54:09.8945390Z 94: [----------] Global test environment set-up.
+2026-10-21T16:54:09.8945801Z 94: [----------] 1 test from KvFuzz
+2026-10-21T16:54:09.8946203Z 94: [ RUN      ] KvFuzz.CheckerFlagsMissingSessionDedupe
+2026-10-21T16:54:09.9088697Z 94: [kv-negative] mode=no_dedupe first_seed=0 error=Exactly-once: key a0 applied client 2 append(a0, c2s3;) invoke=25 complete=30 more than once
+2026-10-21T16:54:09.9090317Z 94: [       OK ] KvFuzz.CheckerFlagsMissingSessionDedupe (14 ms)
+2026-10-21T16:54:09.9090997Z 94: [----------] 1 test from KvFuzz (14 ms total)
+2026-10-21T16:54:09.9091483Z 94: 
+2026-10-21T16:54:09.9091916Z 94: [----------] Global test environment tear-down
+2026-10-21T16:54:09.9092451Z 94: [==========] 1 test from 1 test suite ran. (14 ms total)
+2026-10-21T16:54:09.9092961Z 94: [  PASSED  ] 1 test.
+2026-10-21T16:54:09.9643702Z 94/94 Test #94: KvFuzz.CheckerFlagsMissingSessionDedupe .............................................   Passed    0.10 sec
+2026-10-21T16:54:09.9650312Z 
+2026-10-21T16:54:09.9650464Z 100% tests passed out of 94
+2026-10-21T16:54:09.9650608Z 
+2026-10-21T16:54:09.9650690Z Total Test time (real) = 360.69 sec
+2026-10-21T16:54:09.9687962Z ##[group]Run executable="build/tsan/quorumkv_tests"
+2026-10-21T16:54:09.9688442Z [36;1mexecutable="build/tsan/quorumkv_tests"[0m
+2026-10-21T16:54:09.9688824Z [36;1mif [ "$RUNNER_OS" = "Windows" ]; then[0m
+2026-10-21T16:54:09.9689138Z [36;1m  executable="$executable.exe"[0m
+2026-10-21T16:54:09.9689344Z [36;1mfi[0m
+2026-10-21T16:54:09.9689701Z [36;1mpython scripts/verify_sim_replay.py "$executable" --output "build/tsan/Testing/Temporary/sim-replay.txt"[0m
+2026-10-21T16:54:09.9690612Z [36;1mpython scripts/verify_replication_replay.py "$executable" --output "build/tsan/Testing/Temporary/replication-replay.txt"[0m
+2026-10-21T16:54:09.9691221Z [36;1mpython scripts/verify_kv_replay.py "$executable" --output "build/tsan/Testing/Temporary/kv-replay.txt"[0m
+2026-10-21T16:54:09.9746115Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-21T16:54:09.9746374Z env:
+2026-10-21T16:54:09.9746588Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:54:09.9746951Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-21T16:54:09.9747294Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:54:09.9747581Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:54:09.9747867Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:54:09.9748171Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-21T16:54:09.9748425Z ##[endgroup]
+2026-10-21T16:54:10.0458412Z [sim] first_seed=42 seeds=1 p50_cold_ticks=22 p99_cold_ticks=22 p50_reelection_ticks=25 p99_reelection_ticks=25 election_bound=300 max_cold_ticks=22 max_reelection_ticks=25 max_recovery_ticks=91 steps=1455 safety_checks=1455 delivered=146 dropped=16 duplicated=5 partitions=6 crashes=20 restarts=23 sync_failures=15 vote_grant_crashes=0 long_delay_packets=2 stale_vote_deliveries=0 digest=18a253973d716023
+2026-10-21T16:54:10.0459641Z Simulator replay verified: build/tsan/Testing/Temporary/sim-replay.txt
+2026-10-21T16:54:10.2053494Z [replication] first_seed=47 seeds=1 steps=2520 safety_checks=2520 log_checks=12600 application_checks=12600 proposals=1 committed_commands=2 figure8_runs=1 ack_crash_runs=0 crashes=50 sync_failures=15 candidate_crashes=10 append_reply_crashes=1 long_delay_packets=31 partitions=6 dropped=95 duplicated=30 max_recovery_ticks=71 digest=852c794765a54cc8
+2026-10-21T16:54:10.2054904Z Verified replication replay: build/tsan/Testing/Temporary/replication-replay.txt
+2026-10-21T16:54:10.3756484Z [kv] first_seed=42 seeds=1 operations=5 acknowledged=5 retries=3 timeouts=3 not_leader=867 logged_reads=0 reads_served=3 reads_failed=0 applied_commands=12 crashes=24 partitions=8 steps=2243 safety_checks=2243 max_quiesce_ticks=18 digest=bfd31a6d5c328d07
+2026-10-21T16:54:10.3758120Z Verified KV replay: build/tsan/Testing/Temporary/kv-replay.txt
+2026-10-21T16:54:10.3849503Z ##[group]Run extra=()
+2026-10-21T16:54:10.3849965Z [36;1mextra=()[0m
+2026-10-21T16:54:10.3851014Z [36;1mif [ "$RUNNER_OS" = "Linux" ] && [ "tsan" = "debug" ]; then[0m
+2026-10-21T16:54:10.3863760Z [36;1m  extra=(--survey --jobs 2)[0m
+2026-10-21T16:54:10.3864126Z [36;1mfi[0m
+2026-10-21T16:54:10.3864769Z [36;1mpython scripts/verify_m3_mutations.py "build/tsan" --output "build/tsan/Testing/Temporary/mutations.jsonl" "${extra[@]}"[0m
+2026-10-21T16:54:10.3939759Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-21T16:54:10.3940340Z env:
+2026-10-21T16:54:10.3940670Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:54:10.3941210Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-21T16:54:10.3941751Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:54:10.3942232Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:54:10.3942758Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:54:10.3943236Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-21T16:54:10.3943642Z ##[endgroup]
+2026-10-21T16:54:10.4406732Z Measuring count_stale_votes
+2026-10-21T16:54:21.7207875Z count_stale_votes: {"seed": 1649, "trace_sha256": "47745bf727438948257a683e0a2a4484d2cb96e9c3d1db6b6519a154053d1949", "failing_replays": 2, "control_passed": true}
+2026-10-21T16:54:21.7208461Z Measuring reply_before_persist
+2026-10-21T16:54:24.3502987Z reply_before_persist: {"seed": 348, "trace_sha256": "f0a9936a5b8a142f270cc90732a0bc9221028210b7d6daaedbf816189989cc52", "failing_replays": 2, "control_passed": true}
+2026-10-21T16:54:24.3503711Z Measuring self_vote_after_send
+2026-10-21T16:54:24.6998695Z self_vote_after_send: {"seed": 1, "trace_sha256": "322f0d5ee59925faef94316de44f58c83c1b87e3c6453081340b260d043a9dde", "failing_replays": 2, "control_passed": true}
+2026-10-21T16:54:24.6999354Z Measuring commit_old_term
+2026-10-21T16:54:25.0755951Z commit_old_term: {"seed": 7, "trace_sha256": "189265074b1e222268c2d3b7e76547f9021e18aaf6ab3245fbeebfcd9b01a28f", "failing_replays": 2, "control_passed": true}
+2026-10-21T16:54:25.0756546Z Measuring append_reply_before_persist
+2026-10-21T16:54:25.4348075Z append_reply_before_persist: {"seed": 6, "trace_sha256": "d26a1655d747b77f23b81ae11491a7fd8ee64b2f68b1e6925fa224de629b2afb", "failing_replays": 2, "control_passed": true}
+2026-10-21T16:54:25.4349058Z Measuring double_vote
+2026-10-21T16:54:25.8143827Z double_vote: {"seed": 7, "trace_sha256": "aa4c457f730d0c4274dc7e7336e12a433c9a022ce11a89a56505796a928a4c48", "failing_replays": 2, "control_passed": true}
+2026-10-21T16:54:25.8144517Z Measuring two_of_five
+2026-10-21T16:54:26.2038618Z two_of_five: {"seed": 7, "trace_sha256": "a747a22a89532ff93ca4625e4fcc3760fbfd8f88e3121eae57deb9b32f8f6c50", "failing_replays": 2, "control_passed": true}
+2026-10-21T16:54:26.2097354Z PASS: every mutation detected and replayed; evidence: build/tsan/Testing/Temporary/mutations.jsonl
+2026-10-21T16:54:26.2228145Z ##[group]Run actions/upload-artifact@v6
+2026-10-21T16:54:26.2228372Z with:
+2026-10-21T16:54:26.2228540Z   name: logs-ubuntu-24.04-tsan
+2026-10-21T16:54:26.2228783Z   path: build/tsan/Testing/Temporary/
+build/stacks/
+
+2026-10-21T16:54:26.2229201Z   if-no-files-found: warn
+2026-10-21T16:54:26.2229389Z   compression-level: 6
+2026-10-21T16:54:26.2229568Z   overwrite: false
+2026-10-21T16:54:26.2229748Z   include-hidden-files: false
+2026-10-21T16:54:26.2229930Z env:
+2026-10-21T16:54:26.2230335Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:54:26.2230671Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib/pkgconfig
+2026-10-21T16:54:26.2230999Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:54:26.2231297Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:54:26.2231585Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.17/x64
+2026-10-21T16:54:26.2231920Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.17/x64/lib
+2026-10-21T16:54:26.2232170Z ##[endgroup]
+2026-10-21T16:54:26.3521666Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-21T16:54:26.3522892Z The least common ancestor is /home/runner/work/quorumkv/quorumkv/build. This will be the root directory of the artifact
+2026-10-21T16:54:26.3523568Z With the provided path, there will be 6 files uploaded
+2026-10-21T16:54:26.3524108Z Artifact name is valid!
+2026-10-21T16:54:26.3524375Z Root directory input is valid!
+2026-10-21T16:54:26.5865071Z Beginning upload of artifact content to blob storage
+2026-10-21T16:54:26.8646644Z Uploaded bytes 503463
+2026-10-21T16:54:26.8950631Z Finished uploading artifact content to blob storage!
+2026-10-21T16:54:26.8951715Z SHA256 digest of uploaded artifact zip is 13740d9a6c6bae41032f26ebdcfbaf0af6acfe1218620d756004ff51d221bd6f
+2026-10-21T16:54:26.8952573Z Finalizing artifact upload
+2026-10-21T16:54:27.1678740Z Artifact logs-ubuntu-24.04-tsan.zip successfully finalized. Artifact ID 12364580879
+2026-10-21T16:54:27.1679589Z Artifact logs-ubuntu-24.04-tsan has been successfully uploaded! Final size is 503463 bytes. Artifact ID is 12364580879
+2026-10-21T16:54:27.1680390Z Artifact download URL: https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39637924544/artifacts/12364580879
+2026-10-21T16:54:27.1831046Z Post job cleanup.
+2026-10-21T16:54:27.2928906Z Post job cleanup.
+2026-10-21T16:54:27.3612119Z [command]/usr/bin/git version
+2026-10-21T16:54:27.3646157Z git version 2.55.0
+2026-10-21T16:54:27.3673978Z Temporarily overriding HOME='/home/runner/work/_temp/cc045f67-f5b6-4028-a006-f803aa501696' before making global git config changes
+2026-10-21T16:54:27.3675025Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-21T16:54:27.3677984Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/quorumkv/quorumkv
+2026-10-21T16:54:27.3708644Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-21T16:54:27.3737278Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-21T16:54:27.3954011Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-21T16:54:27.3980456Z http.https://github.com/.extraheader
+2026-10-21T16:54:27.3991328Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-21T16:54:27.4023783Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-21T16:54:27.4233583Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-21T16:54:27.4263945Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-21T16:54:27.4617370Z Cleaning up orphan processes
