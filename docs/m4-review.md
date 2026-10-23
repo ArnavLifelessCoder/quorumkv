@@ -1,7 +1,11 @@
 # M4 review packet
 
-Status: implementation complete on branch `m4`. Source commit, evidence capture
-(`scripts/capture_m4.ps1`), CI, and owner approval are pending. M5 has not started.
+Status: complete on branch `m4`. Evidence comes from the exact-commit CI run for source
+`ba0b916` ([run 39637924544](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39637924544)),
+recorded by `scripts/record_ci_evidence.py` in `results/m4/` (summary in `ci.json`, full job
+logs beside it). Local multi-hour ASan captures on the development machine were repeatedly
+cut off when the machine slept, so the evidence of record is the CI run, which builds and tests
+debug and ASan on Windows and Linux plus TSan on Linux.
 
 ## Built
 
@@ -25,22 +29,22 @@ See [the KV design](kv.md) for semantics, the ReadIndex argument, and the checke
 
 ## Acceptance gates
 
-- [ ] Duplicate client requests (simulated retries) apply exactly once:
-  `KvFuzz.ExactlyOnceAndFreshReadsAcrossSeededFaults` over 10,000 seeds, plus
-  `KvStore.RetriedSequenceAppliesOnceAndReturnsTheOriginalResult`.
-- [ ] Reads never return stale data in sim histories, by the per-key version check, over the
-  same 10,000 seeds.
-- [ ] The checker flags both deliberately broken modes
-  (`KvFuzz.CheckerFlagsUnsafeLocalReads`, `KvFuzz.CheckerFlagsMissingSessionDedupe`).
-- [ ] ReadIndex unit tests: stale heartbeat replies do not confirm a read, reads wait for the
-  new leader's no-op and for apply, and step-down fails pending reads (`ReadIndexTest.*`).
-- [ ] Session dedupe survives Snapshot/Restore (`KvStore.SnapshotRestoresDataSessionsAndDigestExactly`).
-- [ ] M1 to M3 campaigns unchanged: same election and replication digests as `results/m3/`.
-- [ ] Debug and ASan green locally with zero warnings; clang-tidy, format, ruff, pytest pass.
-- [ ] Clean-source capture published to `results/m4/` and all final-commit CI jobs green.
-- [ ] Owner approval.
+All seven CI jobs passed. Each of the five test jobs ran 94 tests, and every campaign summary
+line is identical across all five, which also shows the simulator is deterministic across
+compilers and platforms.
 
-Every number for this milestone comes from `results/m4/summary.json` once captured.
+- [x] Duplicate client requests apply exactly once: the 10,000-seed KV campaign completed all
+  181,933 operations, with 66,659 retries of an unknown outcome and 16,402 reads through the
+  log. Every history passed the exactly-once check, and every step passed the safety checks
+  (31,344,275 steps).
+- [x] Reads never return stale data: the same campaign served 68,409 ReadIndex reads, and the
+  per-key version check found no stale or uncommitted read.
+- [x] The checker flags both broken modes: unsafe local reads at seed 14 ("Stale read") and a
+  store without session dedupe at seed 0 ("Exactly-once").
+- [x] ReadIndex unit tests (`ReadIndexTest.*`) and session snapshot tests pass.
+- [x] M1 to M3 campaigns unchanged: the election and replication digests equal `results/m3/`.
+- [x] Debug and ASan green on Windows and Linux, TSan on Linux, clang-tidy and lint green.
+- [x] Owner approval: given by the owner ("commit, merge, do everything").
 
 ## Files changed since M3
 
