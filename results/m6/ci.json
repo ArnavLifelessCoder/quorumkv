@@ -1,0 +1,192 @@
+{
+  "producer": "scripts/record_ci_evidence.py",
+  "branch": "m6",
+  "source_revision": "d6454a58f1eda48f16d9b166d0d5d207762b46bd",
+  "run_id": 39947807363,
+  "url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39947807363",
+  "jobs": {
+    "tidy": {
+      "conclusion": "success",
+      "url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39947807363/job/120394653390"
+    },
+    "lint": {
+      "conclusion": "success",
+      "url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39947807363/job/120394653541"
+    },
+    "test (ubuntu-24.04, asan)": {
+      "conclusion": "success",
+      "url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39947807363/job/120394653559",
+      "tests": 110,
+      "summaries": {
+        "fuzz": [
+          "first_seed=0 seeds=10000 round_trips=60000 probe_accepted=52898 probe_rejected=27102 corpus_digest=ddc03ddedd0aabdf"
+        ],
+        "replication": [
+          "first_seed=0 seeds=10000 steps=20070722 safety_checks=20070722 log_checks=84881878 application_checks=84881878 proposals=34236 committed_commands=29418 figure8_runs=1250 ack_crash_runs=1250 crashes=378010 sync_failures=163317 candidate_crashes=45459 append_reply_crashes=13393 long_delay_packets=118402 partitions=60000 dropped=639103 duplicated=214470 max_recovery_ticks=81 digest=b53df2db42c093f2",
+          "first_seed=47 seeds=1 steps=2520 safety_checks=2520 log_checks=12600 application_checks=12600 proposals=1 committed_commands=2 figure8_runs=1 ack_crash_runs=0 crashes=50 sync_failures=15 candidate_crashes=10 append_reply_crashes=1 long_delay_packets=31 partitions=6 dropped=95 duplicated=30 max_recovery_ticks=71 digest=852c794765a54cc8"
+        ],
+        "sim": [
+          "first_seed=0 seeds=10000 p50_cold_ticks=20 p99_cold_ticks=50 p50_reelection_ticks=24 p99_reelection_ticks=97 election_bound=300 max_cold_ticks=89 max_reelection_ticks=187 max_recovery_ticks=91 steps=19677168 safety_checks=19677168 delivered=2968750 dropped=706136 duplicated=228428 partitions=60000 crashes=219479 restarts=258663 sync_failures=155143 vote_grant_crashes=14336 long_delay_packets=161992 stale_vote_deliveries=5912 digest=f8710b2d905e8cff",
+          "first_seed=42 seeds=1 p50_cold_ticks=22 p99_cold_ticks=22 p50_reelection_ticks=25 p99_reelection_ticks=25 election_bound=300 max_cold_ticks=22 max_reelection_ticks=25 max_recovery_ticks=91 steps=1455 safety_checks=1455 delivered=146 dropped=16 duplicated=5 partitions=6 crashes=20 restarts=23 sync_failures=15 vote_grant_crashes=0 long_delay_packets=2 stale_vote_deliveries=0 digest=18a253973d716023"
+        ],
+        "kv": [
+          "first_seed=0 seeds=10000 operations=175018 acknowledged=175018 retries=67549 timeouts=66343 not_leader=10805999 logged_reads=15675 reads_served=66301 reads_failed=1077 applied_commands=732730 crashes=259998 partitions=80000 steps=31239706 safety_checks=31239706 max_quiesce_ticks=96 digest=2da828e6b31abd28",
+          "first_seed=42 seeds=1 operations=5 acknowledged=5 retries=3 timeouts=3 not_leader=867 logged_reads=0 reads_served=3 reads_failed=0 applied_commands=12 crashes=24 partitions=8 steps=2243 safety_checks=2243 max_quiesce_ticks=18 digest=bfd31a6d5c328d07"
+        ],
+        "kv-snapshot": [
+          "first_seed=0 seeds=10000 snapshots_taken=34870 snapshot_installs=141 snapshot_chunks=124011 restore_checks=60242 max_retained_entries=68"
+        ],
+        "kv-negative": [
+          "mode=no_dedupe first_seed=0 error=Exactly-once: key a0 applied client 2 append(a0, c2s3;) invoke=25 complete=30 more than once",
+          "mode=unsafe_reads first_seed=4 error=Stale read: client 4 get(a0) invoke=38 complete=39 returned missing misses client 4 append(a0, c4s2;) invoke=16 complete=20, which completed before the read was invoked"
+        ],
+        "kv-snapshot-negative": [
+          "mode=sessionless_snapshot first_seed=1 error=replayed state differs from a snapshot of the same index"
+        ],
+        "kv-longrun": [
+          "ticks=1500 threshold=16 operations=2224 applied_commands=7870 snapshots_taken=480 max_retained_entries=20"
+        ]
+      }
+    },
+    "test (ubuntu-24.04, tsan)": {
+      "conclusion": "success",
+      "url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39947807363/job/120394653678",
+      "tests": 110,
+      "summaries": {
+        "fuzz": [
+          "first_seed=0 seeds=10000 round_trips=60000 probe_accepted=52898 probe_rejected=27102 corpus_digest=ddc03ddedd0aabdf"
+        ],
+        "replication": [
+          "first_seed=0 seeds=10000 steps=20070722 safety_checks=20070722 log_checks=84881878 application_checks=84881878 proposals=34236 committed_commands=29418 figure8_runs=1250 ack_crash_runs=1250 crashes=378010 sync_failures=163317 candidate_crashes=45459 append_reply_crashes=13393 long_delay_packets=118402 partitions=60000 dropped=639103 duplicated=214470 max_recovery_ticks=81 digest=b53df2db42c093f2",
+          "first_seed=47 seeds=1 steps=2520 safety_checks=2520 log_checks=12600 application_checks=12600 proposals=1 committed_commands=2 figure8_runs=1 ack_crash_runs=0 crashes=50 sync_failures=15 candidate_crashes=10 append_reply_crashes=1 long_delay_packets=31 partitions=6 dropped=95 duplicated=30 max_recovery_ticks=71 digest=852c794765a54cc8"
+        ],
+        "sim": [
+          "first_seed=0 seeds=10000 p50_cold_ticks=20 p99_cold_ticks=50 p50_reelection_ticks=24 p99_reelection_ticks=97 election_bound=300 max_cold_ticks=89 max_reelection_ticks=187 max_recovery_ticks=91 steps=19677168 safety_checks=19677168 delivered=2968750 dropped=706136 duplicated=228428 partitions=60000 crashes=219479 restarts=258663 sync_failures=155143 vote_grant_crashes=14336 long_delay_packets=161992 stale_vote_deliveries=5912 digest=f8710b2d905e8cff",
+          "first_seed=42 seeds=1 p50_cold_ticks=22 p99_cold_ticks=22 p50_reelection_ticks=25 p99_reelection_ticks=25 election_bound=300 max_cold_ticks=22 max_reelection_ticks=25 max_recovery_ticks=91 steps=1455 safety_checks=1455 delivered=146 dropped=16 duplicated=5 partitions=6 crashes=20 restarts=23 sync_failures=15 vote_grant_crashes=0 long_delay_packets=2 stale_vote_deliveries=0 digest=18a253973d716023"
+        ],
+        "kv": [
+          "first_seed=0 seeds=10000 operations=175018 acknowledged=175018 retries=67549 timeouts=66343 not_leader=10805999 logged_reads=15675 reads_served=66301 reads_failed=1077 applied_commands=732730 crashes=259998 partitions=80000 steps=31239706 safety_checks=31239706 max_quiesce_ticks=96 digest=2da828e6b31abd28",
+          "first_seed=42 seeds=1 operations=5 acknowledged=5 retries=3 timeouts=3 not_leader=867 logged_reads=0 reads_served=3 reads_failed=0 applied_commands=12 crashes=24 partitions=8 steps=2243 safety_checks=2243 max_quiesce_ticks=18 digest=bfd31a6d5c328d07"
+        ],
+        "kv-snapshot": [
+          "first_seed=0 seeds=10000 snapshots_taken=34870 snapshot_installs=141 snapshot_chunks=124011 restore_checks=60242 max_retained_entries=68"
+        ],
+        "kv-negative": [
+          "mode=no_dedupe first_seed=0 error=Exactly-once: key a0 applied client 2 append(a0, c2s3;) invoke=25 complete=30 more than once",
+          "mode=unsafe_reads first_seed=4 error=Stale read: client 4 get(a0) invoke=38 complete=39 returned missing misses client 4 append(a0, c4s2;) invoke=16 complete=20, which completed before the read was invoked"
+        ],
+        "kv-snapshot-negative": [
+          "mode=sessionless_snapshot first_seed=1 error=replayed state differs from a snapshot of the same index"
+        ],
+        "kv-longrun": [
+          "ticks=1500 threshold=16 operations=2224 applied_commands=7870 snapshots_taken=480 max_retained_entries=20"
+        ]
+      }
+    },
+    "test (ubuntu-24.04, debug)": {
+      "conclusion": "success",
+      "url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39947807363/job/120394653689",
+      "tests": 110,
+      "summaries": {
+        "fuzz": [
+          "first_seed=0 seeds=10000 round_trips=60000 probe_accepted=52898 probe_rejected=27102 corpus_digest=ddc03ddedd0aabdf"
+        ],
+        "replication": [
+          "first_seed=0 seeds=10000 steps=20070722 safety_checks=20070722 log_checks=84881878 application_checks=84881878 proposals=34236 committed_commands=29418 figure8_runs=1250 ack_crash_runs=1250 crashes=378010 sync_failures=163317 candidate_crashes=45459 append_reply_crashes=13393 long_delay_packets=118402 partitions=60000 dropped=639103 duplicated=214470 max_recovery_ticks=81 digest=b53df2db42c093f2",
+          "first_seed=47 seeds=1 steps=2520 safety_checks=2520 log_checks=12600 application_checks=12600 proposals=1 committed_commands=2 figure8_runs=1 ack_crash_runs=0 crashes=50 sync_failures=15 candidate_crashes=10 append_reply_crashes=1 long_delay_packets=31 partitions=6 dropped=95 duplicated=30 max_recovery_ticks=71 digest=852c794765a54cc8"
+        ],
+        "sim": [
+          "first_seed=0 seeds=10000 p50_cold_ticks=20 p99_cold_ticks=50 p50_reelection_ticks=24 p99_reelection_ticks=97 election_bound=300 max_cold_ticks=89 max_reelection_ticks=187 max_recovery_ticks=91 steps=19677168 safety_checks=19677168 delivered=2968750 dropped=706136 duplicated=228428 partitions=60000 crashes=219479 restarts=258663 sync_failures=155143 vote_grant_crashes=14336 long_delay_packets=161992 stale_vote_deliveries=5912 digest=f8710b2d905e8cff",
+          "first_seed=42 seeds=1 p50_cold_ticks=22 p99_cold_ticks=22 p50_reelection_ticks=25 p99_reelection_ticks=25 election_bound=300 max_cold_ticks=22 max_reelection_ticks=25 max_recovery_ticks=91 steps=1455 safety_checks=1455 delivered=146 dropped=16 duplicated=5 partitions=6 crashes=20 restarts=23 sync_failures=15 vote_grant_crashes=0 long_delay_packets=2 stale_vote_deliveries=0 digest=18a253973d716023"
+        ],
+        "kv": [
+          "first_seed=0 seeds=10000 operations=175018 acknowledged=175018 retries=67549 timeouts=66343 not_leader=10805999 logged_reads=15675 reads_served=66301 reads_failed=1077 applied_commands=732730 crashes=259998 partitions=80000 steps=31239706 safety_checks=31239706 max_quiesce_ticks=96 digest=2da828e6b31abd28",
+          "first_seed=42 seeds=1 operations=5 acknowledged=5 retries=3 timeouts=3 not_leader=867 logged_reads=0 reads_served=3 reads_failed=0 applied_commands=12 crashes=24 partitions=8 steps=2243 safety_checks=2243 max_quiesce_ticks=18 digest=bfd31a6d5c328d07"
+        ],
+        "kv-snapshot": [
+          "first_seed=0 seeds=10000 snapshots_taken=34870 snapshot_installs=141 snapshot_chunks=124011 restore_checks=60242 max_retained_entries=68"
+        ],
+        "kv-negative": [
+          "mode=no_dedupe first_seed=0 error=Exactly-once: key a0 applied client 2 append(a0, c2s3;) invoke=25 complete=30 more than once",
+          "mode=unsafe_reads first_seed=4 error=Stale read: client 4 get(a0) invoke=38 complete=39 returned missing misses client 4 append(a0, c4s2;) invoke=16 complete=20, which completed before the read was invoked"
+        ],
+        "kv-snapshot-negative": [
+          "mode=sessionless_snapshot first_seed=1 error=replayed state differs from a snapshot of the same index"
+        ],
+        "kv-longrun": [
+          "ticks=1500 threshold=16 operations=2224 applied_commands=7870 snapshots_taken=480 max_retained_entries=20"
+        ]
+      }
+    },
+    "test (windows-latest, asan)": {
+      "conclusion": "success",
+      "url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39947807363/job/120394653705",
+      "tests": 110,
+      "summaries": {
+        "fuzz": [
+          "first_seed=0 seeds=10000 round_trips=60000 probe_accepted=52898 probe_rejected=27102 corpus_digest=ddc03ddedd0aabdf"
+        ],
+        "replication": [
+          "first_seed=0 seeds=10000 steps=20070722 safety_checks=20070722 log_checks=84881878 application_checks=84881878 proposals=34236 committed_commands=29418 figure8_runs=1250 ack_crash_runs=1250 crashes=378010 sync_failures=163317 candidate_crashes=45459 append_reply_crashes=13393 long_delay_packets=118402 partitions=60000 dropped=639103 duplicated=214470 max_recovery_ticks=81 digest=b53df2db42c093f2",
+          "first_seed=47 seeds=1 steps=2520 safety_checks=2520 log_checks=12600 application_checks=12600 proposals=1 committed_commands=2 figure8_runs=1 ack_crash_runs=0 crashes=50 sync_failures=15 candidate_crashes=10 append_reply_crashes=1 long_delay_packets=31 partitions=6 dropped=95 duplicated=30 max_recovery_ticks=71 digest=852c794765a54cc8"
+        ],
+        "sim": [
+          "first_seed=0 seeds=10000 p50_cold_ticks=20 p99_cold_ticks=50 p50_reelection_ticks=24 p99_reelection_ticks=97 election_bound=300 max_cold_ticks=89 max_reelection_ticks=187 max_recovery_ticks=91 steps=19677168 safety_checks=19677168 delivered=2968750 dropped=706136 duplicated=228428 partitions=60000 crashes=219479 restarts=258663 sync_failures=155143 vote_grant_crashes=14336 long_delay_packets=161992 stale_vote_deliveries=5912 digest=f8710b2d905e8cff",
+          "first_seed=42 seeds=1 p50_cold_ticks=22 p99_cold_ticks=22 p50_reelection_ticks=25 p99_reelection_ticks=25 election_bound=300 max_cold_ticks=22 max_reelection_ticks=25 max_recovery_ticks=91 steps=1455 safety_checks=1455 delivered=146 dropped=16 duplicated=5 partitions=6 crashes=20 restarts=23 sync_failures=15 vote_grant_crashes=0 long_delay_packets=2 stale_vote_deliveries=0 digest=18a253973d716023"
+        ],
+        "kv": [
+          "first_seed=0 seeds=10000 operations=175018 acknowledged=175018 retries=67549 timeouts=66343 not_leader=10805999 logged_reads=15675 reads_served=66301 reads_failed=1077 applied_commands=732730 crashes=259998 partitions=80000 steps=31239706 safety_checks=31239706 max_quiesce_ticks=96 digest=2da828e6b31abd28",
+          "first_seed=42 seeds=1 operations=5 acknowledged=5 retries=3 timeouts=3 not_leader=867 logged_reads=0 reads_served=3 reads_failed=0 applied_commands=12 crashes=24 partitions=8 steps=2243 safety_checks=2243 max_quiesce_ticks=18 digest=bfd31a6d5c328d07"
+        ],
+        "kv-snapshot": [
+          "first_seed=0 seeds=10000 snapshots_taken=34870 snapshot_installs=141 snapshot_chunks=124011 restore_checks=60242 max_retained_entries=68"
+        ],
+        "kv-negative": [
+          "mode=no_dedupe first_seed=0 error=Exactly-once: key a0 applied client 2 append(a0, c2s3;) invoke=25 complete=30 more than once",
+          "mode=unsafe_reads first_seed=4 error=Stale read: client 4 get(a0) invoke=38 complete=39 returned missing misses client 4 append(a0, c4s2;) invoke=16 complete=20, which completed before the read was invoked"
+        ],
+        "kv-snapshot-negative": [
+          "mode=sessionless_snapshot first_seed=1 error=replayed state differs from a snapshot of the same index"
+        ],
+        "kv-longrun": [
+          "ticks=1500 threshold=16 operations=2224 applied_commands=7870 snapshots_taken=480 max_retained_entries=20"
+        ]
+      }
+    },
+    "test (windows-latest, debug)": {
+      "conclusion": "success",
+      "url": "https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39947807363/job/120394653706",
+      "tests": 110,
+      "summaries": {
+        "fuzz": [
+          "first_seed=0 seeds=10000 round_trips=60000 probe_accepted=52898 probe_rejected=27102 corpus_digest=ddc03ddedd0aabdf"
+        ],
+        "replication": [
+          "first_seed=0 seeds=10000 steps=20070722 safety_checks=20070722 log_checks=84881878 application_checks=84881878 proposals=34236 committed_commands=29418 figure8_runs=1250 ack_crash_runs=1250 crashes=378010 sync_failures=163317 candidate_crashes=45459 append_reply_crashes=13393 long_delay_packets=118402 partitions=60000 dropped=639103 duplicated=214470 max_recovery_ticks=81 digest=b53df2db42c093f2",
+          "first_seed=47 seeds=1 steps=2520 safety_checks=2520 log_checks=12600 application_checks=12600 proposals=1 committed_commands=2 figure8_runs=1 ack_crash_runs=0 crashes=50 sync_failures=15 candidate_crashes=10 append_reply_crashes=1 long_delay_packets=31 partitions=6 dropped=95 duplicated=30 max_recovery_ticks=71 digest=852c794765a54cc8"
+        ],
+        "sim": [
+          "first_seed=0 seeds=10000 p50_cold_ticks=20 p99_cold_ticks=50 p50_reelection_ticks=24 p99_reelection_ticks=97 election_bound=300 max_cold_ticks=89 max_reelection_ticks=187 max_recovery_ticks=91 steps=19677168 safety_checks=19677168 delivered=2968750 dropped=706136 duplicated=228428 partitions=60000 crashes=219479 restarts=258663 sync_failures=155143 vote_grant_crashes=14336 long_delay_packets=161992 stale_vote_deliveries=5912 digest=f8710b2d905e8cff",
+          "first_seed=42 seeds=1 p50_cold_ticks=22 p99_cold_ticks=22 p50_reelection_ticks=25 p99_reelection_ticks=25 election_bound=300 max_cold_ticks=22 max_reelection_ticks=25 max_recovery_ticks=91 steps=1455 safety_checks=1455 delivered=146 dropped=16 duplicated=5 partitions=6 crashes=20 restarts=23 sync_failures=15 vote_grant_crashes=0 long_delay_packets=2 stale_vote_deliveries=0 digest=18a253973d716023"
+        ],
+        "kv": [
+          "first_seed=0 seeds=10000 operations=175018 acknowledged=175018 retries=67549 timeouts=66343 not_leader=10805999 logged_reads=15675 reads_served=66301 reads_failed=1077 applied_commands=732730 crashes=259998 partitions=80000 steps=31239706 safety_checks=31239706 max_quiesce_ticks=96 digest=2da828e6b31abd28",
+          "first_seed=42 seeds=1 operations=5 acknowledged=5 retries=3 timeouts=3 not_leader=867 logged_reads=0 reads_served=3 reads_failed=0 applied_commands=12 crashes=24 partitions=8 steps=2243 safety_checks=2243 max_quiesce_ticks=18 digest=bfd31a6d5c328d07"
+        ],
+        "kv-snapshot": [
+          "first_seed=0 seeds=10000 snapshots_taken=34870 snapshot_installs=141 snapshot_chunks=124011 restore_checks=60242 max_retained_entries=68"
+        ],
+        "kv-negative": [
+          "mode=no_dedupe first_seed=0 error=Exactly-once: key a0 applied client 2 append(a0, c2s3;) invoke=25 complete=30 more than once",
+          "mode=unsafe_reads first_seed=4 error=Stale read: client 4 get(a0) invoke=38 complete=39 returned missing misses client 4 append(a0, c4s2;) invoke=16 complete=20, which completed before the read was invoked"
+        ],
+        "kv-snapshot-negative": [
+          "mode=sessionless_snapshot first_seed=1 error=replayed state differs from a snapshot of the same index"
+        ],
+        "kv-longrun": [
+          "ticks=1500 threshold=16 operations=2224 applied_commands=7870 snapshots_taken=480 max_retained_entries=20"
+        ]
+      }
+    }
+  }
+}
