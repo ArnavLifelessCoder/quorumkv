@@ -1,7 +1,10 @@
 # M5 review packet
 
-Status: implementation complete on branch `m5`. Evidence capture (`scripts/capture_m5.ps1`)
-and CI for the final commit are recorded in `results/m5/`.
+Status: complete on branch `m5`. Evidence comes from the exact-commit CI run for source
+`2af72e6` ([run 39947796243](https://github.com/ArnavLifelessCoder/quorumkv/actions/runs/39947796243)),
+recorded by `scripts/record_ci_evidence.py` in `results/m5/` (summary in `ci.json`, full job
+logs beside it). As for M4, CI is the evidence of record because local multi-hour captures were
+cut off when the machine slept. `scripts/capture_m5.ps1` produces the same lines locally.
 
 ## Built
 
@@ -20,17 +23,22 @@ See [the snapshot design](snapshots.md).
 
 ## Acceptance gates
 
-- [ ] A lagging follower catches up through a snapshot:
-  `SimSnapshot.LaggingFollowerCatchesUpThroughChunkedInstallSnapshot`, plus InstallSnapshot
-  completions across the 10,000-seed KV campaign.
-- [ ] Restart from snapshot plus remaining log gives identical state:
-  `SimSnapshot.RestartFromSnapshotPlusLogReproducesIdenticalState`, and the restore and replay
-  checks on every step of the campaign.
-- [ ] Log size stays bounded under a long-running workload:
-  `SimSnapshot.LogStaysBoundedUnderALongRunningWorkload` (`[kv-longrun]` line).
-- [ ] Session dedupe survives snapshots: the KV campaign with snapshots on, and the
-  sessionless-snapshot negative control.
-- [ ] Debug and ASan green with zero warnings; clang-tidy, format, ruff, and pytest pass;
-  final-commit CI green.
+All seven CI jobs passed. Each of the five test jobs ran 104 tests, and every campaign summary
+line is identical across all five.
 
-Every number comes from `results/m5/summary.json`.
+- [x] A lagging follower catches up through a snapshot:
+  `SimSnapshot.LaggingFollowerCatchesUpThroughChunkedInstallSnapshot` passes, and the
+  10,000-seed KV campaign completed 141 InstallSnapshot transfers in 124,011 chunks.
+- [x] Restart from snapshot plus remaining log gives identical state:
+  `SimSnapshot.RestartFromSnapshotPlusLogReproducesIdenticalState` passes, and the campaign ran
+  60,242 restore checks with no mismatch across 34,870 snapshots.
+- [x] Log size stays bounded under a long-running workload: the `[kv-longrun]` run of 1,500
+  ticks applied 7,870 commands and never retained more than 20 entries (threshold 16).
+- [x] Session dedupe survives snapshots: the campaign completed all 175,018 operations with
+  snapshots on and no exactly-once or stale-read failure, and the sessionless-snapshot control
+  fails at seed 1 ("replayed state differs from a snapshot of the same index").
+- [x] Debug and ASan green on Windows and Linux, TSan on Linux, clang-tidy, format, ruff and
+  pytest green in the same run.
+- [x] M1 to M4 digests: the election and replication digests equal `results/m3/`.
+
+Every number comes from `results/m5/ci.json`.
